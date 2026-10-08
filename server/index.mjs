@@ -27,6 +27,7 @@ import { ProjectService,root,hypit,run } from './project.mjs';
 try{process.loadEnvFile(path.join(root,'.env'));}catch(e){if(e.code!=='ENOENT')throw e;}
 const settingsStore=new SettingsStore(path.join(root,'.env'));await settingsStore.loadInto(process.env);
 const port=Number(process.env.PORT||5180);
+const agentPort=Number(process.env.OMNICUT_AGENT_PORT||5182);
 const service=new ProjectService();const engine=new NativeEngine({service,root,hypit,run});service.engine=engine;const nativeRuntime=new NativeRuntime({root,getConfig:async()=>(await settingsStore.read()).env});engine.runtime=nativeRuntime;await service.recover();
 const generations=new GenerationService({service,getConfig:async()=>(await settingsStore.read()).env});await generations.init();
 const references=new ReferenceService({service,generations,getConfig:async()=>(await settingsStore.read()).env});await references.init();
@@ -79,7 +80,7 @@ async function getExportStatus(projectId,jobId){
  return {...job,download:job.status==='done'?'/api/jobs/'+job.id+'/download':undefined};
 }
 let agentBridge,configUpdating=false;
-try{const {createAgentBridge}=await import('./agent.mjs');agentBridge=await createAgentBridge({service,exportVideo,getExportStatus,generations,getExports,references,images,audio,tasks,nativeWeb:true,nativePort:5182,engine,snapshot,studioMutation,adjustTiming,transcriptions,nativeRuntime,nativeBuilds});}catch(e){console.error('Agent bridge:',e.message);}
+try{const {createAgentBridge}=await import('./agent.mjs');agentBridge=await createAgentBridge({service,exportVideo,getExportStatus,generations,getExports,references,images,audio,tasks,nativeWeb:true,nativePort:agentPort,engine,snapshot,studioMutation,adjustTiming,transcriptions,nativeRuntime,nativeBuilds});}catch(e){console.error('Agent bridge:',e.message);}
 async function createConversationJob(projectId,input,kind,create){
  const cid=input.conversationId||projectId;agentBridge?.state(projectId,cid);
  const result=await create();
@@ -89,7 +90,7 @@ async function createConversationJob(projectId,input,kind,create){
 const server=http.createServer(async(req,res)=>{try{
  const url=new URL(req.url,'http://localhost:'+port),p=url.pathname;
  const accessError=requestAccessError(req,p,port);if(accessError)return json(res,403,{error:accessError});
- if(p.startsWith('/dsh/'))return proxyNative(req,res,5182);
+ if(p.startsWith('/dsh/'))return proxyNative(req,res,agentPort);
  if(p==='/api/home-composer'&&req.method==='POST'){
   if(!agentBridge?.ready)throw Error('对话服务正在连接，请稍后重试');
   const sessionId=await agentBridge.ensureHome();
@@ -110,7 +111,7 @@ const server=http.createServer(async(req,res)=>{try{
      if(p==='/api/settings'){let input;try{input=await requestJson(req);}catch{throw Error('模型配置格式无效');}await settingsStore.save(input);}
      await settingsStore.loadInto(process.env);
      const changed=before.some((value,index)=>value!==process.env[agentSettings[index]]);
-     if(changed||p==='/api/reconnect'||!agentBridge?.ready){await agentBridge?.close();try{const {createAgentBridge}=await import('./agent.mjs');agentBridge=await createAgentBridge({service,exportVideo,getExportStatus,generations,getExports,references,images,audio,tasks,nativeWeb:true,nativePort:5182,engine,snapshot,studioMutation,adjustTiming,transcriptions,nativeRuntime,nativeBuilds});}catch{agentBridge=undefined;}}
+     if(changed||p==='/api/reconnect'||!agentBridge?.ready){await agentBridge?.close();try{const {createAgentBridge}=await import('./agent.mjs');agentBridge=await createAgentBridge({service,exportVideo,getExportStatus,generations,getExports,references,images,audio,tasks,nativeWeb:true,nativePort:agentPort,engine,snapshot,studioMutation,adjustTiming,transcriptions,nativeRuntime,nativeBuilds});}catch{agentBridge=undefined;}}
      return json(res,200,{...publicSettings(process.env),agentReady:Boolean(agentBridge?.ready),saved:true});
    }finally{configUpdating=false;}
  }
@@ -233,7 +234,7 @@ const server=http.createServer(async(req,res)=>{try{
  if(p==='/icons.js'){res.setHeader('content-type','text/javascript');return res.end(await fs.readFile(path.join(root,'node_modules/lucide/dist/umd/lucide.js')));}
  json(res,404,{error:'未找到页面'});
  }catch(e){if(res.headersSent){res.destroy();return;}json(res,e.status||400,{error:e.message});}});
-server.on('upgrade',(req,socket,head)=>proxyNativeUpgrade(req,socket,head,5182,port));
-server.listen(port,'127.0.0.1',()=>console.log('Frame 工作台 http://localhost:'+port));
+server.on('upgrade',(req,socket,head)=>proxyNativeUpgrade(req,socket,head,agentPort,port));
+server.listen(port,'127.0.0.1',()=>console.log('OmniCut 工作台 http://localhost:'+port));
 function shutdown(){tasks.close();images.close().catch(()=>{});audio.closed=true;generations.close();studios.close();agentBridge?.close();server.close();setTimeout(()=>process.exit(),500).unref();}
 process.on('SIGINT',shutdown);process.on('SIGTERM',shutdown);

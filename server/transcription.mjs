@@ -2,7 +2,7 @@ import {promises as fs} from 'node:fs';
 import path from 'node:path';
 import {assetPath} from './assets.mjs';
 import {whisperxModel} from './native-runtime.mjs';
-import {interpretWhisperXTranscript} from '../../hypit/packages/whisperx/src/transcript.ts';
+import {interpretWhisperXTranscript} from '../engines/video/packages/whisperx/src/transcript.ts';
 
 export function nativeTranscriptEvidence(transcript){
  if(transcript?.format!=='hypit.transcript@1'||!Array.isArray(transcript.passages)||!(transcript.audio_seconds>0))throw Error('本地语音服务未返回有效转录结果');

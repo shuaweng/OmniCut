@@ -1,0 +1,8 @@
+.runtime-before-rebuild/
+.manifest-after-rebuild.json
+
+# These are public upstream examples and test fixtures, not OmniCut user data.
+!source/apps/desktop/.env.macos.example
+!source/apps/desktop/.env.windows.example
+!source/packages/experimental/webworker-runtime/tests/fixtures/vfs-example/workspace/data/
+!source/packages/experimental/webworker-runtime/tests/fixtures/vfs-example/workspace/data/tasks.json

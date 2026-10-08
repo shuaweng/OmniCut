@@ -24,3 +24,6 @@ harness/attachments/
 harness/cache/
 harness/logs/
 sample-assets/reference-cream.mp4
+
+# Local engine rebuilds and dependency state
+engines/agent/.runtime-before-rebuild/

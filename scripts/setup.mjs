@@ -1,12 +1,12 @@
 #!/usr/bin/env node
 import {spawnSync} from 'node:child_process';
-import {existsSync} from 'node:fs';
+import {existsSync, realpathSync} from 'node:fs';
+import {createRequire} from 'node:module';
 import path from 'node:path';
 
 const root = path.resolve(import.meta.dirname, '..');
-const upstream = path.resolve(root, '../hypit');
-const repository = 'https://github.com/hypit-ai/hypit.git';
-const revision = '1f8f4e1b8a00ecf8e5680233dfc6584e736a0eea';
+const video = path.join(root, 'engines/video');
+const agent = path.join(root, 'engines/agent/runtime');
 const args = new Set(process.argv.slice(2));
 const allowed = new Set(['--check', '--prepare-browser', '--help']);
 if ([...args].some(arg => !allowed.has(arg)) || args.has('--check') && args.has('--prepare-browser')) {
@@ -14,13 +14,13 @@ if ([...args].some(arg => !allowed.has(arg)) || args.has('--check') && args.has(
   process.exit(1);
 }
 if (args.has('--help')) {
-  console.log(`npm run setup                     安装固定版本的视频引擎及依赖
-npm run setup -- --check           只读检查本机依赖，不安装或下载
-npm run setup -- --prepare-browser 安装依赖，并准备本地渲染用的 Chrome
+  console.log(`npm run setup                     安装 OmniCut 及内置内核的依赖
+npm run setup -- --check           只读检查本机依赖和内核，不安装或下载
+npm run setup -- --prepare-browser 安装依赖，并准备视频渲染浏览器
 
-视频引擎位置：${upstream}
-已有目录必须属于官方仓库且位于要求的版本；脚本不会重置或覆盖它。
-Chrome 默认缓存为 ~/.cache/hyperframes/chrome。`);
+全部产品源码和内核都在当前仓库；无需克隆其他工程或安装独立 Agent。
+安装会从 npm 下载通用依赖，渲染浏览器使用 Chrome for Testing。
+项目与模型设置保存在本机，不会被安装步骤覆盖。`);
   process.exit(0);
 }
 
@@ -30,51 +30,50 @@ function command(program, argv, {cwd = root, capture = false} = {}) {
   if (result.status !== 0) throw new Error(`${program} 执行失败（退出码 ${result.status ?? result.signal}）${capture ? '\n' + result.stderr.trim() : ''}`);
   return result.stdout?.trim() || '';
 }
-
-function verifyUpstream() {
-  const remote = command('git', ['remote', 'get-url', 'origin'], {cwd: upstream, capture: true});
-  const normalized = remote.replace(/^git@github\.com:/, 'https://github.com/').replace(/^ssh:\/\/git@github\.com\//, 'https://github.com/').replace(/\.git\/?$/, '').replace(/\/$/, '');
-  if (normalized !== 'https://github.com/hypit-ai/hypit') {
-    throw new Error(`已有目录 ${upstream} 的 origin 不是预期的官方仓库。请另选父目录安装 OmniCut；现有目录未修改。`);
+function required(file, message) {
+  if (!existsSync(file)) throw new Error(message);
+}
+function verifyInstalled() {
+  const require = createRequire(path.join(root, 'package.json'));
+  let resolved;
+  try { resolved = realpathSync(require.resolve('@deepseek-ai/dsh')); }
+  catch { // The CLI package exposes a bin rather than a main entry.
+    try { resolved = realpathSync(path.join(root, 'node_modules/@deepseek-ai/dsh/lib/bin.js')); }
+    catch { throw new Error('对话内核依赖尚未安装，请运行 npm run setup。'); }
   }
-  const head = command('git', ['rev-parse', 'HEAD'], {cwd: upstream, capture: true});
-  if (head !== revision) {
-    throw new Error(`已有视频引擎版本为 ${head}，本项目需要 ${revision}。请另选父目录安装，或自行保留本地工作后切换版本；脚本不会 reset。`);
-  }
-  const changes = command('git', ['status', '--porcelain', '--untracked-files=no'], {cwd: upstream, capture: true});
-  if (changes) throw new Error('现有视频引擎有本地修改。请先自行保存，或另选父目录安装；脚本不会覆盖这些修改。');
+  if (!resolved.startsWith(realpathSync(agent) + path.sep)) throw new Error('检测到旧版外置对话包，请运行 npm run setup 更新为内置内核。');
+  required(path.join(root, 'node_modules/lucide/package.json'), '界面依赖尚未安装，请运行 npm run setup。');
+  required(path.join(video, 'node_modules/tsx/package.json'), '视频内核依赖尚未安装，请运行 npm run setup。');
+  required(path.join(video, 'node_modules/vite/package.json'), '工作台构建依赖尚未安装，请运行 npm run setup。');
+  console.log('✓ 对话内核：仓库内置');
+  console.log('✓ 视频内核：仓库内置');
 }
 
 try {
   if (Number(process.versions.node.split('.')[0]) < 24) throw new Error(`需要 Node.js 24 或更新版本，当前为 ${process.version}。`);
   if (process.platform === 'win32') throw new Error('当前安装流程支持 macOS / Linux；Windows 请使用 WSL。');
-  for (const [program, versionArg] of [['git', '--version'], ['ffmpeg', '-version'], ['ffprobe', '-version'], ['npm', '--version']]) {
+  for (const [program, versionArg] of [['ffmpeg', '-version'], ['ffprobe', '-version'], ['npm', '--version']]) {
     command(program, [versionArg], {capture: true});
     console.log(`✓ ${program}`);
   }
   console.log(`✓ Node.js ${process.version}`);
-  if (!existsSync(path.join(root, 'node_modules/@deepseek-ai/dsh/package.json'))) {
-    throw new Error('请先在 OmniCut 目录运行 npm ci --ignore-scripts。');
-  }
-  if (existsSync(upstream)) verifyUpstream();
-  else if (args.has('--check')) throw new Error('尚未安装视频引擎。运行 npm run setup 后再检查。');
-  else {
-    console.log(`下载视频引擎到 ${upstream}`);
-    command('git', ['clone', '--filter=blob:none', '--no-checkout', repository, upstream]);
-    command('git', ['checkout', '--detach', revision], {cwd: upstream});
-    verifyUpstream();
-  }
-  console.log(`✓ 视频引擎 ${revision.slice(0, 7)}`);
+  required(path.join(video, 'bin/hypit.mjs'), '仓库中的视频内核不完整，请重新下载 OmniCut。');
+  required(path.join(agent, 'dsh/lib/bin.js'), '仓库中的对话内核不完整，请重新下载 OmniCut。');
   if (args.has('--check')) {
-    if (!existsSync(path.join(upstream, 'node_modules/tsx/package.json'))) throw new Error('视频引擎依赖尚未安装。请运行 npm run setup。');
-    console.log('预检通过。本次未下载、安装、启动服务或检查模型 Key；渲染浏览器需单独准备。');
+    verifyInstalled();
+    console.log('预检通过。本次未下载、启动服务或调用模型；渲染浏览器单独准备。');
     process.exit(0);
   }
-  command('npx', ['--yes', 'pnpm@10.33.0', 'install', '--frozen-lockfile'], {cwd: upstream});
+  console.log('\n安装产品与对话内核依赖…');
+  command('npm', ['ci', '--ignore-scripts', '--no-audit', '--no-fund']);
+  console.log('\n安装视频内核依赖…');
+  command('npx', ['--yes', 'pnpm@10.33.0', 'install', '--frozen-lockfile'], {cwd: video});
+  verifyInstalled();
   if (args.has('--prepare-browser')) {
+    console.log('\n准备本地渲染浏览器…');
     command(process.execPath, [path.join(root, 'scripts/hypit.mjs'), 'programs', 'prepare', '--runtime', path.join(root, 'template/hypit.runtime.json'), '--endpoint', 'hyperframes.local']);
   }
-  console.log(`安装完成。${args.has('--prepare-browser') ? '' : '首次渲染前，请运行 npm run setup -- --prepare-browser。\n'}运行 npm start，打开 http://localhost:5180，在模型设置里填写自己的 API Key。`);
+  console.log(`\n安装完成。${args.has('--prepare-browser') ? '' : '首次渲染前可运行 npm run setup -- --prepare-browser。\n'}运行 npm start，打开 http://localhost:5180，在模型设置中填写自己的 API Key。`);
 } catch (error) {
   console.error('\n' + error.message);
   process.exitCode = 1;

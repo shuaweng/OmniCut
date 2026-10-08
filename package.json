@@ -1,5 +1,5 @@
 {
-  "name": "frame-commerce-video",
+  "name": "omnicut",
   "version": "0.1.0",
   "private": true,
   "type": "module",
@@ -7,13 +7,18 @@
     "dev": "node server/index.mjs",
     "test": "node --test tests/*.test.mjs",
     "setup": "node scripts/setup.mjs",
-    "start": "node server/index.mjs"
+    "start": "node server/index.mjs",
+    "agent:verify": "node engines/agent/verify.mjs",
+    "agent:rebuild": "node engines/agent/rebuild.mjs"
   },
   "dependencies": {
-    "@deepseek-ai/dsh": "0.2.0-rc.2",
+    "@deepseek-ai/dsh": "file:engines/agent/runtime/dsh",
     "lucide": "0.468.0"
   },
   "engines": {
     "node": ">=24"
-  }
+  },
+  "workspaces": [
+    "engines/agent/runtime/*"
+  ]
 }

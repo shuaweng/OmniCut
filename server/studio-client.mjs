@@ -6,11 +6,11 @@ import {promises as fs} from 'node:fs';
 // Bundle the upstream editor, not a second implementation of its timeline,
 // Inspector, source editor or playback. This host adapter only exposes the
 // upstream store and refresh hooks; the Hypit checkout stays unmodified.
-export async function buildStudioClient(root){
- const upstream=path.resolve(root,'../hypit/packages/studio');
+export async function buildStudioClient(root,{outputDirectory=path.join(root,'data/studio-client')}={}){
+ const upstream=path.join(root,'engines/video/packages/studio');
  const require=createRequire(path.join(upstream,'package.json'));
  const {build}=await import(pathToFileURL(require.resolve('vite')).href);
- const directory=path.join(root,'data/studio-client');
+ const directory=outputDirectory;
  await build({configFile:false,root:path.join(root,'src/hypit-studio'),base:'/hypit-studio/',logLevel:'warn',
   plugins:[{name:'frame-hypit-host',enforce:'pre',transform(code,id){
    if(id.split('?')[0]===path.join(upstream,'src/ui/timeline.ts')){

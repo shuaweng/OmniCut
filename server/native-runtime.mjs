@@ -21,7 +21,13 @@ export class NativeRuntime{
  config.endpoints['image.frame']={use:'@hypit/provider-image-opencv-local',config:{defaultConcurrency:2,...(installed?{pythonExecutable:python}:{})}};
  config.bindings['@hypit/raster@1#execute-raster']='image.frame';
  const selected=env.HYPIT_GATEWAY;if(gateways.includes(selected)&&env[gatewayKey(selected)]){config.credentials={env:{use:'@hypit/credential-store-env'}};config.endpoints[selected+'.frame']={use:'@hypit/provider-'+selected,config:{apiKey:{store:'env',key:gatewayKey(selected)},defaultConcurrency:2}};}else delete config.credentials;
- if(env.HYPIT_WHISPERX==='enabled'){config.endpoints['whisperx.frame']={use:'@hypit/provider-whisperx-local',config:{expectedModel:whisperxModel,expectedDevice:'cpu',expectedCompute:'int8',alignmentLanguages:['zh','en'],modelCacheDirectory:path.resolve(this.root,'../.hypit-cache/whisperx')}};config.bindings['@hypit/whisperx@1#whisperx-alignment']='whisperx.frame';}else delete config.bindings['@hypit/whisperx@1#whisperx-alignment'];
+ if(env.HYPIT_WHISPERX==='enabled'){
+  let modelCacheDirectory=path.join(this.root,'.cache/whisperx');
+  const previousCache=path.resolve(this.root,'../.hypit-cache/whisperx');
+  if(!await fs.stat(modelCacheDirectory).then(stat=>stat.isDirectory(),()=>false)&&await fs.stat(previousCache).then(stat=>stat.isDirectory(),()=>false))modelCacheDirectory=previousCache;
+  config.endpoints['whisperx.frame']={use:'@hypit/provider-whisperx-local',config:{expectedModel:whisperxModel,expectedDevice:'cpu',expectedCompute:'int8',alignmentLanguages:['zh','en'],modelCacheDirectory}};
+  config.bindings['@hypit/whisperx@1#whisperx-alignment']='whisperx.frame';
+ }else delete config.bindings['@hypit/whisperx@1#whisperx-alignment'];
  const text=JSON.stringify(config,null,2);if(await fs.readFile(file,'utf8')!==text)await fs.writeFile(file,text);return config;
  }
  async status(dir){const config=await this.prepare(dir);return {endpoints:Object.entries(config.endpoints).map(([id,e])=>({id,provider:e.use})),bindings:config.bindings,gateway:(await this.getConfig()).HYPIT_GATEWAY||'none',note:'已配置不代表服务可用；使用 doctor/plan 检查当前工程所需能力。'};}

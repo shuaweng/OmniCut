@@ -10,6 +10,7 @@ OmniCut 自己实现的部分包括项目与多对话组织、素材与生成任
 
 - 上游：[hypit-ai/hypit](https://github.com/hypit-ai/hypit)
 - Copyright © 2026 Hypit.AI。
+- 仓库内的 [engines/video/](engines/video/) 收录 Hypit 0.2.17 源码，固定上游 commit `1f8f4e1b8a00ecf8e5680233dfc6584e736a0eea`；来源与收录范围见 [UPSTREAM.md](engines/video/UPSTREAM.md)。安装直接使用这个目录及其锁文件，不需要用户另行克隆 Hypit 仓库。
 - 用途：视频工程、原生 Studio 编辑器、预览与渲染、语义时间线、创作组件及 Skills。OmniCut 通过宿主适配与统一工程接口连接这些能力；Studio 在构建时接入本项目的展示与同步适配。
 - `templates/hypit-chat/` 包含从 Hypit 0.2.17 示例改编的聊天动画，具体来源和修改记录见其 [NOTICE.txt](templates/hypit-chat/NOTICE.txt)，原许可证保留在该目录中。
 - 许可证：Hypit 的附加条款版 Apache License 2.0，原文见 [LICENSE](LICENSE)，其引用的基础文本见 [licenses/APACHE-2.0.txt](licenses/APACHE-2.0.txt)。附加条款涉及多租户托管、商业再分发及部分展示面的名称、LOGO 和版权保留要求。是否需要额外授权，应以原文及上游书面授权为准；本仓库没有取得或授予这些额外权限。
@@ -17,9 +18,10 @@ OmniCut 自己实现的部分包括项目与多对话组织、素材与生成任
 ## DeepSeek Harness
 
 - 上游：[deepseek-ai/deepseek-harness](https://github.com/deepseek-ai/deepseek-harness)
-- 使用包：`@deepseek-ai/dsh`，版本 `0.2.0-rc.2`。
+- 仓库内的 [engines/agent/source/](engines/agent/source/) 收录匹配 `dsh-v0.2.0-rc.2` 的上游源码，commit 为 `639ed015397290b3745d163aafe02ffee4aa3f84`；[engines/agent/runtime/](engines/agent/runtime/) 收录与该版本匹配、原已用于 OmniCut 的 npm 发布包运行构建物。来源、包版本、文件校验及排除项记录在 [manifest.json](engines/agent/manifest.json)。
+- 使用包：`@deepseek-ai/dsh`，版本 `0.2.0-rc.2`。安装使用仓库内的本地包与匹配构建物，不要求用户另外下载 DSH 源码；外部依赖仍按安装锁文件准备。将这些包收录到本仓库不改变其作者、许可证或第三方归属。
 - 用途：原生会话、流式聊天与输入组件、子 Agent、工具调用、等待与继续执行、上下文管理、Skills 和 MCP 扩展机制。OmniCut 通过插件和展示插槽接入媒体任务与创意子 Agent。
-- Copyright (c) 2026 DeepSeek。MIT 许可证原文见 [licenses/DSH-LICENSE.txt](licenses/DSH-LICENSE.txt)。
+- Copyright (c) 2026 DeepSeek。MIT 许可证原文见 [engines/agent/LICENSE](engines/agent/LICENSE) 和 [licenses/DSH-LICENSE.txt](licenses/DSH-LICENSE.txt)；上游自身使用的第三方组件另见其 [THIRD_PARTY_NOTICES.md](engines/agent/THIRD_PARTY_NOTICES.md)，各包内原有声明继续保留。
 
 ## 界面图标
 

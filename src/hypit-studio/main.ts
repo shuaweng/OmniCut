@@ -37,8 +37,8 @@ try{if(!localStorage.getItem('hypit-studio.language'))localStorage.setItem('hypi
 
 // This imports the actual upstream UI, including its semantic rulers, visual
 // handles, source navigation, comments, trim/snap gestures and parameter forms.
-let native:typeof import('../../../hypit/packages/studio/src/ui/main.ts');
-try{native=await import('../../../hypit/packages/studio/src/ui/main.ts');}
+let native:typeof import('../../engines/video/packages/studio/src/ui/main.ts');
+try{native=await import('../../engines/video/packages/studio/src/ui/main.ts');}
 catch(error){host({event:'load-error',message:error instanceof Error?error.message:'工作台连接失败'});throw error;}
 await import('./shell.css');
 await import('../select.css');

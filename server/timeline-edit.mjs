@@ -1,5 +1,5 @@
 // Reuse Hypit's semantic constraints and snapping; both UI and Agent use this entry.
-import {chooseSemanticGesture,semanticGestureSpan} from '../../hypit/packages/studio/src/temporal-edit.ts';
+import {chooseSemanticGesture,semanticGestureSpan} from '../engines/video/packages/studio/src/temporal-edit.ts';
 export function timelineMutation(snapshot,{revision,entityId,gesture='move',targetFrame,semantic}){
  if(revision!==snapshot.revision)throw Error('场景已更新，请重新读取时间线');
  const clip=snapshot.tracks.flatMap(t=>t.clips).find(c=>c.id===entityId);
