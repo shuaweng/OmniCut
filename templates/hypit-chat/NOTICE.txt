@@ -1,0 +1,5 @@
+Adapted from Hypit 0.2.17, examples/semantic-composition/chat.svml and packages/chat-scene.
+Upstream: https://github.com/hypit-ai/hypit
+Copyright © 2026 Hypit.AI. See LICENSE.
+Local changes: expose the scene subtitle as a text parameter; accept a local FontArtifactRef wrapped as a font stack; use the existing Chinese display font. The original message entrance/scroll animation is retained.
+The src directory records the adapted TypeScript; dist is its checked-in JavaScript output, generated with the local Hypit TypeScript transpiler.

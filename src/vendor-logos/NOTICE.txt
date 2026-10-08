@@ -1,0 +1,5 @@
+Lobe Icons static SVG 1.95.1
+Source: https://github.com/lobehub/lobe-icons
+Package: https://registry.npmjs.org/@lobehub/icons-static-svg/-/icons-static-svg-1.95.1.tgz
+Copyright (c) 2023 LobeHub. MIT License.
+Original SVG artwork is used without modification. Brand marks identify configured services; no affiliation is implied.

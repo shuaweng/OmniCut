@@ -1,0 +1,12 @@
+Bundled font: Noto Sans CJK SC Regular
+Local filename: FrameSans-Regular.otf
+Embedded PostScript name: NotoSansCJKsc-Regular
+Embedded copyright: © 2014-2021 Adobe (http://www.adobe.com/).
+
+Source: https://github.com/notofonts/noto-cjk
+Upstream license source: https://github.com/notofonts/noto-cjk/blob/main/Sans/LICENSE
+License: SIL Open Font License, Version 1.1; see OFL-NotoSansCJK.txt.
+
+The local filename is an application asset name. It does not identify a new
+font family or claim authorship of the font. The embedded font names and
+copyright information are retained.

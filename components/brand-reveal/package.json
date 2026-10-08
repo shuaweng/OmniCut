@@ -1,0 +1,9 @@
+{
+  "name": "@frame/brand-reveal",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "光线划过，品牌与主张依次揭幕。文字、色彩和时段均可修改。",
+  "hypit": { "activation": "./activation.js" },
+  "frame": { "name": "轻盈揭幕", "import": "@frame/brand-reveal@1" }
+}

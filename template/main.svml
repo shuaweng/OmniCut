@@ -1,0 +1,35 @@
+<?svml using="@hypit/markup@1"?>
+<svml>
+  <import as="time" from="@hypit/timeline-author@1"/>
+  <import as="space" from="@hypit/spatial@1"/>
+  <import as="asset" from="@hypit/media@1"/>
+  <import as="typo" from="@hypit/typography-track@1"/>
+  <import as="media" from="@hypit/media-track@1"/>
+  <import as="film" from="@hypit/film@1"/>
+  <import as="render" from="@hypit/render-hyperframes@1"/>
+  <import as="look" source="./look.svs"/>
+  <time:Clock id="clock" frame-rate="30"/>
+  <time:Timeline id="program" clock={clock} end="12s"/>
+  <space:Canvas id="canvas" width="540" height="960"/>
+  <asset:Font id="font" src="./assets/display.ttf" weight="400" style="oblique"/>
+  <space:Frame id="title-frame" within={canvas} left="7%" top="17%" right="93%" bottom="38%"/>
+  <space:Frame id="brand-frame" within={canvas} left="7%" top="8%" right="93%" bottom="14%"/>
+  <space:Frame id="caption-frame" within={canvas} left="7%" top="76%" right="93%" bottom="94%"/>
+  <space:Frame id="full-frame" within={canvas} left="0%" top="0%" right="100%" bottom="100%"/>
+  <!-- PRODUCT_ASSET -->
+  <typo:Style id="title-style" recipe={look.text.title} font={font}><typo:Fill color="#F6F1E8"/></typo:Style>
+  <typo:Style id="caption-style" recipe={look.text.caption} font={font}><typo:Fill color="#F6F1E8"/></typo:Style>
+  <typo:Style id="brand-style" recipe={look.text.brand} font={font}><typo:Fill color="#C1D9C6"/></typo:Style>
+  <typo:Track id="titles" timeline={program.timeline}>
+    <typo:Area id="brand" placement={brand-frame} style={brand-style} during="program">日常好物 · 创作练习</typo:Area>
+    <typo:Area id="title" placement={title-frame} style={title-style} during="program">把日常，装进轻盈里</typo:Area>
+    <typo:Area id="caption-1" placement={caption-frame} style={caption-style} at="0s" for="4s">出门之前，带上这一份轻松</typo:Area>
+    <typo:Area id="caption-2" placement={caption-frame} style={caption-style} at="4s" for="4s">从通勤到周末，让喜欢随行</typo:Area>
+    <typo:Area id="caption-3" placement={caption-frame} style={caption-style} at="8s" for="4s">上传你的商品，开始这一条</typo:Area>
+  </typo:Track>
+  <film:Film id="main" canvas={canvas} timeline={program.timeline} appearance={look.film.main}>
+    <!-- PRODUCT_TRACK -->
+    <film:Track source={titles.track}/>
+  </film:Film>
+  <render:Video id="final" composition={main.composition} timeline={program.timeline}/>
+</svml>

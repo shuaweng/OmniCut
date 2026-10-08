@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#111111">
+  <meta name="description" content="OmniCut：让视频 Agent 和你一起把片子改好。一个把参考创作、素材生成和持续剪辑放进同一工作台的个人产品作品集。">
+  <title>OmniCut — 一起把片子改好</title>
+  <link rel="icon" href="media/omnicut-mark.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="showcase.css">
+  <script src="showcase.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">跳到正文</a>
+  <header class="site-header wrap">
+    <a class="brand" href="#" aria-label="OmniCut 首页"><img src="media/omnicut-mark.svg" width="34" height="34" alt=""><span>OmniCut<span class="brand-dot">.</span></span></a>
+    <nav aria-label="页面导航"><a href="#samples">样片</a><a href="#workflow">怎么用</a><a href="https://github.com/shuaweng/OmniCut">GitHub <span aria-hidden="true">↗</span></a></nav>
+  </header>
+
+  <main id="main">
+    <section class="hero wrap" aria-labelledby="hero-title">
+      <div class="hero-heading">
+        <div><p class="eyebrow"><span class="signal" aria-hidden="true"></span>个人产品作品集 · 视频创作 Agent</p><h1 id="hero-title">让视频 Agent 和你<br>一起把片子<span class="accent">改好。</span></h1></div>
+        <div class="hero-intro"><p>有个想法，或者一条喜欢的参考片？<br>和 Agent 一起拆创意、做素材、剪成片。<br>不满意的地方，接着改。</p><div class="actions"><a class="button primary" href="#samples">看样片</a><a class="text-link" href="https://github.com/shuaweng/OmniCut">看 GitHub 源码 <span aria-hidden="true">↗</span></a></div></div>
+      </div>
+      <figure class="product-figure"><div class="figure-bar"><span><span class="signal small" aria-hidden="true"></span>OmniCut 工作台</span><span>同一个项目，一起修改</span></div><img class="workbench-image" src="media/workbench.jpg" width="1600" height="1000" alt="OmniCut 工作台：左侧编辑画面与时间线，右侧与 Agent 对话，共享项目中的素材和工程" fetchpriority="high"><figcaption><span>工作台负责确定性，对话框负责自由度。</span><span>你动手改，Agent 也接得上。</span></figcaption></figure>
+    </section>
+
+    <section class="samples-section wrap" id="samples" aria-labelledby="samples-title">
+      <div class="section-heading"><div><p class="eyebrow">先看它实际做出了什么</p><h2 id="samples-title">同一个工作台，不同的制作任务。</h2></div><p class="section-aside">点击播放，建议打开声音。<br>均为个人概念样片，非品牌委托或合作。</p></div>
+      <div class="showreel">
+        <div class="player-column">
+          <div class="video-stage"><video id="sample-player" controls playsinline preload="none" poster="media/dabao.jpg" aria-label="大宝 SOD 蜜概念广告，30 秒"><source src="media/dabao.mp4" type="video/mp4">浏览器暂不支持播放，请使用下方链接打开视频。</video></div>
+          <div class="sample-detail"><div><p id="sample-meta" class="sample-meta">30 秒 · 16:9 · 参考创作</p><h3 id="sample-title">大宝 SOD 蜜</h3><p id="sample-description">拿一条喜欢的美妆广告作参考，换成新的商品与表达，再把人物、产品镜头和配音剪到一起。</p></div><a id="sample-download" class="download-link" href="media/dabao.mp4" download="大宝SOD蜜-概念样片.mp4">下载样片 <span aria-hidden="true">↓</span></a></div>
+        </div>
+        <div class="sample-list" aria-label="选择样片">
+          <button type="button" class="sample-option is-active" data-sample="dabao" aria-pressed="true"><img src="media/dabao.jpg" width="104" height="76" alt="" loading="lazy"><span class="option-copy"><span class="option-index">01 <span>参考创作</span></span><strong>大宝 SOD 蜜</strong><span class="option-meta">30 秒 · 16:9</span></span><span class="option-arrow" aria-hidden="true">↗</span></button>
+          <button type="button" class="sample-option" data-sample="xiaomi" aria-pressed="false"><img src="media/xiaomi.jpg" width="104" height="76" alt="" loading="lazy"><span class="option-copy"><span class="option-index">02 <span>消费电子</span></span><strong>小米 17</strong><span class="option-meta">20 秒 · 16:9</span></span><span class="option-arrow" aria-hidden="true">↗</span></button>
+          <button type="button" class="sample-option" data-sample="stride" aria-pressed="false"><img src="media/stride.jpg" width="104" height="76" alt="" loading="lazy"><span class="option-copy"><span class="option-index">03 <span>竖屏快消</span></span><strong>炫迈口香糖</strong><span class="option-meta">20 秒 · 9:16</span></span><span class="option-arrow" aria-hidden="true">↗</span></button>
+          <button type="button" class="sample-option" data-sample="ps5" aria-pressed="false"><img src="media/ps5.jpg" width="104" height="76" alt="" loading="lazy"><span class="option-copy"><span class="option-index">04 <span>电梯广告</span></span><strong>PlayStation 5</strong><span class="option-meta">15 秒 · 3:4</span></span><span class="option-arrow" aria-hidden="true">↗</span></button>
+          <p class="sample-note">这些片子用来验证真实制作流程，也会暴露画面、节奏和声画配合的问题。它们是产品迭代的起点。</p>
+        </div>
+      </div>
+      <p id="player-status" class="player-status" role="status" aria-live="polite"></p>
+      <noscript><p class="no-script">也可以直接打开：<a href="media/dabao.mp4">大宝</a> · <a href="media/xiaomi.mp4">小米</a> · <a href="media/stride.mp4">炫迈</a> · <a href="media/ps5.mp4">PS5</a></p></noscript>
+    </section>
+
+    <section class="workflow-section wrap" id="workflow" aria-labelledby="workflow-title">
+      <div class="section-heading"><div><p class="eyebrow">从用户的任务出发</p><h2 id="workflow-title">不想学一套新流程，<br>只想把这条片子做好。</h2></div></div>
+      <div class="workflow-layout">
+        <figure class="home-figure"><img src="media/homepage.jpg" width="1440" height="1000" alt="OmniCut 首页，可以描述创作想法、添加素材或用参考视频开始任务" loading="lazy"><figcaption>先说你想做什么，素材可以边做边补。</figcaption></figure>
+        <div class="workflow-steps">
+          <article><span class="step-number">01</span><div><h3>先有一个方向</h3><p>一句创作要求、一张商品图，或者一条参考视频，都可以作为起点。参考片用来讨论镜头、节奏和感觉，再换成自己的内容。</p></div></article>
+          <article><span class="step-number">02</span><div><h3>让素材真的接进工程</h3><p>图像、视频、配音、配乐和字幕进入同一个项目。Agent 可以调用工具制作，你也可以随时查看画面与时间线。</p></div></article>
+          <article><span class="step-number">03</span><div><h3>看见问题，就在这里改</h3><p>“这个镜头短一点”“换一句旁白”“尾板别那么满”。用对话继续调整，也能直接动手剪；不必为了改一个地方重新做整条片。</p></div></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="thinking-section wrap" aria-labelledby="thinking-title">
+      <div><p class="eyebrow">做这个产品时，我更在意什么</p><h2 id="thinking-title">生成只是开头。<br>能改，才有机会变好。</h2></div>
+      <div class="thinking-copy"><p>我自己用它做过护肤品、快消和消费电子广告。过程中最烦的，往往是生成完的镜头接不上剪辑、进度看不懂，或者声音和字幕各走各的。</p><p>所以 OmniCut 的重点，是让人和 Agent 围绕同一份工程工作：已经做好的东西能接着用，不合适的地方能继续改，任务没结束时也别假装已经完成。</p><p class="boundary-note">目前是持续迭代中的本地原型。画面一致性、中文配音和复杂剪辑仍需要人工挑选与调整，展示样片不代表每次都能得到同样的结果。</p></div>
+    </section>
+
+    <section class="open-section wrap" aria-labelledby="open-title"><div><p class="eyebrow">源码与实现</p><h2 id="open-title">把整合的功夫，做在用户用得到的地方。</h2><p>视频工程与编辑器基于 Hypit，会话与 Agent 内核基于 DeepSeek Harness。<br>OmniCut 负责把项目、素材、模型服务和创作流程连起来。</p></div><a class="button secondary" href="https://github.com/shuaweng/OmniCut">去 GitHub 看实现 <span aria-hidden="true">↗</span></a></section>
+  </main>
+
+  <footer class="site-footer wrap"><a class="brand footer-brand" href="#"><img src="media/omnicut-mark.svg" width="26" height="26" alt=""><span>OmniCut<span class="brand-dot">.</span></span></a><p>个人产品作品集 · 概念广告非官方合作</p><a href="https://github.com/shuaweng/OmniCut/blob/main/THIRD_PARTY_NOTICES.md">开源归属与许可 <span aria-hidden="true">↗</span></a></footer>
+</body>
+</html>

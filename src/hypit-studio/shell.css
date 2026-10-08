@@ -1,0 +1,21 @@
+/* Only host layout and accent tokens. All editing UI and behaviors are Hypit. */
+:root{--brand-400:#ff9858;--brand-500:#ff6a2b;--brand-600:#dc4e1a}
+.topbar{grid-template-columns:minmax(0,1fr) auto;gap:12px}
+.topbar .project-title{max-width:180px}
+.frame-studio-toggles{display:flex;gap:4px;margin-right:10px}
+.frame-studio-toggles button{border:0;border-radius:5px;background:transparent;color:var(--text-3);padding:5px 9px}
+.frame-studio-toggles button[aria-pressed=true]{background:var(--subtab-active-surface);color:var(--text)}
+#app[data-source=closed] .studio-shell:not([data-view=comments]) .source-panel,
+#app[data-source=closed] .studio-shell:not([data-view=comments]) .source-handle,
+#app[data-properties=closed] .studio-shell:not([data-view=comments]) .workspace-panel,
+#app[data-properties=closed] .studio-shell:not([data-view=comments]) .workspace-handle{display:none}
+#app[data-source=closed][data-properties=open] .studio-shell:not([data-view=comments]) .upper-shell{grid-template-columns:minmax(200px,1fr) 8px minmax(250px,var(--workspace-width))}
+#app[data-source=open][data-properties=closed] .studio-shell:not([data-view=comments]) .upper-shell{grid-template-columns:minmax(280px,var(--source-width)) 8px minmax(200px,1fr)}
+#app[data-source=closed][data-properties=closed] .studio-shell:not([data-view=comments]) .upper-shell{grid-template-columns:minmax(0,1fr)}
+#app[data-properties=open] .studio-shell:not([data-view=comments]) .workspace-panel{display:flex}
+#app[data-properties=open] .studio-shell:not([data-view=comments]) .workspace-handle{display:block}
+@media(max-width:1000px){
+ #app[data-source=open][data-properties=open] .studio-shell:not([data-view=comments]) .upper-shell{grid-template-columns:minmax(250px,1fr) 8px minmax(220px,1fr) 8px minmax(240px,1fr)}
+ .topbar .meta,.topbar .project-title{display:none}
+ .topbar{grid-template-columns:1fr}.topbar-right{grid-column:1}
+}

@@ -1,0 +1,12 @@
+import {ReferenceService} from '../server/reference.mjs';
+import {SettingsStore} from '../server/settings.mjs';
+import {root} from '../server/project.mjs';
+import {promises as fs} from 'node:fs';
+import path from 'node:path';
+const proof=JSON.parse(await fs.readFile(path.join(root,'output/reference-proof.json')));
+const base=`http://127.0.0.1:5180/api/projects/${proof.projectId}/references/${proof.referenceId}`;
+const item=await (await fetch(base)).json();
+const refs=new ReferenceService({service:{dataRoot:path.join(root,'data')},getConfig:async()=>(await new SettingsStore(path.join(root,'.env')).read()).env});
+const plan=await refs.reviewPlan(item.plan,item);
+await fs.writeFile(path.join(root,'output/reference-fact-review.json'),JSON.stringify({corrections:item.corrections,plan},null,2));
+const r=await fetch(base+'/plan',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({version:item.version,plan})});const b=await r.json();if(!r.ok)throw Error(b.error);console.log(JSON.stringify({status:b.status,version:b.version,corrections:item.corrections,scenes:b.plan.scenes.map(s=>({duration:s.duration,voiceover:s.voiceover}))}));

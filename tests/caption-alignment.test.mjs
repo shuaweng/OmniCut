@@ -1,0 +1,2 @@
+import test from 'node:test';import assert from 'node:assert/strict';import {alignCaptions} from '../harness/skills/frame-commercial-video/scripts/align-captions.mjs';
+test('字幕用真实时间戳，重复品牌词顺序定位，未说出的台词拒绝猜时间',()=>{const a={characters:['品','牌','，','润','泽','。','品','牌'],starts:[0,.2,.4,1,1.3,1.5,2,2.2],ends:[.2,.4,.5,1.3,1.5,1.6,2.2,2.4]};assert.deepEqual(alignCaptions(a,['品牌','润泽','品牌'],{offset:.2,duration:3}).map(x=>[x.start,x.end]),[[.2,.6],[1.2,1.7],[2.2,2.6]]);assert.throws(()=>alignCaptions(a,['虚构台词']),/找不到/);});

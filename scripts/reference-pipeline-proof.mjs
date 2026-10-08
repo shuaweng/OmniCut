@@ -1,0 +1,11 @@
+import {ReferenceService} from '../server/reference.mjs';
+import {ProjectService,root} from '../server/project.mjs';
+import {SettingsStore} from '../server/settings.mjs';
+import {promises as fs} from 'node:fs';
+import path from 'node:path';
+const proof=JSON.parse(await fs.readFile(path.join(root,'output/reference-proof.json')));
+const service=new ProjectService();
+const refs=new ReferenceService({service,getConfig:async()=>(await new SettingsStore(path.join(root,'.env')).read()).env});refs.dir=path.join(root,'output/reference-pipeline-validation');await refs.init();
+if(refs.list(proof.projectId).length)throw Error('已有验证结果，不重复请求');
+const item=await refs.create(proof.projectId,{requestId:crypto.randomUUID(),assetFile:proof.reference,imageFile:proof.image,targetDuration:15,brief:'为麻辣王子辣条做15秒竖屏广告，参考原片展示、取用、体验的动作与节奏，但不复制原来的面霜功效。用户提供的商品事实只有：麻辣王子、麻辣口味、小包装辣条，红金包装参考商品图。其他地域、成分、健康、销量和价格一概没有依据，不得编造。热情、快乐、食欲感，中文旁白，2到3段，总长15秒。'});
+await refs.close();const result=refs.public(refs.get(proof.projectId,item.id));console.log(JSON.stringify({status:result.status,error:result.error,model:result.analysisModel,corrections:result.corrections,sceneCount:result.plan?.scenes.length,duration:result.plan?.scenes.reduce((n,s)=>n+s.duration,0),voiceovers:result.plan?.scenes.map(s=>s.voiceover)},null,2));if(result.status!=='ready')process.exitCode=1;
