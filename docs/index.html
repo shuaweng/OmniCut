@@ -14,7 +14,7 @@
   <a class="skip-link" href="#main">跳到正文</a>
   <header class="site-header wrap">
     <a class="brand" href="#" aria-label="OmniCut 首页"><img src="media/omnicut-mark.svg" width="34" height="34" alt=""><span>OmniCut<span class="brand-dot">.</span></span></a>
-    <nav aria-label="页面导航"><a href="#samples">样片</a><a href="#workflow">怎么用</a><a href="https://github.com/shuaweng/OmniCut">GitHub <span aria-hidden="true">↗</span></a></nav>
+    <nav aria-label="页面导航"><a href="#samples">样片</a><a href="#workbench-tour">工作台</a><a class="nav-workflow" href="#workflow">怎么用</a><a href="https://github.com/shuaweng/OmniCut">GitHub <span aria-hidden="true">↗</span></a></nav>
   </header>
 
   <main id="main">
@@ -41,6 +41,24 @@
       </div>
       <p id="player-status" class="player-status" role="status" aria-live="polite"></p>
       <noscript><p class="no-script">也可以直接打开：<a href="media/dabao.mp4">大宝</a> · <a href="media/estee-lauder.mp4">雅诗兰黛</a></p></noscript>
+    </section>
+
+    <section class="tour-section wrap" id="workbench-tour" aria-labelledby="tour-title">
+      <div class="section-heading"><div><p class="eyebrow">看看创作是怎么接起来的</p><h2 id="tour-title">逛逛工作台。</h2></div><p class="section-aside">从拆一条参考片，到改好一个镜头。<br>这里是实际使用中的六个页面。</p></div>
+      <div class="tour-choices" role="group" aria-label="选择要看的工作台页面">
+        <button type="button" class="tour-choice is-active" data-screenshot="reference-workbench" aria-pressed="true" aria-controls="tour-figure">参考拆解</button>
+        <button type="button" class="tour-choice" data-screenshot="asset-library" aria-pressed="false" aria-controls="tour-figure">项目素材</button>
+        <button type="button" class="tour-choice" data-screenshot="timeline-inspector" aria-pressed="false" aria-controls="tour-figure">精确剪辑</button>
+        <button type="button" class="tour-choice" data-screenshot="creative-subagent" aria-pressed="false" aria-controls="tour-figure">创意子代理</button>
+        <button type="button" class="tour-choice" data-screenshot="model-settings" aria-pressed="false" aria-controls="tour-figure">模型设置</button>
+        <button type="button" class="tour-choice" data-screenshot="export-preview" aria-pressed="false" aria-controls="tour-figure">成片预览</button>
+      </div>
+      <figure class="tour-figure" id="tour-figure">
+        <a class="tour-image-link" id="tour-image-link" href="media/reference-workbench.jpg" target="_blank" rel="noopener" aria-label="查看参考拆解截图原图，在新标签页打开"><img id="tour-image" src="media/reference-workbench.jpg" width="1910" height="1074" alt="参考视频拆解页面，展示整理后的分镜与时间点" loading="lazy" decoding="async"></a>
+        <figcaption><div class="tour-caption" aria-live="polite"><h3 id="tour-caption-title">先弄明白，喜欢这条参考片的什么。</h3><p id="tour-caption-text">把参考片拆成分镜和时间点，再和 Agent 讨论哪些感觉要保留、哪些内容换成自己的。</p></div><a id="tour-original" class="tour-original" href="media/reference-workbench.jpg" target="_blank" rel="noopener">查看原图 <span aria-hidden="true">↗</span></a></figcaption>
+      </figure>
+      <p id="tour-status" class="tour-status" role="status"></p>
+      <noscript><p class="no-script">直接查看：<a href="media/reference-workbench.jpg">参考拆解</a> · <a href="media/asset-library.jpg">项目素材</a> · <a href="media/timeline-inspector.jpg">精确剪辑</a> · <a href="media/creative-subagent.jpg">创意子代理</a> · <a href="media/model-settings.jpg">模型设置</a> · <a href="media/export-preview.jpg">成片预览</a></p></noscript>
     </section>
 
     <section class="workflow-section wrap" id="workflow" aria-labelledby="workflow-title">
