@@ -1,12 +1,64 @@
 const samples = {
-  dabao: { title: '大宝 SOD 蜜', meta: '30 秒 · 16:9 · 参考创作', description: '拿一条喜欢的美妆广告作参考，换成新的商品与表达，再把人物、产品镜头和配音剪到一起。', filename: '大宝SOD蜜-概念样片.mp4' },
-  'estee-lauder': { title: '雅诗兰黛眼霜', meta: '30 秒 · 16:9 · 美妆表达', description: '从美妆参考片的氛围出发，把人物、眼部细节和产品特写组织成一条 30 秒短片，验证参考改编与持续剪辑的流程。', filename: '雅诗兰黛眼霜-概念样片.mp4' },
+  "omnicut-creative": {
+    "title": "OmniCut · 创意不该困在工具里",
+    "label": "产品介绍",
+    "meta": "61 秒 · 16:9 · 产品介绍",
+    "shortMeta": "61 秒 · 16:9",
+    "description": "用图形、字效和声音组织一分钟产品介绍，讲清为什么视频创作需要能持续修改的 Agent。",
+    "filename": "OmniCut · 创意不该困在工具里-概念样片.mp4",
+    "projectUrl": "https://github.com/shuaweng/OmniCut/tree/main/examples/featured/projects/p-eea876508eae"
+  },
+  "omnicut-code": {
+    "title": "OmniCut · 代码界面版",
+    "label": "代码动效",
+    "meta": "61 秒 · 16:9 · 代码动效",
+    "shortMeta": "61 秒 · 16:9",
+    "description": "将产品界面写成可编排的代码场景，让功能演示、字效和剪辑节奏一起服务同一个主张。",
+    "filename": "OmniCut · 代码界面版-概念样片.mp4",
+    "projectUrl": "https://github.com/shuaweng/OmniCut/tree/main/examples/featured/projects/p-eea876508eae"
+  },
+  "estee-lauder": {
+    "title": "雅诗兰黛 · 小棕瓶眼霜",
+    "label": "美妆表达",
+    "meta": "30 秒 · 16:9 · 美妆表达",
+    "shortMeta": "30 秒 · 16:9",
+    "description": "从美妆参考片的氛围出发，把人物、眼部细节和产品特写组织成一条 30 秒短片。",
+    "filename": "雅诗兰黛 · 小棕瓶眼霜-概念样片.mp4",
+    "projectUrl": "https://github.com/shuaweng/OmniCut/tree/main/examples/featured/projects/p-c3f6a5a9eba4"
+  },
+  "estee-lauder-poise": {
+    "title": "雅诗兰黛 · 把从容留给双眸",
+    "label": "参考改编",
+    "meta": "15 秒 · 16:9 · 参考改编",
+    "shortMeta": "15 秒 · 16:9",
+    "description": "把参考片的柔和氛围与商品镜头压进 15 秒，保留人物、旁白和产品的呼应。",
+    "filename": "雅诗兰黛 · 把从容留给双眸-概念样片.mp4",
+    "projectUrl": "https://github.com/shuaweng/OmniCut/tree/main/examples/featured/projects/p-7934041f904c"
+  },
+  "dabao": {
+    "title": "大宝 SOD 蜜 · 把日子润成诗",
+    "label": "参考创作",
+    "meta": "30 秒 · 16:9 · 参考创作",
+    "shortMeta": "30 秒 · 16:9",
+    "description": "拿一条喜欢的美妆广告作参考，换成新的商品与表达，再把人物、产品镜头和配音剪到一起。",
+    "filename": "大宝 SOD 蜜 · 把日子润成诗-概念样片.mp4",
+    "projectUrl": "https://github.com/shuaweng/OmniCut/tree/main/examples/featured/projects/p-6edeb7d33b08"
+  },
+  "omnicut-voice": {
+    "title": "OmniCut · 让想法开口",
+    "label": "口播介绍",
+    "meta": "31.4 秒 · 9:16 · 口播介绍",
+    "shortMeta": "31.4 秒 · 9:16",
+    "description": "把口播人物、产品界面与功能演示剪在一起，验证从参考片到产品介绍视频的协作流程。",
+    "filename": "OmniCut · 让想法开口-概念样片.mp4",
+    "projectUrl": "https://github.com/shuaweng/OmniCut/tree/main/examples/featured/projects/p-cf0dc440b2cc"
+  }
 };
 
 const player = document.querySelector('#sample-player');
 const status = document.querySelector('#player-status');
 const options = [...document.querySelectorAll('[data-sample]')];
-let selected = 'dabao';
+let selected = 'omnicut-creative';
 
 function selectSample(id) {
   if (!samples[id] || selected === id) return;
@@ -15,7 +67,7 @@ function selectSample(id) {
   player.pause();
   player.poster = `media/${id}.jpg`;
   player.querySelector('source').src = `media/${id}.mp4`;
-  player.setAttribute('aria-label', `${sample.title}概念广告，${sample.meta}`);
+  player.setAttribute('aria-label', `${sample.title}，${sample.meta}`);
   player.load();
   document.querySelector('#sample-title').textContent = sample.title;
   document.querySelector('#sample-meta').textContent = sample.meta;
@@ -23,6 +75,7 @@ function selectSample(id) {
   const download = document.querySelector('#sample-download');
   download.href = `media/${id}.mp4`;
   download.download = sample.filename;
+  document.querySelector('#sample-project').href = sample.projectUrl;
   options.forEach(option => {
     const active = option.dataset.sample === id;
     option.classList.toggle('is-active', active);
@@ -31,7 +84,18 @@ function selectSample(id) {
   status.textContent = '';
 }
 
-options.forEach(option => option.addEventListener('click', () => selectSample(option.dataset.sample)));
+options.forEach((option, index) => {
+  option.addEventListener('click', () => selectSample(option.dataset.sample));
+  option.addEventListener('keydown', event => {
+    const next = event.key === 'ArrowDown' ? (index + 1) % options.length
+      : event.key === 'ArrowUp' ? (index - 1 + options.length) % options.length
+      : event.key === 'Home' ? 0 : event.key === 'End' ? options.length - 1 : null;
+    if (next === null) return;
+    event.preventDefault();
+    options[next].focus();
+    selectSample(options[next].dataset.sample);
+  });
+});
 document.querySelectorAll('video').forEach(video => {
   video.addEventListener('play', () => {
     document.querySelectorAll('video').forEach(other => { if (other !== video) other.pause(); });

@@ -1,0 +1,202 @@
+{
+  "name": "@frame/dark-keynote",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "license": "MIT",
+  "description": "纷乱界面一按归位，光扫揭幕与数字亮相，最后收成一根光标。",
+  "hypit": {
+    "activation": "./activation.js"
+  },
+  "scripts": {
+    "build:scene": "node build-scene.mjs"
+  },
+  "frame": {
+    "name": "空间发布会",
+    "category": "完整场景",
+    "tags": [
+      "产品发布",
+      "空间整理",
+      "镜头运动",
+      "光扫揭幕",
+      "数字"
+    ],
+    "duration": 42,
+    "sourceDuration": 42,
+    "aspectRatio": "16:9",
+    "nativeFonts": [
+      {
+        "id": "inter",
+        "file": "fonts/Inter.ttf",
+        "weight": 400,
+        "variableWeight": "100 900",
+        "style": "normal"
+      },
+      {
+        "id": "interTight",
+        "file": "fonts/InterTight-var.ttf",
+        "weight": 400,
+        "variableWeight": "100 900",
+        "style": "normal"
+      },
+      {
+        "id": "mono",
+        "file": "fonts/JetBrainsMono-var.ttf",
+        "weight": 400,
+        "variableWeight": "100 800",
+        "style": "normal"
+      }
+    ],
+    "parameters": [
+      {
+        "key": "brand",
+        "label": "品牌名（最多 8 字）",
+        "type": "text",
+        "default": "Tidy",
+        "maxLength": 8
+      },
+      {
+        "key": "accent",
+        "label": "品牌强调色",
+        "type": "text",
+        "default": "#B7F34A"
+      },
+      {
+        "key": "captions",
+        "label": "原字幕 true / false",
+        "type": "text",
+        "default": "true"
+      },
+      {
+        "key": "sourceStart",
+        "label": "原片起始秒数",
+        "type": "number",
+        "default": 0,
+        "min": 0,
+        "max": 41.999,
+        "step": 0.125
+      },
+      {
+        "key": "rate",
+        "label": "播放速率",
+        "type": "number",
+        "default": 1,
+        "min": 0.25,
+        "max": 4,
+        "step": 0.05
+      },
+      {
+        "key": "z",
+        "label": "图层顺序",
+        "type": "number",
+        "default": 50,
+        "step": 1
+      }
+    ],
+    "segments": [
+      {
+        "id": "accumulation",
+        "name": "界面积累与拥挤",
+        "start": 0,
+        "end": 15,
+        "description": "光标开场、持续拉远、通知/文件/照片积累、三次过载插入镜头。",
+        "sourceStart": 0,
+        "sourceEnd": 15,
+        "duration": 15
+      },
+      {
+        "id": "freeze-sort",
+        "name": "冻结与三股归位",
+        "start": 15,
+        "end": 19.5,
+        "description": "推近冻结光标、一按急拉、264对象按类型沿弧线收拢再分类。",
+        "sourceStart": 15,
+        "sourceEnd": 19.5,
+        "duration": 4.5
+      },
+      {
+        "id": "product-reveal",
+        "name": "完整产品光扫",
+        "start": 19.5,
+        "end": 24.5,
+        "description": "倾斜界面转正、分条透视与光扫揭幕、三组勾选。",
+        "sourceStart": 19.5,
+        "sourceEnd": 24.5,
+        "duration": 5
+      },
+      {
+        "id": "number-reveal",
+        "name": "数据潜入与数字揭示",
+        "start": 24.5,
+        "end": 29.5,
+        "description": "从状态栏潜入全屏数字、字符逐次锁定、0.8秒标尺。",
+        "sourceStart": 24.5,
+        "sourceEnd": 29.5,
+        "duration": 5
+      },
+      {
+        "id": "put-away",
+        "name": "界面收起成光标",
+        "start": 29.5,
+        "end": 33,
+        "description": "从数字拉回界面、逐项减法、真实窗口压成线再收成光标。",
+        "sourceStart": 29.5,
+        "sourceEnd": 33,
+        "duration": 3.5
+      },
+      {
+        "id": "echo",
+        "name": "光标回响与结束",
+        "start": 33,
+        "end": 42,
+        "description": "空场呼吸、原开场句打字与原片署名、光标熄灭。",
+        "sourceStart": 33,
+        "sourceEnd": 42,
+        "duration": 9
+      }
+    ],
+    "recommendedUses": [
+      "软件产品发布",
+      "裁取镜头片段",
+      "数据解说"
+    ],
+    "import": "@frame/dark-keynote@1",
+    "source": {
+      "repository": "https://github.com/lemomo-ai/lemo-opuscar",
+      "commit": "a75e2b3384cded87955c8743b5a59db06ea491a8",
+      "path": "styles/dark-keynote/demo",
+      "license": "MIT",
+      "files": "SOURCE.json"
+    },
+    "referenceAudio": {
+      "file": "audio/reference-mix.wav",
+      "purpose": "原片声画审查参考；非默认自动配音",
+      "license": "see CREDITS"
+    },
+    "description": "纷乱界面一按归位，光扫揭幕与数字亮相，最后收成一根光标。",
+    "kind": "scene",
+    "previewSettings": {
+      "width": 960,
+      "height": 540,
+      "fps": 24,
+      "posterTime": 22,
+      "galleryStart": 15,
+      "galleryEnd": 24.5
+    },
+    "sourceFiles": [
+      "source/adapter.js",
+      "source/styles/dark-keynote/demo/film.js",
+      "source/styles/dark-keynote/demo/engine.js",
+      "source/styles/dark-keynote/demo/world.js",
+      "source/styles/dark-keynote/demo/timeline.js",
+      "source/core/lib.js",
+      "source/styles/dark-keynote/demo/lines.json",
+      "source/styles/dark-keynote/demo/voices/dur.json",
+      "build-scene.mjs",
+      "render.js",
+      "definition.js",
+      "author-runtime.js"
+    ],
+    "buildScript": "build-scene.mjs"
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "id": "99cef220-204c-4327-aed2-afe880b13f87",
+  "projectId": "p-cf0dc440b2cc",
+  "videoId": "v-default",
+  "name": "OmniCut · 让想法开口·成片",
+  "created": "2026-10-09T08:24:00.221Z",
+  "status": "done",
+  "duration": 31.4,
+  "output": {
+    "width": 1080,
+    "height": 1920
+  },
+  "fileSize": 5638897,
+  "revision": "14:c83af5b3044b91a1",
+  "runtimeStopped": true
+}

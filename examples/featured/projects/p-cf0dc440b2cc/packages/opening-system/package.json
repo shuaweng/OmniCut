@@ -1,0 +1,19 @@
+{
+  "name": "@omnicut/opening-system",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "hypit": {
+    "activation": "./src/activation.js"
+  },
+  "exports": {
+    ".": "./src/render.js"
+  },
+  "files": [
+    "src",
+    "README.md"
+  ],
+  "dependencies": {
+    "@omnicut/visual-language": "file:../visual-language"
+  }
+}

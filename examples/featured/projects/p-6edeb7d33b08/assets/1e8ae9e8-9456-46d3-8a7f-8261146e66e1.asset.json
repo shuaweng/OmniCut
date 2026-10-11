@@ -1,0 +1,18 @@
+{
+  "id": "1e8ae9e8-9456-46d3-8a7f-8261146e66e1",
+  "filename": "1e8ae9e8-9456-46d3-8a7f-8261146e66e1.png",
+  "name": "尾板·成片底板（1920×1080）",
+  "kind": "image",
+  "duration": null,
+  "width": 1920,
+  "height": 1080,
+  "hasAudio": false,
+  "created": "2026-10-08T15:05:22.581Z",
+  "poster": "1e8ae9e8-9456-46d3-8a7f-8261146e66e1.preview.jpg",
+  "scene": "品牌尾板",
+  "editorialStatus": "selected",
+  "provenance": {
+    "provider": "featured",
+    "sourcePath": "assets/endcard-plate.png"
+  }
+}

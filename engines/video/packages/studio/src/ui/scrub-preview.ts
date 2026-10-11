@@ -1,11 +1,7 @@
 import { uiAttr, uiText, t } from "./i18n.js";
 import type { StudioSnapshot } from "../shared.js";
 import { feedbackClock } from "../feedback.js";
-
-type PreviewWindow = Window & {
-  __hypitSeekFrame?: (frame: number) => Promise<boolean>;
-  __hypitSetMuted?: (muted: boolean) => Promise<boolean>;
-};
+import { createIsolatedPreview } from "./isolated-preview.js";
 
 /** One lazy, muted picture for scrubbing; it never changes the main playhead. */
 export function createScrubPreview(container: HTMLElement) {
@@ -20,6 +16,7 @@ export function createScrubPreview(container: HTMLElement) {
   const time = element.querySelector<HTMLElement>(".scrub-preview-time")!;
   container.append(element);
   let iframe: HTMLIFrameElement | undefined;
+  let bridge: ReturnType<typeof createIsolatedPreview> | undefined;
   let revision: number | undefined;
   let ready = false;
   let seeking = false;
@@ -33,8 +30,7 @@ export function createScrubPreview(container: HTMLElement) {
     try {
       while (iframe === current && requested !== undefined && requested !== displayed) {
         const frame: number = requested;
-        const target = current.contentWindow as PreviewWindow | null;
-        const placed = await target?.__hypitSeekFrame?.(frame);
+        const placed = await bridge?.seek(frame);
         if (iframe !== current) return;
         if (!placed) throw new Error(t("player.frame-unavailable"));
         displayed = frame;
@@ -52,7 +48,7 @@ export function createScrubPreview(container: HTMLElement) {
   };
   const hide = (): void => { element.hidden = true; requested = undefined; };
   const clear = (): void => {
-    hide(); iframe?.remove(); iframe = undefined; revision = undefined;
+    hide(); bridge?.destroy(); bridge = undefined; iframe?.remove(); iframe = undefined; revision = undefined;
     ready = false; seeking = false; displayed = undefined;
     delete element.dataset.frame;
   };
@@ -69,24 +65,20 @@ export function createScrubPreview(container: HTMLElement) {
         const created = document.createElement("iframe");
         uiAttr(created, "title", "player.hovered-frame");
         created.tabIndex = -1;
-        created.setAttribute("sandbox", "allow-scripts allow-same-origin");
+        created.setAttribute("sandbox", "allow-scripts");
         created.setAttribute("allow", "autoplay 'none'");
         created.style.width = `${canvasWidth}px`;
         created.style.height = `${canvasHeight}px`;
         created.style.transform = `scale(${scale})`;
         created.style.visibility = "hidden";
-        created.addEventListener("load", () => {
-          void (async () => {
-            const target = created.contentWindow as PreviewWindow | null;
-            await target?.__hypitSetMuted?.(true);
-            if (iframe !== created) return;
-            ready = true;
-            await seek();
-          })().catch(() => { if (iframe === created) uiText(status, "player.frame-unavailable"); });
-        });
-        created.srcdoc = snapshot.preview.srcdoc;
-        iframe = created;
+        const mounted = createIsolatedPreview(created);
+        iframe = created; bridge = mounted;
         picture.prepend(created);
+        void mounted.load(snapshot.preview.srcdoc, snapshot.space.frameRate.numerator / snapshot.space.frameRate.denominator).then(async loaded => {
+          if (!loaded || iframe !== created) return;
+          await mounted.mute(true);
+          ready = true; await seek();
+        }).catch(() => { if (iframe === created) uiText(status, "player.frame-unavailable"); });
       }
       requested = frame;
       element.hidden = false;

@@ -1,0 +1,152 @@
+<?svml using="@hypit/markup@1"?>
+<svml>
+  <import as="asset" from="@hypit/media@1"/>
+  <import as="time" from="@hypit/timeline-author@1"/>
+  <import as="spatial" from="@hypit/spatial@1"/>
+  <import as="pipeline" from="@hypit/media-pipeline@1"/>
+  <import as="audio" from="@hypit/audio-track@1"/>
+  <import as="film" from="@hypit/film@1"/>
+  <import as="render" from="@hypit/render-hyperframes@1"/>
+  <import as="motion" from="@frame/dark-keynote@1"/>
+  <import as="oc" from="@omnicut/film@1"/>
+  <import as="look" source="./look.svs"/>
+  <import as="vo" source="./prepared/media/m-5d5f37d20d8848bea065b897ca7dcb42-30.svml"/>
+  <import as="sfx-whoosh" source="./prepared/media/m-0e206592b3da4db4a0e670489afa1a95-30.svml"/>
+  <import as="sfx-click" source="./prepared/media/m-251d47aa9ba949a9adc384a5fb06d50b-30.svml"/>
+  <import as="sfx-impact" source="./prepared/media/m-3bc7d0b0c0884750855e8728e65b3fb4-30.svml"/>
+  <import as="kv-escape" source="./prepared/media/m-67e6551160bb4ad0baf3e2b729fc8983-30.svml"/>
+  <import as="kv-converge" source="./prepared/media/m-6c54722545d140058130597eb134f78d-30.svml"/>
+  <import as="kv-horizon" source="./prepared/media/m-9e047c63950246b181a8c743d0bb9dc8-30.svml"/>
+
+  <!-- 真实产品截图（只裁切取景，不改内容） -->
+  <asset:Image id="ui-home" src="./assets/dca80bb2-d9c0-4b12-bf18-357fdb01009c.jpg"/>
+  <asset:Image id="ui-workbench" src="./assets/81ed7302-1e60-4644-b633-6221e97e75e1.jpg"/>
+  <asset:Image id="ui-inspector" src="./assets/349310ba-f0de-4f86-96c6-79e306de47d7.jpg"/>
+  <asset:Image id="ui-assets" src="./assets/12114eeb-13b1-4968-95bc-057f97997847.jpg"/>
+  <asset:Image id="ui-gallery" src="./assets/omnicut-gallery-ui.jpg"/>
+  <asset:Image id="ui-export" src="./assets/6d28ec13-e8a8-44b1-a81c-3f340eba9c74.jpg"/>
+  <asset:Image id="ui-subagent" src="./assets/9024af1b-222e-4513-b8df-b573d4767cb0.jpg"/>
+  <asset:Image id="ui-home-logo" src="./assets/dca80bb2-d9c0-4b12-bf18-357fdb01009c.jpg"/>
+
+  <asset:Font id="font" src="./assets/FrameSans-Regular.otf" weight="400" style="normal"/>
+  <asset:Font id="inter" src="./packages/frame--dark-keynote-1.0.0/fonts/Inter.ttf" weight="400" style="normal"/>
+  <asset:Font id="interTight" src="./packages/frame--dark-keynote-1.0.0/fonts/InterTight-var.ttf" weight="400" style="normal"/>
+  <asset:Font id="mono" src="./packages/frame--dark-keynote-1.0.0/fonts/JetBrainsMono-var.ttf" weight="400" style="normal"/>
+
+  <asset:Audio id="music-file" src="./assets/omnicut-music-ducked.wav"/>
+  <spatial:Canvas id="canvas" width="1920" height="1080"/>
+  <time:Clock id="clock" frame-rate="30"/>
+  <pipeline:Normalize id="music-media" source={music-file} clock={clock} video="none" audio="default" span-authority="audio"/>
+  <time:Timeline id="program" clock={clock} end="61s"/>
+
+  <!-- 00 Hook：完整场景「空间发布会」改编（开场句改为“一个想法。”），界面堆积 → 冻结一按归位 -->
+  <motion:Motion id="hook-pileup" timeline={program.timeline} canvas={canvas} font={font} inter={inter} interTight={interTight} mono={mono}
+    start="0s" end="4.6s" brand="Tidy" accent="#FF6A2B" captions="false" sourceStart="0.4" rate="2.9" z="20"/>
+  <motion:Motion id="hook-freeze" timeline={program.timeline} canvas={canvas} font={font} inter={inter} interTight={interTight} mono={mono}
+    start="4.6s" end="7.3s" brand="Tidy" accent="#FF6A2B" captions="false" sourceStart="14.9" rate="1.25" z="20"/>
+
+  <!-- 主张：概念空间·光带出走 -->
+  <oc:Claim id="claim-escape" timeline={program.timeline} canvas={canvas} font={font} display={interTight}
+    start="7.3s" end="13s" titles="0|0.34|创意，;;0|1.14|不该困在工具里" stagger="0.14" size="108"
+    openAt="0.85" openDur="0.95" w0="340" h0="230" fadeIn="0.25" fadeOut="0.35" z="30"/>
+
+  <!-- 价值 01：说出想法 -->
+  <oc:Shot id="v1-home" timeline={program.timeline} canvas={canvas} font={font} display={interTight} image={ui-home}
+    start="13s" end="16.4s" iw="1906" ih="1072" keys="0,1050,260,1.3;3.4,1010,250,1.75"
+    focus="0.9,3.4,629,159,852,164" cursor="0.3,1250,560,0;1.0,820,215,1;3.3,860,222,0"
+    tag="01|说出想法" notes="1.7|3.4|你说|“做一条有态度的产品片，开头要抓人。”|52|66" fadeIn="0.2" z="30"/>
+  <oc:Shot id="v1-plan" timeline={program.timeline} canvas={canvas} font={font} display={interTight} image={ui-subagent}
+    start="16.4s" end="21s" iw="1910" ih="1074" keys="0,1400,380,1.75;4.6,1400,640,1.75"
+    focus="0.4,2.4,1106,320,670,46;2.6,4.6,1100,575,700,170" z="30"/>
+
+  <!-- 价值 02：组合图声动效 -->
+  <oc:Bench id="v2-converge" timeline={program.timeline} canvas={canvas} font={font} display={interTight}
+    start="21s" end="25.4s" drops="0.25,0.85;0.95,1.55;1.65,2.25" capAt="2.6" playAt="2.9" fadeIn="0.2" fadeOut="0.25" z="30"/>
+  <oc:Shot id="v2-assets" timeline={program.timeline} canvas={canvas} font={font} display={interTight} image={ui-assets}
+    start="25.4s" end="27.9s" iw="1910" ih="1074" keys="0,520,330,2.1;2.5,520,640,2.1"
+    focus="0.3,1.4,25,170,255,90;1.4,2.5,25,280,260,240" cursor="0.2,300,240,0;0.9,90,186,0;2.4,150,330,0" tag="02|组合图声动效" z="30"/>
+  <oc:Shot id="v2-motion" timeline={program.timeline} canvas={canvas} font={font} display={interTight} image={ui-gallery}
+    start="27.9s" end="30.2s" iw="1913" ih="2124" keys="0,640,620,1.9;2.3,640,690,2.4"
+    focus="0.2,1.0,278,540,780,40;1.0,2.3,278,595,640,250" cursor="0,560,470,0;0.5,474,556,1;2.2,450,700,0" z="30"/>
+
+  <!-- 价值 03：在时间线精修 -->
+  <oc:Shot id="v3-timeline" timeline={program.timeline} canvas={canvas} font={font} display={interTight} image={ui-workbench}
+    start="30.2s" end="35s" iw="1910" ih="1074" keys="0,700,560,1.35;1.6,620,650,1.8;4.8,840,660,1.8"
+    focus="1.9,2.9,200,550,1170,72;2.95,4.8,200,736,1170,30" cursor="0.6,900,540,0;2.1,620,582,0;3.2,780,750,1;4.6,900,750,0"
+    tag="03|在时间线精修" z="30"/>
+  <oc:Shot id="v3-inspector" timeline={program.timeline} canvas={canvas} font={font} display={interTight} image={ui-inspector}
+    start="35s" end="38.2s" iw="1910" ih="1074" keys="0,1100,300,2.0;3.2,1180,300,2.35"
+    focus="0.4,3.2,1220,215,170,140" cursor="0.1,820,420,0;0.9,1300,234,1;1.7,1300,282,1;3.0,1310,300,0" z="30"/>
+  <oc:Shot id="v3-split" timeline={program.timeline} canvas={canvas} font={font} display={interTight} image={ui-workbench}
+    start="38.2s" end="42.6s" iw="1910" ih="1074" keys="0,1640,420,1.7;1.4,1640,420,1.7;2.3,560,440,1.45;4.4,560,440,1.5"
+    notes="0.25|1.6|对话|自由地想|6|74;;1.95|4.4|工作台|精确地改|62|74" z="30"/>
+
+  <!-- 交付：导出，仍可继续编辑 -->
+  <oc:Shot id="v4-export" timeline={program.timeline} canvas={canvas} font={font} display={interTight} image={ui-export}
+    start="42.6s" end="45.9s" iw="1910" ih="1074" keys="0,955,537,1.3;3.3,955,560,1.6"
+    focus="0.6,3.3,498,296,914,515" cursor="0.1,1300,850,0;0.9,523,762,1;3.0,560,790,0" tag="04|交付，仍可编辑" z="30"/>
+  <oc:Shot id="v4-editable" timeline={program.timeline} canvas={canvas} font={font} display={interTight} image={ui-workbench}
+    start="45.9s" end="49s" iw="1910" ih="1074" keys="0,1400,120,2.2;3.1,1560,120,2.6"
+    focus="0.5,3.1,1340,8,560,52" cursor="0.3,1500,220,0;1.4,1622,28,0;3.0,1700,30,0" fadeOut="0.3" z="30"/>
+
+  <!-- 片尾：真实首页截图左上角裁出的 OmniCut logo + 品牌句 -->
+  <oc:Endcard id="endcard" timeline={program.timeline} canvas={canvas} font={font} display={interTight} bg={kv-horizon.asset} logo={ui-home-logo}
+    start="49s" end="61s" crop="18,14,150,52" liw="1906" lih="1072" logoScale="2.6" logoAt="1.75" logoY="24"
+    titles="0|2.86|创意，;;0|3.58|不该困在工具里。;;1|5.6|对话给你自由 · 工作台给你掌控" stagger="0.16" sizes="92,34" ty="55" horizon="76.6" fadeIn="0.5" fadeOut="1.4" z="30"/>
+
+  <oc:Captions id="captions" timeline={program.timeline} canvas={canvas} font={font} display={interTight} start="0s" end="61s" size="46" bottom="7" z="90"
+    cues="0.25|3|一个想法，要穿过多少个窗口;;3.05|4.87|才能变成作品？;;13.06|15.68|在 OmniCut，从一句话开始;;15.78|17.44|说出你想要的感觉;;17.54|19.68|它先给你一份完整的方案;;30.44|32.1|然后回到时间线;;32.36|34.47|每一个镜头、每一句字幕;;34.52|36.18|都由你亲手调准;;38.44|39.83|对话给你自由;;39.88|41.62|工作台给你掌控;;42.84|43.99|导出的那一刻;;44.04|46.98|它依然是一份可以继续编辑的作品"/>
+
+  <!-- 旁白：同一条整段配音按句切分，按真实字符时序放置 -->
+  <audio:Track id="voice" timeline={program.timeline}>
+    <audio:Item id="vo-1" source={vo.prepared.media} start="0.25s" end="4.61s" trim-start="0s" trim-end="4.36s"/>
+    <audio:Item id="vo-2" source={vo.prepared.media} start="7.6s" end="10.22s" trim-start="4.36s" trim-end="6.98s"/>
+    <audio:Item id="vo-3" source={vo.prepared.media} start="13s" end="19.86s" trim-start="6.98s" trim-end="13.84s"/>
+    <audio:Item id="vo-4" source={vo.prepared.media} start="21.3s" end="25.22s" trim-start="13.88s" trim-end="17.8s"/>
+    <audio:Item id="vo-5" source={vo.prepared.media} start="30.4s" end="36.32s" trim-start="17.8s" trim-end="23.72s"/>
+    <audio:Item id="vo-6" source={vo.prepared.media} start="38.4s" end="41.76s" trim-start="23.72s" trim-end="27.08s"/>
+    <audio:Item id="vo-7" source={vo.prepared.media} start="42.8s" end="47.22s" trim-start="27.08s" trim-end="31.5s"/>
+    <audio:Item id="vo-8" source={vo.prepared.media} start="50.8s" end="54.18s" trim-start="31.5s" trim-end="34.88s"/>
+  </audio:Track>
+  <!-- 配乐：已按旁白区间预先避让（-10dB）的连续配乐 -->
+  <audio:Track id="music" timeline={program.timeline}>
+    <audio:Item id="music-bed" source={music-media.media} start="0s" end="61s" gain="0.6" fade-out="1s"/>
+  </audio:Track>
+  <audio:Track id="sfx-hits" timeline={program.timeline}>
+    <audio:Item id="impact" source={sfx-impact.prepared.media} start="4.3s" end="6.78s" gain="0.6"/>
+    <audio:Item id="whoosh-claim" source={sfx-whoosh.prepared.media} start="6.75s" end="8.23s" gain="0.4"/>
+    <audio:Item id="whoosh-converge" source={sfx-whoosh.prepared.media} start="20.55s" end="22.03s" gain="0.35"/>
+    <audio:Item id="whoosh-end" source={sfx-whoosh.prepared.media} start="48.4s" end="49.88s" gain="0.35"/>
+  </audio:Track>
+  <audio:Track id="sfx-clicks" timeline={program.timeline}>
+    <audio:Item id="click-home" source={sfx-click.prepared.media} start="14s" end="14.6s" gain="0.45"/>
+    <audio:Item id="click-motion" source={sfx-click.prepared.media} start="28.4s" end="29s" gain="0.4"/>
+    <audio:Item id="click-cue" source={sfx-click.prepared.media} start="33.4s" end="34s" gain="0.4"/>
+    <audio:Item id="click-left" source={sfx-click.prepared.media} start="35.9s" end="36.5s" gain="0.4"/>
+    <audio:Item id="click-top" source={sfx-click.prepared.media} start="36.7s" end="37.3s" gain="0.4"/>
+    <audio:Item id="click-play" source={sfx-click.prepared.media} start="43.5s" end="44.1s" gain="0.45"/>
+  </audio:Track>
+
+  <film:Film id="main" canvas={canvas} timeline={program.timeline} appearance={look.film.main}>
+    <film:Track source={hook-pileup.track}/>
+    <film:Track source={hook-freeze.track}/>
+    <film:Track source={claim-escape.track}/>
+    <film:Track source={v1-home.track}/>
+    <film:Track source={v1-plan.track}/>
+    <film:Track source={v2-converge.track}/>
+    <film:Track source={v2-assets.track}/>
+    <film:Track source={v2-motion.track}/>
+    <film:Track source={v3-timeline.track}/>
+    <film:Track source={v3-inspector.track}/>
+    <film:Track source={v3-split.track}/>
+    <film:Track source={v4-export.track}/>
+    <film:Track source={v4-editable.track}/>
+    <film:Track source={endcard.track}/>
+    <film:Track source={captions.track}/>
+    <film:Track source={voice.audio}/>
+    <film:Track source={music.audio}/>
+    <film:Track source={sfx-hits.audio}/>
+    <film:Track source={sfx-clicks.audio}/>
+  </film:Film>
+  <render:Video id="final" composition={main.composition} timeline={program.timeline}/>
+</svml>

@@ -372,7 +372,9 @@ var ApiSessionAgentController = class {
 	liveAgent(sessionId) {
 		const agent = this.ctx.agents.get(sessionId);
 		if (agent === void 0) return void 0;
-		return hasApiSessionSubagentOwner(this.ctx, agent.session, agent) ? { error: apiSessionSubagentOwnershipError(sessionId) } : { agent };
+		if (hasApiSessionSubagentOwner(this.ctx, agent.session, agent)) return { error: apiSessionSubagentOwnershipError(sessionId) };
+		this.installSelection(agent);
+		return { agent };
 	}
 	async resume(sessionId, supplied) {
 		if (supplied !== void 0) return this.resumeObserved(sessionId, supplied);

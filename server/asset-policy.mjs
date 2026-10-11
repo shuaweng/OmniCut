@@ -4,6 +4,7 @@ import {promises as fs} from 'node:fs';
 export function isDiagnosticPath(name=''){
  const parts=name.replaceAll('\\','/').split('/');
  return parts.some(p=>/^(?:analysis|diagnostics?|qa|checks?\d*|contact[-_]?sheets?|thumbnails?)$/i.test(p))||
+  /^packages\/[^/]+\/audio\/reference-(?:mix|score)\.(?:wav|mp3|m4a|ogg|flac)$/i.test(parts.join('/'))||
   /(?:contact[-_ ]?sheet|film[-_ ]?sheet|画面检查|字幕核查|质检拼图)/i.test(parts.at(-1)||'');
 }
 // Explicit author references win over directory conventions. Never hide a
@@ -17,7 +18,7 @@ export async function authoredMediaReferences(dir){
   if(e.isDirectory()){if(!isDiagnosticPath(e.name))await walk(file);continue;}
   if(!/\.(svml|svs|svrun)$/.test(e.name))continue;
   const source=await fs.readFile(file,'utf8');
-  for(const match of source.matchAll(/["']([^"'<>\n]+\.(?:png|jpe?g|webp|gif|avif|mp4|mov|webm|mp3|wav|m4a|ogg|flac))["']/gi)){
+  for(const match of source.matchAll(/["']([^"'<>\n]+\.(?:png|jpe?g|svg|webp|gif|avif|mp4|mov|webm|mp3|wav|m4a|ogg|flac))["']/gi)){
    references.add(path.relative(dir,path.resolve(base,match[1])).split(path.sep).join('/'));
   }
  }}

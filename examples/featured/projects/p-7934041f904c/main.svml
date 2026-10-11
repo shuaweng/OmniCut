@@ -1,0 +1,92 @@
+<?svml using="@hypit/markup@1"?>
+<svml>
+  <import as="pipeline" from="@hypit/media-pipeline@1"/>
+  <import as="audio" from="@hypit/audio-track@1"/>
+  <import as="time" from="@hypit/timeline-author@1"/>
+  <import as="space" from="@hypit/spatial@1"/>
+  <import as="asset" from="@hypit/media@1"/>
+  <import as="typo" from="@hypit/typography-track@1"/>
+  <import as="media" from="@hypit/media-track@1"/>
+  <import as="film" from="@hypit/film@1"/>
+  <import as="render" from="@hypit/render-hyperframes@1"/>
+  <import as="look" source="./look.svs"/>
+  <time:Clock id="clock" frame-rate="30"/>
+  <time:Timeline id="program" clock={clock} end="15s"/>
+  <space:Canvas id="canvas" width="1920" height="1080"/>
+  <asset:Font id="font" src="./assets/FrameSans-Regular.otf" weight="400" style="normal"/>
+  <space:Frame id="full-frame" within={canvas} left="0%" top="0%" right="100%" bottom="100%"/>
+  <space:Frame id="caption-frame" within={canvas} left="16%" top="82%" right="84%" bottom="92%"/>
+  <space:Frame id="endcard-name-frame" within={canvas} left="12%" top="78%" right="88%" bottom="86%"/>
+  <space:Frame id="endcard-tag-frame" within={canvas} left="12%" top="86.5%" right="88%" bottom="93%"/>
+
+  <!-- 画面：园林窗影 → 眼周触感 → 眼霜质地 → 官方包装品牌收尾 -->
+  <asset:Video id="seg1-file" src="./assets/a734107c-3334-4d26-b233-5a9a9d2bb540.mp4"/>
+  <pipeline:Normalize id="seg1-normal" source={seg1-file} clock={clock} video="primary-moving" audio="none" span-authority="video"/>
+  <asset:Video id="seg2-file" src="./assets/8814b4e5-ac4e-4da4-a57e-dea080bfd443.mp4"/>
+  <pipeline:Normalize id="seg2-normal" source={seg2-file} clock={clock} video="primary-moving" audio="none" span-authority="video"/>
+  <asset:Video id="seg3-file" src="./assets/683ceb1f-e231-4cf6-be12-c7c1dab8f251.mp4"/>
+  <pipeline:Normalize id="seg3-normal" source={seg3-file} clock={clock} video="primary-moving" audio="none" span-authority="video"/>
+  <asset:Image id="product-image" src="./assets/1571c49e-ba5d-49ea-a869-9405409f3eaf.png"/>
+  <space:Extent id="product-extent" width="1920" height="1080"/>
+
+  <media:Track id="picture" canvas={canvas} timeline={program.timeline}>
+    <media:Item id="shot-garden" media={seg1-normal.media} frame={full-frame} appearance={look.media.picture} at="0s" for="5s"/>
+    <media:Item id="shot-skin" media={seg2-normal.media} frame={full-frame} appearance={look.media.picture} at="5s" for="4s"/>
+    <media:Item id="shot-cream" media={seg3-normal.media} frame={full-frame} appearance={look.media.picture} at="9s" for="3.6s"/>
+    <media:Item id="shot-brand" image={product-image} extent={product-extent} frame={full-frame} appearance={look.media.endcard} at="12.6s" for="2.4s"/>
+  </media:Track>
+
+  <!-- 声音：镜头自然环境音、MiniMax 旁白、ElevenLabs 钢琴弦乐 -->
+  <pipeline:Normalize id="seg1-audio" source={seg1-file} clock={clock} video="none" audio="default" span-authority="audio"/>
+  <pipeline:Normalize id="seg2-audio" source={seg2-file} clock={clock} video="none" audio="default" span-authority="audio"/>
+  <pipeline:Normalize id="seg3-audio" source={seg3-file} clock={clock} video="none" audio="default" span-authority="audio"/>
+  <asset:Audio id="vo-file" src="./assets/6825c490-7078-4748-8c22-8f3b543e1939.mp3"/>
+  <pipeline:Normalize id="vo-normal" source={vo-file} clock={clock} video="none" audio="default" span-authority="audio"/>
+  <asset:Audio id="music-file" src="./assets/f4461cd7-b2be-44b7-b8b4-d05edcf1a859.mp3"/>
+  <pipeline:Normalize id="music-normal" source={music-file} clock={clock} video="none" audio="default" span-authority="audio"/>
+
+  <audio:Track id="ambience" timeline={program.timeline}>
+    <audio:Item id="amb-garden" source={seg1-audio.media} at="0s" for="5s" playback="once-start" gain="2" fade-in="6f" fade-out="8f"/>
+    <audio:Item id="amb-skin" source={seg2-audio.media} at="5s" for="4s" playback="once-start" gain="1.6" fade-in="8f" fade-out="8f"/>
+    <audio:Item id="amb-cream" source={seg3-audio.media} at="9s" for="3.6s" playback="once-start" gain="0.35" fade-in="8f" fade-out="10f"/>
+  </audio:Track>
+  <audio:Track id="voice" timeline={program.timeline}>
+    <audio:Item id="vo-line" source={vo-normal.media} at="6.6s" for="5.6s" playback="once-start" gain="1" fade-in="4f" fade-out="6f"/>
+  </audio:Track>
+  <audio:Track id="score" timeline={program.timeline}>
+    <audio:Item id="music-open" source={music-normal.media} at="0s" for="6.6s" playback="once-start" trim-start="0s" trim-end="6.6s" gain="1.5" fade-out="4f"/>
+    <audio:Item id="music-under" source={music-normal.media} at="6.6s" for="5.6s" playback="once-start" trim-start="6.6s" trim-end="12.2s" gain="0.42" fade-in="4f" fade-out="6f"/>
+    <audio:Item id="music-close" source={music-normal.media} at="12.2s" for="2.8s" playback="once-start" trim-start="12.2s" trim-end="15s" gain="1.8" fade-in="12f"/>
+  </audio:Track>
+
+  <!-- 字幕：与旁白真实字级时序对齐；结尾品牌字标 -->
+  <typo:Style id="caption-style" recipe={look.text.caption} font={font}>
+    <typo:Box target="content" color="#17120FA6" padding="14 34" radius="18"/>
+    <typo:Fill color="#FFFFFF"/>
+  </typo:Style>
+  <typo:Style id="endcard-name-style" recipe={look.text.endcard-name} font={font}>
+    <typo:Fill color="#3A2C1E"/>
+  </typo:Style>
+  <typo:Style id="endcard-tag-style" recipe={look.text.endcard-tag} font={font}>
+    <typo:Fill color="#8A7357"/>
+  </typo:Style>
+  <typo:Motion id="calm-fade">
+    <typo:ItemKeyframe at="0" opacity="0"/>
+    <typo:ItemKeyframe at="7" opacity="1" easing="ease-out"/>
+  </typo:Motion>
+  <typo:Track id="titles" timeline={program.timeline}>
+    <typo:Area id="caption-line1" placement={caption-frame} style={caption-style} motion={calm-fade} at="6.767s" for="2.267s">把从容，留给双眸</typo:Area>
+    <typo:Area id="caption-line2" placement={caption-frame} style={caption-style} motion={calm-fade} at="9.167s" for="2.867s">雅诗兰黛小棕瓶眼霜</typo:Area>
+    <typo:Area id="endcard-name" placement={endcard-name-frame} style={endcard-name-style} motion={calm-fade} at="12.95s" for="2.05s">雅诗兰黛</typo:Area>
+    <typo:Area id="endcard-tag" placement={endcard-tag-frame} style={endcard-tag-style} motion={calm-fade} at="13.3s" for="1.7s">小棕瓶眼霜</typo:Area>
+  </typo:Track>
+
+  <film:Film id="main" canvas={canvas} timeline={program.timeline} appearance={look.film.main}>
+    <film:Track source={picture.visual}/>
+    <film:Track source={titles.track}/>
+    <film:Track source={ambience.audio}/>
+    <film:Track source={voice.audio}/>
+    <film:Track source={score.audio}/>
+  </film:Film>
+  <render:Video id="final" composition={main.composition} timeline={program.timeline}/>
+</svml>

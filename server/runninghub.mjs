@@ -2,11 +2,12 @@ import {promises as fs} from 'node:fs';
 import path from 'node:path';
 import os from 'node:os';
 import {run} from './project.mjs';
+import {RUNNINGHUB_VIDEO_RESOLUTIONS,VIDEO_RATIOS,VIDEO_REFERENCE_LIMITS,VIDEO_AUDIO_MODES} from './media-capabilities.mjs';
 
 export const RUNNINGHUB_BASE='https://www.runninghub.cn';
 export const RUNNINGHUB_VIDEO_MODEL='minimax-h3-rh-enhanced';
 export const RUNNINGHUB_IMAGE_MODEL='seedream-v5-pro';
-export const RUNNINGHUB_VIDEO_RESOLUTIONS=['480p','768p','1080p'];
+export {RUNNINGHUB_VIDEO_RESOLUTIONS};
 export function runninghubConfig(env,kind='video'){
  if(!env.RUNNINGHUB_API_KEY)throw Error('请在模型设置中填写 RunningHub API Key');
  const model=kind==='image'?env.RUNNINGHUB_IMAGE_MODEL||RUNNINGHUB_IMAGE_MODEL:env.RUNNINGHUB_VIDEO_MODEL||RUNNINGHUB_VIDEO_MODEL;
@@ -60,13 +61,13 @@ export function runninghubImageBody(values,imageUrls=[]){
 export function runninghubVideoBody(values,content){
  const resolution=(values.resolution||'768p').toLowerCase();
  if(!RUNNINGHUB_VIDEO_RESOLUTIONS.includes(resolution))throw Error('H3 RH Enhanced 支持 480p、768p、1080p');
- if(!['9:16','16:9','1:1','4:3','3:4','21:9'].includes(values.ratio))throw Error('H3 RH Enhanced 需要明确的画面比例');
+ if(!VIDEO_RATIOS.includes(values.ratio)||values.ratio==='adaptive')throw Error('H3 RH Enhanced 需要明确的画面比例');
  const first=content.filter(c=>c.role==='first_frame'),last=content.filter(c=>c.role==='last_frame');
  const images=content.filter(c=>c.role==='reference_image'),videos=content.filter(c=>c.role==='reference_video'),audios=content.filter(c=>c.role==='reference_audio'),driving=content.filter(c=>c.role==='driving_audio');
- if(first.length>1||last.length>1||images.length>9||videos.length>3||audios.length>3||driving.length>1)throw Error('H3 RH Enhanced 参考素材数量超出限制');
+ if(first.length>1||last.length>1||images.length>VIDEO_REFERENCE_LIMITS.maxImages||videos.length>VIDEO_REFERENCE_LIMITS.maxVideos||audios.length>VIDEO_REFERENCE_LIMITS.maxAudio||driving.length>1)throw Error('H3 RH Enhanced 参考素材数量超出限制');
  if((first.length||last.length)&&(images.length||videos.length))throw Error('首尾帧和多参考画面需分开使用');
  const audioMode=values.audioMode||(audios.length?'reference_only':'native');
- if(!['native','reference_only','lock_source','remix_source'].includes(audioMode))throw Error('视频声音模式无效');
+ if(!VIDEO_AUDIO_MODES.includes(audioMode))throw Error('视频声音模式无效');
  if(['lock_source','remix_source'].includes(audioMode)&&!driving.length)throw Error('锁定或改编音轨需要指定驱动音频');
  const mode=first.length||last.length?'i2va':images.length||videos.length||audios.length?'ref2va':'t2va';
  // Official docs still show node IDs. The live API (2026-10-08) requires these aliases.

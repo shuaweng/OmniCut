@@ -1,0 +1,38 @@
+动效复用接入 · 2026-10-08
+
+结论
+Hypit 的“写一次，多项目复用”是原生 Author Package 机制：包内保留实现代码、素材、公开参数、README 和版本；消费项目通过 Module ABI import，再将输出 Track 加进自己的 Timeline / Film。换品牌文字、色彩、素材和时段不重写动画。它不是把完整广告复制成模板，也不是把动效预渲染成 MP4。
+
+源码依据
+../hypit/skills/hypit/references/production/component-sharing.md
+../hypit/examples/minimal-author-package/
+../hypit/examples/complex-explainer/packages/web-scenes/
+../hypit/packages/hyperframes/README.md
+
+此前 Frame 已具备
+checkout / commit 能保留任意 SVML、SVS、SVRun 和 packages/ 源码。
+commerce 包已有 HTML/CSS/逐帧 JS 的标题、商品卡、倒计时；chat-scene 也属于项目组件。
+原生 Studio、浏览器程序渲染、轨道组合、参数修改、导出已接入。
+缺口是没有发现和跨项目分发入口，Agent 也缺少“先复用组件、合入同一工程”的明确路径，所以用户多数只看到生成镜头拼接与静态字幕。
+
+本次实现
+1. 本地动效库保存普通原生包，不引入第二套渲染器或镜头模板格式。
+2. list_motion_components 发现内置/自存版本；use_motion_component 放入当前代码草稿并返回原生用法；save_motion_component 从已提交工程保存可复用包。
+3. 安装保留未提交草稿、不替换当前影片；README 指导 import 与 Track 合成，commit 后才进入同一工作台。
+4. 版本明确，同名版本不覆盖，不自动改变别的项目；不联网装依赖、不复制凭证。
+5. 内置“轻盈揭幕”包含品牌、标题、副标题、光线、圆环的帧动画。文字、颜色、起止时间、透明叠加与层级可改，并接原生 Studio Inspector。
+6. 库的展示预览不装入消费项目，避免把演示 MP4 混入用户素材库。
+
+真实验收（临时项目，与用户工程隔离）
+甲工程使用内置组件并保存 1.0.1；乙工程安装已保存版本，仅换文案、颜色，同一份 render.js 仍完整可编辑。
+编译、源码修改与撤销、重复安装保留未提交草稿通过。
+原生 Studio “主标题”参数通过 parameter.adjust 实际写回 SVML，并可撤销。
+两项目通过本地 Hypit/Hyperframes 输出各4秒、640×360、24fps 视频，无生成模型费用；抽帧实看清雅/黑橙两个版本。
+演示：output/动效复用验收/动效复用·清雅.mp4 与 动效复用·黑橙.mp4。
+内置库预览：components/brand-reveal/preview.mp4。
+
+边界
+当前提供一个经过实渲染的内置动效，绝不等于搬来了完整模板商城。
+任意自创 Author Package 可通过相同工具保存与复用；需要按原生 API 编写参数和 Studio Companion，复杂动态行为仍由代码表达。
+现阶段选择动效后由 Agent 按当前视频整合，保留用户审阅/发出指令这一动作，不直接用一段预设工程覆盖现有广告。
+调整调用参数不增加包版本；修改组件公共行为后再保存新版本。库内已有项目不会被隐式升级。

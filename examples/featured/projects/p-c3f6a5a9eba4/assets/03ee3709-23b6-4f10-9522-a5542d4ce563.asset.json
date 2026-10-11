@@ -1,0 +1,17 @@
+{
+  "id": "03ee3709-23b6-4f10-9522-a5542d4ce563",
+  "filename": "03ee3709-23b6-4f10-9522-a5542d4ce563.mp4",
+  "name": "视频素材.mp4",
+  "kind": "video",
+  "duration": 4.375,
+  "videoDuration": 4.375,
+  "width": 2560,
+  "height": 1440,
+  "hasAudio": false,
+  "created": "2026-10-07T06:57:40.763Z",
+  "poster": "03ee3709-23b6-4f10-9522-a5542d4ce563.preview.jpg",
+  "provenance": {
+    "provider": "featured",
+    "sourcePath": "assets/cut-eye-closeup.mp4"
+  }
+}

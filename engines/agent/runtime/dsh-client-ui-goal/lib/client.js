@@ -125,8 +125,8 @@ window.__ModuleLoader__.load({
 			};
 		}
 		//#endregion
-		//#region \0dsh-css:/home/runner/work/deepseek-harness/deepseek-harness/packages/client/ui-goal/src/client/GoalBar.module.css.mjs
-		const css$1 = ".nLMEza_dock{box-sizing:border-box;width:calc(100% - var(--dsh-composer-side-clearance) - var(--dsh-composer-side-clearance) - var(--dsh-composer-dock-inset) - var(--dsh-composer-dock-inset) - var(--dsh-composer-dock-inset) - var(--dsh-composer-dock-inset));margin:0 auto}.nLMEza_bar{isolation:isolate;box-sizing:border-box;width:100%;max-width:calc(var(--dsh-composer-card-max-width) - 4 * var(--dsh-composer-dock-inset));--dsw-elevation-stroke-color:var(--dsw-alias-border-l1);border-radius:var(--dsw-radius-md);height:36px;box-shadow:var(--dsw-elevation-panel);border:0;align-items:center;gap:10px;margin:0 auto;padding:4px 5px 4px 12px;display:flex;position:relative}.nLMEza_bar:before{z-index:-1;border-radius:inherit;background:var(--dsw-specific-menu);backdrop-filter:var(--dsw-menu-backdrop-filter);content:\"\";pointer-events:none;position:absolute;inset:0}.nLMEza_goalGlyph{color:var(--dsw-alias-label-tertiary);flex:none;display:inline-flex}.nLMEza_label{color:var(--dsw-alias-label-primary);flex:none;font-size:13px;font-weight:500;line-height:24px}.nLMEza_objective{min-width:0;color:var(--dsw-alias-label-primary-dimmed);text-overflow:ellipsis;white-space:nowrap;flex:1;font-size:13px;line-height:20px;overflow:hidden}.nLMEza_error{min-width:0;color:var(--dsw-alias-state-error-primary);text-overflow:ellipsis;white-space:nowrap;flex:1;font-size:12px;line-height:20px;overflow:hidden}.nLMEza_objectiveInput{border:.5px solid var(--dsw-alias-border-l4);border-radius:var(--dsw-radius-sm);background:var(--dsw-alias-bg-base);min-width:0;height:26px;color:var(--dsw-alias-label-primary);outline:none;flex:1;padding:0 8px;font-size:13px;line-height:20px}.nLMEza_objectiveInput:focus{border-color:var(--dsw-alias-state-business-primary)}.nLMEza_objectiveInput::placeholder{color:var(--dsw-alias-label-caption)}.nLMEza_actions{flex:none;align-items:center;gap:10px;display:flex}.nLMEza_iconBtn{corner-shape:round;width:28px;height:28px;color:var(--dsw-alias-label-tertiary);cursor:pointer;background:0 0;border:none;border-radius:999px;justify-content:center;align-items:center;padding:0;display:inline-flex}.nLMEza_iconBtn:hover{background:var(--dsw-alias-interactive-bg-hover);color:var(--dsw-alias-label-secondary)}.nLMEza_iconBtn:disabled{opacity:.4;cursor:default}";
+		//#region \0dsh-css:/Users/wotar/Desktop/视频Agent/frame/engines/agent/source/packages/client/ui-goal/src/client/GoalBar.module.css.mjs
+		const css$1 = "._1IdlHG_dock{box-sizing:border-box;width:calc(100% - var(--dsh-composer-side-clearance) - var(--dsh-composer-side-clearance) - var(--dsh-composer-dock-inset) - var(--dsh-composer-dock-inset) - var(--dsh-composer-dock-inset) - var(--dsh-composer-dock-inset));margin:0 auto}._1IdlHG_bar{isolation:isolate;box-sizing:border-box;width:100%;max-width:calc(var(--dsh-composer-card-max-width) - 4 * var(--dsh-composer-dock-inset));--dsw-elevation-stroke-color:var(--dsw-alias-border-l1);border-radius:var(--dsw-radius-md);height:36px;box-shadow:var(--dsw-elevation-panel);border:0;align-items:center;gap:10px;margin:0 auto;padding:4px 5px 4px 12px;display:flex;position:relative}._1IdlHG_bar:before{z-index:-1;border-radius:inherit;background:var(--dsw-specific-menu);backdrop-filter:var(--dsw-menu-backdrop-filter);content:\"\";pointer-events:none;position:absolute;inset:0}._1IdlHG_goalGlyph{color:var(--dsw-alias-label-tertiary);flex:none;display:inline-flex}._1IdlHG_label{color:var(--dsw-alias-label-primary);flex:none;font-size:13px;font-weight:500;line-height:24px}._1IdlHG_objective{min-width:0;color:var(--dsw-alias-label-primary-dimmed);text-overflow:ellipsis;white-space:nowrap;flex:1;font-size:13px;line-height:20px;overflow:hidden}._1IdlHG_error{min-width:0;color:var(--dsw-alias-state-error-primary);text-overflow:ellipsis;white-space:nowrap;flex:1;font-size:12px;line-height:20px;overflow:hidden}._1IdlHG_objectiveInput{border:.5px solid var(--dsw-alias-border-l4);border-radius:var(--dsw-radius-sm);background:var(--dsw-alias-bg-base);min-width:0;height:26px;color:var(--dsw-alias-label-primary);outline:none;flex:1;padding:0 8px;font-size:13px;line-height:20px}._1IdlHG_objectiveInput:focus{border-color:var(--dsw-alias-state-business-primary)}._1IdlHG_objectiveInput::placeholder{color:var(--dsw-alias-label-caption)}._1IdlHG_actions{flex:none;align-items:center;gap:10px;display:flex}._1IdlHG_iconBtn{corner-shape:round;width:28px;height:28px;color:var(--dsw-alias-label-tertiary);cursor:pointer;background:0 0;border:none;border-radius:999px;justify-content:center;align-items:center;padding:0;display:inline-flex}._1IdlHG_iconBtn:hover{background:var(--dsw-alias-interactive-bg-hover);color:var(--dsw-alias-label-secondary)}._1IdlHG_iconBtn:disabled{opacity:.4;cursor:default}";
 		const tagId$1 = "@deepseek-ai/dsh-client-ui-goal/GoalBar.module.css";
 		if (typeof document !== "undefined" && document.querySelector("style[data-plugin-css=" + JSON.stringify(tagId$1) + "]") === null) {
 			const tag = document.createElement("style");
@@ -136,15 +136,15 @@ window.__ModuleLoader__.load({
 			document.head.appendChild(tag);
 		}
 		var GoalBar_module_css_default = {
-			"actions": "nLMEza_actions",
-			"bar": "nLMEza_bar",
-			"dock": "nLMEza_dock",
-			"error": "nLMEza_error",
-			"goalGlyph": "nLMEza_goalGlyph",
-			"iconBtn": "nLMEza_iconBtn",
-			"label": "nLMEza_label",
-			"objective": "nLMEza_objective",
-			"objectiveInput": "nLMEza_objectiveInput"
+			"actions": "_1IdlHG_actions",
+			"bar": "_1IdlHG_bar",
+			"dock": "_1IdlHG_dock",
+			"error": "_1IdlHG_error",
+			"goalGlyph": "_1IdlHG_goalGlyph",
+			"iconBtn": "_1IdlHG_iconBtn",
+			"label": "_1IdlHG_label",
+			"objective": "_1IdlHG_objective",
+			"objectiveInput": "_1IdlHG_objectiveInput"
 		};
 		//#endregion
 		//#region lib/types/client/GoalBar.js
@@ -434,8 +434,8 @@ window.__ModuleLoader__.load({
 			}
 		};
 		//#endregion
-		//#region \0dsh-css:/home/runner/work/deepseek-harness/deepseek-harness/packages/client/ui-goal/src/client/GoalCommandInputView.module.css.mjs
-		const css = ".oRe1gG_row{flex-direction:column;align-items:flex-end;gap:6px;display:flex}.oRe1gG_stack{min-width:0;max-width:min(calc(var(--dsh-chat-content-width,748px) * .702), 82%);flex-direction:column;align-items:flex-end;display:flex}.oRe1gG_bubble{overflow-wrap:anywhere;border-radius:var(--dsw-radius-xl);background:var(--dsw-specific-bubble);max-width:100%;color:var(--dsw-alias-label-primary);font-size:var(--dsh-content-font-size,14px);line-height:calc(22px + var(--dsh-content-font-delta,0px));white-space:pre-wrap;padding:10px 16px}";
+		//#region \0dsh-css:/Users/wotar/Desktop/视频Agent/frame/engines/agent/source/packages/client/ui-goal/src/client/GoalCommandInputView.module.css.mjs
+		const css = ".KXxLTG_row{flex-direction:column;align-items:flex-end;gap:6px;display:flex}.KXxLTG_stack{min-width:0;max-width:min(calc(var(--dsh-chat-content-width,748px) * .702), 82%);flex-direction:column;align-items:flex-end;display:flex}.KXxLTG_bubble{overflow-wrap:anywhere;border-radius:var(--dsw-radius-xl);background:var(--dsw-specific-bubble);max-width:100%;color:var(--dsw-alias-label-primary);font-size:var(--dsh-content-font-size,14px);line-height:calc(22px + var(--dsh-content-font-delta,0px));white-space:pre-wrap;padding:10px 16px}";
 		const tagId = "@deepseek-ai/dsh-client-ui-goal/GoalCommandInputView.module.css";
 		if (typeof document !== "undefined" && document.querySelector("style[data-plugin-css=" + JSON.stringify(tagId) + "]") === null) {
 			const tag = document.createElement("style");
@@ -445,9 +445,9 @@ window.__ModuleLoader__.load({
 			document.head.appendChild(tag);
 		}
 		var GoalCommandInputView_module_css_default = {
-			"bubble": "oRe1gG_bubble",
-			"row": "oRe1gG_row",
-			"stack": "oRe1gG_stack"
+			"bubble": "KXxLTG_bubble",
+			"row": "KXxLTG_row",
+			"stack": "KXxLTG_stack"
 		};
 		//#endregion
 		//#region lib/types/client/GoalCommandInputView.js

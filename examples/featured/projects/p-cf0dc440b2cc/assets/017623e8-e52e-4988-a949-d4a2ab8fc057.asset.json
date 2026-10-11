@@ -1,0 +1,17 @@
+{
+  "id": "017623e8-e52e-4988-a949-d4a2ab8fc057",
+  "filename": "017623e8-e52e-4988-a949-d4a2ab8fc057.mp4",
+  "name": "dabao.mp4",
+  "kind": "video",
+  "duration": 30,
+  "videoDuration": 30,
+  "width": 1920,
+  "height": 1080,
+  "hasAudio": true,
+  "created": "2026-10-09T06:53:31.427Z",
+  "poster": "017623e8-e52e-4988-a949-d4a2ab8fc057.preview.jpg",
+  "provenance": {
+    "provider": "featured",
+    "sourcePath": "assets/017623e8-e52e-4988-a949-d4a2ab8fc057.mp4"
+  }
+}

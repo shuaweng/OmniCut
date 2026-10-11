@@ -1,0 +1,105 @@
+{
+  "repository": "https://github.com/lemomo-ai/lemo-opuscar",
+  "commit": "a75e2b3384cded87955c8743b5a59db06ea491a8",
+  "title": "Room to Think — Dark Tech Keynote",
+  "durationSeconds": 42,
+  "sourceWidth": 1920,
+  "sourceHeight": 1080,
+  "files": [
+    {
+      "file": "source/styles/dark-keynote/demo/film.js",
+      "sha256": "d1eeacc879f1f728bc4d3569a92a8856601326cf8805a8d4447e04f65d0166bc",
+      "url": "https://github.com/lemomo-ai/lemo-opuscar/blob/a75e2b3384cded87955c8743b5a59db06ea491a8/styles/dark-keynote/demo/film.js"
+    },
+    {
+      "file": "source/styles/dark-keynote/demo/world.js",
+      "sha256": "64fa27ddc43df698b62e17d44a965b6cfbf13c9346d30f3a42300dcbc79c672f",
+      "url": "https://github.com/lemomo-ai/lemo-opuscar/blob/a75e2b3384cded87955c8743b5a59db06ea491a8/styles/dark-keynote/demo/world.js"
+    },
+    {
+      "file": "source/styles/dark-keynote/demo/engine.js",
+      "sha256": "68f8f379c27634f826b0014e1e68cab458adcefefa5036627999b9789c52215a",
+      "url": "https://github.com/lemomo-ai/lemo-opuscar/blob/a75e2b3384cded87955c8743b5a59db06ea491a8/styles/dark-keynote/demo/engine.js"
+    },
+    {
+      "file": "source/styles/dark-keynote/demo/timeline.js",
+      "sha256": "9de8b56b273b46b4b42543596f4ea6cf2f97ecdfa7cdcd943119c11777631e3f",
+      "url": "https://github.com/lemomo-ai/lemo-opuscar/blob/a75e2b3384cded87955c8743b5a59db06ea491a8/styles/dark-keynote/demo/timeline.js"
+    },
+    {
+      "file": "source/styles/dark-keynote/demo/main.js",
+      "sha256": "b0ef008fffc1c67d8e5cbc8f2905ad0fc1068ae831f2735d70f338f0d03aed89",
+      "url": "https://github.com/lemomo-ai/lemo-opuscar/blob/a75e2b3384cded87955c8743b5a59db06ea491a8/styles/dark-keynote/demo/main.js"
+    },
+    {
+      "file": "source/styles/dark-keynote/demo/frames.js",
+      "sha256": "74e0bb3a34b46dbb9b7e74df0ee16e184287767817b216de575512803f45009c",
+      "url": "https://github.com/lemomo-ai/lemo-opuscar/blob/a75e2b3384cded87955c8743b5a59db06ea491a8/styles/dark-keynote/demo/frames.js"
+    },
+    {
+      "file": "source/styles/dark-keynote/demo/lines.json",
+      "sha256": "58630d9810da93bd667c736a5643b27de1d09f273eb754257fe72edb85988d5e",
+      "url": "https://github.com/lemomo-ai/lemo-opuscar/blob/a75e2b3384cded87955c8743b5a59db06ea491a8/styles/dark-keynote/demo/lines.json"
+    },
+    {
+      "file": "source/styles/dark-keynote/demo/voices/dur.json",
+      "sha256": "b9799522076cbf91249713b75678de122e592d1fb127e720ff1a9f103c261c6b",
+      "url": "https://github.com/lemomo-ai/lemo-opuscar/blob/a75e2b3384cded87955c8743b5a59db06ea491a8/styles/dark-keynote/demo/voices/dur.json"
+    },
+    {
+      "file": "source/styles/dark-keynote/demo/fonts/fonts.css",
+      "sha256": "19ba918990a38086dd0528f4e9ecbef903bd94fd7dddc44f6fe8a1dc5769bd3f",
+      "url": "https://github.com/lemomo-ai/lemo-opuscar/blob/a75e2b3384cded87955c8743b5a59db06ea491a8/styles/dark-keynote/demo/fonts/fonts.css"
+    },
+    {
+      "file": "source/styles/dark-keynote/demo/fonts/OFL-inter.txt",
+      "sha256": "5b9321a4298cfeb6b34354164a1c3afc3db114569984c502b9b35d988fd58c57",
+      "url": "https://github.com/lemomo-ai/lemo-opuscar/blob/a75e2b3384cded87955c8743b5a59db06ea491a8/styles/dark-keynote/demo/fonts/OFL-inter.txt"
+    },
+    {
+      "file": "source/styles/dark-keynote/demo/fonts/OFL-jetbrainsmono.txt",
+      "sha256": "a76abf002c49097d146e86740a3105a5d00450b1592e820a1109a8c5680cd697",
+      "url": "https://github.com/lemomo-ai/lemo-opuscar/blob/a75e2b3384cded87955c8743b5a59db06ea491a8/styles/dark-keynote/demo/fonts/OFL-jetbrainsmono.txt"
+    },
+    {
+      "file": "source/styles/dark-keynote/demo/CREDITS",
+      "sha256": "0c28931a2414b40a65f1794733d2342e0f59e4ae1183fc090aa11125bb1fc456",
+      "url": "https://github.com/lemomo-ai/lemo-opuscar/blob/a75e2b3384cded87955c8743b5a59db06ea491a8/styles/dark-keynote/demo/CREDITS"
+    },
+    {
+      "file": "source/styles/dark-keynote/STYLE.md",
+      "sha256": "b0791b5e95f56bf46c621e6064d426ebbee810c7515fb87e951b73668a2a0d24",
+      "url": "https://github.com/lemomo-ai/lemo-opuscar/blob/a75e2b3384cded87955c8743b5a59db06ea491a8/styles/dark-keynote/STYLE.md"
+    },
+    {
+      "file": "source/styles/dark-keynote/DEMO.md",
+      "sha256": "d0da5c1e25642b2b68269088e4fe7c7b1dbf361a9cf3590d3e2509dfb55b8bf0",
+      "url": "https://github.com/lemomo-ai/lemo-opuscar/blob/a75e2b3384cded87955c8743b5a59db06ea491a8/styles/dark-keynote/DEMO.md"
+    },
+    {
+      "file": "source/styles/dark-keynote/style.json",
+      "sha256": "c992e65414bb4e96ff6e0eeeba2cfc7a795d332fadfb3baa5301faa0b0c6b992",
+      "url": "https://github.com/lemomo-ai/lemo-opuscar/blob/a75e2b3384cded87955c8743b5a59db06ea491a8/styles/dark-keynote/style.json"
+    },
+    {
+      "file": "source/LICENSE",
+      "sha256": "f6d14d5ea5f60387eff5e7916f490e9d743986be48138d9ce187d69cbe536756",
+      "url": "https://github.com/lemomo-ai/lemo-opuscar/blob/a75e2b3384cded87955c8743b5a59db06ea491a8/LICENSE"
+    },
+    {
+      "file": "source/core/lib.js",
+      "sha256": "770c8fde7c43e6a8aa9f69235869eb2a6ef5dc43453d0e56d4ff0da576c83907",
+      "url": "https://github.com/lemomo-ai/lemo-opuscar/blob/a75e2b3384cded87955c8743b5a59db06ea491a8/core/lib.js"
+    }
+  ],
+  "adaptations": [
+    "Instance-local synchronous browserProgram entry; no fetch, autoplay or global window.render",
+    "Original fonts provided as native FontArtifact refs with project Chinese fallback",
+    "Original brand strings become one configurable brand, default Tidy",
+    "Clear offscreen canvases before each seek to remove previous-frame feedback; original source snapshot is unchanged",
+    "Original subtitles retained as inline lines and duration JSON; visual-only package",
+    "Native fonts bind numeric weight 400; Canvas font families keep variable ranges 100–900/100–800",
+    "Renamed brands hide the original demo self-introduction end card; default Tidy retains the reference card",
+    "sourceStart and rate select original absolute time; default 0 and 1 preserve the full 42-second original timeline"
+  ]
+}

@@ -69,6 +69,13 @@ test('原生 Studio 手改 → Agent 批量编辑 → 源码回写 → 撤销，
  await engine.undo(p.id,p.revision);assert.ok(!(await engine.read(p.id,'main.svml')).text.includes('保留原生扩展'));
  assert.ok((await engine.read(p.id,'main.svml')).text.includes('用户手动标题'));
  assert.equal(await fs.readFile(path.join(workspace,'main.svml'),'utf8'),(await engine.read(p.id,'main.svml')).text,'撤销后代码工作区与手动工程一致');
+ // Out-of-Studio source changes recompile in the running Studio, not a new process.
+ const studioProcess=studios.sessions.get(studios.key(p.id)).child.pid;
+ p=await service.get(p.id);
+ const afterUndo=JSON.parse((await host.resource(p.id,'session')).body);
+ assert.equal(afterUndo.frameRevision,p.revision);
+ assert.ok(!afterUndo.source.text.includes('保留原生扩展'),'刷新后画面来自撤销后的源码');
+ assert.equal(studios.sessions.get(studios.key(p.id)).child.pid,studioProcess,'工程在外部修改后复用同一个 Studio 进程');
 });
 
 

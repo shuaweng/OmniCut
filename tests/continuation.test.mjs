@@ -7,11 +7,11 @@ import path from 'node:path';
 import {ProjectService} from '../server/project.mjs';
 import {ImageGenerationService} from '../server/image-generation.mjs';
 import {TaskRegistry} from '../server/task-registry.mjs';
-import {createAgentBridge} from '../server/agent.mjs';
+import {createAgentBridge} from './fixtures/isolated-agent-bridge.mjs';
 const delay=ms=>new Promise(r=>setTimeout(r,ms));
 async function until(fn){for(let i=0;i<160;i++){if(await fn())return;await delay(50);}throw Error('等待超时');}
 async function fixture(t){
- const dir=await fs.mkdtemp(path.join(os.tmpdir(),'frame-continuation-')),service=new ProjectService(dir,async()=>{}),project=await service.create('隔离任务接续');let release;
+ const dir=await fs.realpath(await fs.mkdtemp(path.join(os.tmpdir(),'frame-continuation-'))),service=new ProjectService(dir,async()=>{}),project=await service.create('隔离任务接续');let release;
  const ready=new Promise(r=>release=r),images=new ImageGenerationService({service,getConfig:async()=>({ARK_API_KEY:'mock-only'}),fetcher:async()=>{await ready;const b=await fs.readFile(new URL('../sample-assets/sage-tumbler.png',import.meta.url));return new Response(JSON.stringify({data:[{b64_json:b.toString('base64')}]}));}});await images.init();const tasks=new TaskRegistry().register('image',images);const bridges=[];
  t.after(async()=>{release();for(const b of bridges)await b.close();tasks.close();await images.close();await fs.rm(dir,{recursive:true,force:true});});return {dir,service,project,images,tasks,release,bridges};
 }
@@ -44,9 +44,9 @@ test('服务重启恢复等待，复用原生成任务并接续原会话', {time
  const first=await createAgentBridge(f);f.bridges.push(first);await first.prompt(f.project.id,{text:'生成一张图片'});await until(()=>first.state(f.project.id).status==='waiting');await first.close();f.release();await Promise.all(f.images.work.values());const second=await createAgentBridge(f);f.bridges.push(second);await until(()=>second.state(f.project.id).messages.some(m=>m.text==='恢复成功'));assert.equal(f.images.list(f.project.id).length,1);assert.equal(second.state(f.project.id).messages.filter(m=>m.role==='user').length,1);
 });
 
-test('新的用户指令替代旧等待，不被稍后完成的任务抢回控制', {timeout:20000},async t=>{
+test('等待时拒绝新轮；明确停止后可换指令，不被晚返回任务抢回控制', {timeout:20000},async t=>{
  const f=await fixture(t);const calls=await mockModel(t,body=>{const {prompt,tools}=lastTurn(body);if(prompt.userRequest==='新的指令')return {text:'已切换到新指令'};if(!tools.length)return {name:'generate_image',args:{operationId:'supersede',prompt:'生成背景'}};if(tools.length===1)return {name:'await_tasks',args:{taskIds:[tools[0].taskId],instruction:'继续原任务'}};return {text:'等待'};});
- const bridge=await createAgentBridge(f);f.bridges.push(bridge);await bridge.prompt(f.project.id,{text:'生成图片并剪辑'});await until(()=>bridge.state(f.project.id).status==='waiting');await bridge.prompt(f.project.id,{text:'新的指令'});await until(()=>bridge.state(f.project.id).status==='idle');const before=calls();f.release();await Promise.all(f.images.work.values());await delay(150);assert.equal(calls(),before);assert.equal(bridge.state(f.project.id).awaiting,null);assert.equal((await f.service.get(f.project.id)).revision,f.project.revision);
+ const bridge=await createAgentBridge(f);f.bridges.push(bridge);await bridge.prompt(f.project.id,{text:'生成图片并剪辑'});await until(()=>bridge.state(f.project.id).status==='waiting');await assert.rejects(bridge.prompt(f.project.id,{text:'新的指令'}),/当前对话仍在进行/);await bridge.cancel(f.project.id);await bridge.prompt(f.project.id,{text:'新的指令'});await until(()=>bridge.state(f.project.id).status==='idle');const before=calls();f.release();await Promise.all(f.images.work.values());await delay(150);assert.equal(calls(),before);assert.equal(bridge.state(f.project.id).awaiting,null);assert.equal((await f.service.get(f.project.id)).revision,f.project.revision);
 });
 
 test('只有思考没有正文或操作时明确报错，不显示假完成', {timeout:15000},async t=>{

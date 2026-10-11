@@ -34,6 +34,7 @@ const Config = z.object({
 	dshHome: z.string(),
 	agentsHome: z.string(),
 	customSkillDirs: z.array(z.string()).default([]),
+	workspaceSkillDirs: z.array(z.string()).default([]),
 	watch: z.boolean().default(true),
 	watchUsePolling: z.boolean().default(false),
 	watchStabilityThresholdMs: z.number().default(DEFAULT_WATCH_STABILITY_THRESHOLD_MS),
@@ -67,6 +68,7 @@ var FileSystemSkillProvider = class {
 	dshHome;
 	agentsHome;
 	customSkillDirs;
+	workspaceSkillDirs;
 	watchManager;
 	bundledSkillDir;
 	disposal;
@@ -77,6 +79,10 @@ var FileSystemSkillProvider = class {
 		this.dshHome = resolveDshHome(config.dshHome);
 		this.agentsHome = resolve(config.agentsHome ?? process.env.DSH_AGENTS_HOME ?? join(homedir(), ".agents"));
 		this.customSkillDirs = (config.customSkillDirs ?? []).map((root) => resolve(root));
+		this.workspaceSkillDirs = (config.workspaceSkillDirs ?? []).map((root) => {
+			if (!root || isAbsolute(root) || root.split(/[\\/]/u).includes("..")) throw new TypeError("skill-filesystem: workspaceSkillDirs must stay within the session cwd");
+			return root;
+		});
 		this.watchManager = new SkillWatchManager(ctx, control.invalidate, resolveWatchConfig(config));
 		control.signal.addEventListener("abort", () => {
 			this.dispose();
@@ -149,6 +155,12 @@ var FileSystemSkillProvider = class {
 	}
 	async roots(cwd) {
 		const roots = [];
+		if (cwd !== void 0) roots.push(...this.workspaceSkillDirs.map((path) => ({
+			path: resolve(cwd, path),
+			source: "custom",
+			rank: PROJECT_DSH_RANK,
+			projectRoot: resolve(cwd)
+		})));
 		if (this.includeDefaultRoots && cwd !== void 0) {
 			const projectRoot = await findProjectRoot(resolve(cwd), optionalFileSystem(this.ctx));
 			roots.push({

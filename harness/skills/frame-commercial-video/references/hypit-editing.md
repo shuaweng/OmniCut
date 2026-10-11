@@ -17,20 +17,23 @@
 </media:Track>
 ```
 
-完整工程的时钟、画布、轨道与电影：
+完整工程的时钟、画布、轨道与电影（Film 至少包含一条实际声明的 Track；下方 picture/captions/mix 必须先声明，不能全部省略）：
 ```xml
 <time:Clock id="clock" frame-rate="30"/>
 <time:Timeline id="program" clock={clock} end="15s"/>
 <space:Canvas id="canvas" width="1440" height="1080"/>
 <space:Frame id="full" within={canvas} left="0%" top="0%" right="100%" bottom="100%"/>
 <!-- picture、captions、mix 为本工程已声明的相应轨道 -->
-<film:Film id="main" canvas={canvas} timeline={program.timeline}>
+<film:Film id="main" canvas={canvas} timeline={program.timeline}
+  appearance={look.film.main}>
   <film:Track source={picture.visual}/>
   <film:Track source={captions.track}/>
   <film:Track source={mix.audio}/>
 </film:Film>
 <render:Video id="final" composition={main.composition} timeline={program.timeline}/>
 ```
+look.svs 还需定义 `film.main { background: #000000; }`；Film 的 appearance 是必填 Recipe，不使用 clear-color 作为样式键。
+
 对应导入：time=timeline-author，space=spatial，asset=media，pipe=media-pipeline，media=media-track，typo=typography-track，sound=audio-track，film=film，render=render-hyperframes，均为 @hypit/包名@1。
 
 render.svrun：

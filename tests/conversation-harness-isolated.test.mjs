@@ -17,11 +17,12 @@ async function fixture(t){
  const messages=[],created=[],flushed=[],jobAccess=[];
  let receive,nextJob=0,nextRequest=0;
  const on=(name,callback)=>{const callbacks=hooks.get(name)||[];callbacks.push(callback);hooks.set(name,callbacks);return()=>{};};
- const makeAgent=(sessionId,meta,seed=[])=>({session:Session.create(sessionId,seed,{version:4,id:sessionId,createdAt:1,isSeeded:false,...meta}),ctx:{on:()=>()=>{}},status:'idle',cancelled:0,prompts:[],cancel(){this.cancelled++;},followup(message){this.prompts.push(message);}});
+ const makeAgent=(sessionId,meta,seed=[])=>({session:Session.create(sessionId,seed,{version:4,id:sessionId,createdAt:1,isSeeded:false,...meta}),ctx:{on:()=>()=>{},systemPrompt:{section:()=>()=>{},getSectionOrder:()=>0}},status:'idle',cancelled:0,prompts:[],cancel(){this.cancelled++;},followup(message){this.prompts.push(message);}});
  const ctx={on,agents:{get:id=>agents.get(id),async create(options){created.push(options);await Promise.resolve();const agent=makeAgent(options.sessionId,options.meta,options.seed);agents.set(agent.session.id,agent);saved.set(agent.session.id,agent);return {agent};},async resume({resumeSessionId}){const agent=saved.get(resumeSessionId);if(!agent)throw Error('missing session');agents.set(resumeSessionId,agent);return {agent};}},
   tools:{register:def=>tools.set(def.name,def)},agentPresets:{mount:async()=>{},serviceFor:()=>({pruneSession:()=>0,compactNow:async()=>true})},
   sessionPersistence:{stat:async id=>saved.has(id)?{header:saved.get(id).session.header}:undefined,open:async id=>({read:async()=>({events:saved.get(id).session.snapshotEvents()}),close:async()=>{}})},
   sessions:{get:id=>agents.get(id)?.session,flush:async session=>{flushed.push(session.id);}},workspaceRegistry:{create:async()=>({attachSession:async()=>{}})},connection:{authenticatedUrl:url=>url},
+  sessionController:{async prompt(request){agents.get(request.sessionId).followup({content:request.content,source:{kind:'user'}});return {accepted:true};}},
   jobs:{start(options){const id='job-'+(++nextJob);jobs.set(id,{owner:options.owner,...options.run({updateProgress(){}})});return id;},wait(id,timeout,owner){assert.equal(owner,jobs.get(id).owner);jobAccess.push(['wait',id,owner]);return jobs.get(id).done;},kill(id,owner){assert.equal(owner,jobs.get(id).owner);jobAccess.push(['kill',id,owner]);jobs.get(id).cancel();},remove(id,owner){assert.equal(owner,jobs.get(id).owner);jobAccess.push(['remove',id,owner]);}},
  };
  process.send=message=>{messages.push(message);if(message.type==='tool')queueMicrotask(()=>receive({type:'tool-result',id:message.id,value:message.operation==='await-tasks'?{waitId:'shared-wait'}:{ok:true}}));};

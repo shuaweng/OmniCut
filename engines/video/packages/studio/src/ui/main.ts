@@ -14,6 +14,7 @@ import { createStage } from "./stage.js";
 import { semanticGestureSpan } from "../temporal-edit.js";
 import type { SemanticTarget } from "../temporal-edit.js";
 import { applyStudioMutation } from "./writeback.js";
+import { bindTextParameterCommit } from "./input-commit.js";
 import { createTimeline } from "./timeline.js";
 import { createComments } from "./comments.js";
 import { themeToggle } from "./theme.js";
@@ -254,14 +255,15 @@ function restoreParameterControls(entityId: string): void {
   }
 }
 
-function commitControl(entityId: string, parameter: Clip["inspector"][number], replacement: CanonicalValue): void {
+async function commitControl(entityId: string, parameter: Clip["inspector"][number], replacement: CanonicalValue): Promise<boolean> {
   try {
-    if (sameValue(parameterAuthorValue(parameter, replacement), parameter.value)) return;
-    void writeParameter(entityId, parameter, replacement);
+    if (sameValue(parameterAuthorValue(parameter, replacement), parameter.value)) return true;
+    return await writeParameter(entityId, parameter, replacement);
   } catch (error) {
     restoreParameterControls(entityId);
     uiText(status, "common.invalid-value"); status.className = "status error";
     status.title = error instanceof Error ? error.message : String(error);
+    return false;
   }
 }
 
@@ -671,7 +673,7 @@ function parameterControl(
     if (parameter.multiline && parameter.control === "text") {
       const value = document.createElement("textarea"); value.className = "parameter-value parameter-multiline";
       value.value = textValue(parameter.value); value.setAttribute("aria-label", parameter.label);
-      value.addEventListener("change", () => commit(value.value)); right.append(value);
+      bindTextParameterCommit(value, commit); right.append(value);
       row.append(name, right); return row;
     }
     const value = document.createElement("input");
@@ -700,7 +702,7 @@ function parameterControl(
     } else value.value = textValue(parameter.value);
     value.dataset.parameterId = parameter.id;
     if (!value.title) value.title = parameter.summary ?? parameter.label;
-    value.addEventListener("change", () => {
+    const commitValue = (): void => {
       if (value.type === "checkbox") {
         commit(value.checked);
       } else if (parameter.control === "number") {
@@ -709,7 +711,9 @@ function parameterControl(
       } else {
         commit(value.value);
       }
-    });
+    };
+    if (parameter.control === "text") bindTextParameterCommit(value, commit);
+    else value.addEventListener("change", commitValue);
     right.append(value);
   }
   if (unitLabel !== undefined) {
@@ -737,9 +741,9 @@ function parameterGroups(entityId: string, fields: readonly Clip["inspector"][nu
 }
 
 let parameterWriteState: "" | "common.saving" | "common.saved" | "common.failed" = "";
-async function writeParameter(entityId: string, parameter: Clip["inspector"][number], replacement: CanonicalValue): Promise<void> {
+async function writeParameter(entityId: string, parameter: Clip["inspector"][number], replacement: CanonicalValue): Promise<boolean> {
   const state = store.current();
-  if (state === undefined) return;
+  if (state === undefined) return false;
   parameterWriteState = "common.saving";
   status.title = "";
   uiText(status, parameterWriteState);
@@ -755,6 +759,7 @@ async function writeParameter(entityId: string, parameter: Clip["inspector"][num
     parameterWriteState = "common.saved";
     uiText(status, parameterWriteState);
     status.className = "status saved";
+    return true;
   } catch (error) {
     // Validation and stale-revision rejections do not publish a new snapshot.
     // Restore the accepted value just as a rejected compilation does.
@@ -763,6 +768,7 @@ async function writeParameter(entityId: string, parameter: Clip["inspector"][num
     uiText(status, error instanceof Error ? "common.save-failed" : parameterWriteState);
     status.className = "status error";
     status.title = error instanceof Error ? error.message : String(error);
+    return false;
   }
 }
 

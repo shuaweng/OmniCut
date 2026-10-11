@@ -100,17 +100,26 @@ var SandboxPolicyService = class extends Service {
 			"workspace-write",
 			"danger-full-access"
 		]).default("read-only"),
-		workspaceRoot: z$1.string()
+		workspaceRoot: z$1.string(),
+		protectedPaths: z$1.array(z$1.string()),
+		protectedPathPatterns: z$1.array(z$1.string())
 	});
 	static inject = ["sessionProjections"];
 	/** The deployment default mode — the fallback beneath a session override. */
 	defaultMode;
 	/** The absolute `workspace-write` fallback root for calls without a session cwd. */
 	workspaceRoot;
+	protectedPaths;
+	protectedPathPatterns;
 	constructor(ctx, config) {
 		super(ctx, "sandboxPolicy");
 		this.defaultMode = config.mode;
 		this.workspaceRoot = resolveWorkspaceRoot(config.workspaceRoot ?? process.cwd());
+		this.protectedPaths = Object.freeze((config.protectedPaths ?? []).map(resolveWorkspaceRoot));
+		this.protectedPathPatterns = Object.freeze((config.protectedPathPatterns ?? []).map((pattern) => {
+			new RegExp(pattern);
+			return pattern;
+		}));
 		ctx.sessionProjections.register({
 			key: "sandboxMode",
 			stateVersion: 1,
@@ -140,9 +149,15 @@ var SandboxPolicyService = class extends Service {
 	*/
 	resolve(request = {}) {
 		const { session } = request;
+		const mode = request.mode ?? (session === void 0 ? void 0 : this.overrideOf(session)) ?? this.defaultMode;
+		if (mode === "danger-full-access" && (this.protectedPaths.length || this.protectedPathPatterns.length)) throw new Error("full-access execution is unavailable while private configuration protection is enabled");
 		return {
-			mode: request.mode ?? (session === void 0 ? void 0 : this.overrideOf(session)) ?? this.defaultMode,
+			mode,
 			workspaceRoot: resolveWorkspaceRoot(session?.header.cwd ?? this.workspaceRoot),
+			...this.protectedPaths.length || this.protectedPathPatterns.length ? {
+				protectedPaths: this.protectedPaths,
+				protectedPathPatterns: this.protectedPathPatterns
+			} : {},
 			...session === void 0 ? {} : { sessionId: session.id }
 		};
 	}

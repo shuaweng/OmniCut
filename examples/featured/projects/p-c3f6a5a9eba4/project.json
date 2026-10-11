@@ -1,0 +1,78 @@
+{
+  "id": "p-c3f6a5a9eba4",
+  "projectId": "p-c3f6a5a9eba4",
+  "videoId": "v-default",
+  "name": "雅诗兰黛小棕瓶眼霜·30秒精品广告",
+  "brief": "雅诗兰黛小棕瓶眼霜·30秒精品广告",
+  "draft": false,
+  "updated": "2026-10-07T11:44:48.308Z",
+  "version": 6,
+  "history": [],
+  "messages": [],
+  "native": {
+    "author": "main.svml",
+    "run": "render.svrun",
+    "target": "final.video",
+    "output": {
+      "width": 1920,
+      "height": 1080,
+      "fps": 30
+    },
+    "duration": 30
+  },
+  "productionPlan": {
+    "duration": 30,
+    "ratio": "16:9",
+    "updated": "2026-10-07T06:23:45.770Z",
+    "scenes": [
+      {
+        "id": "ref-scene-fb65060a-e903-4650-aa0c-0a5ecefc1d74",
+        "name": "01 光斑入瓶·商品关联",
+        "start": 0,
+        "end": 6,
+        "visual": "园林午后柔光穿过枝叶，斑驳光斑在深色石面缓慢晃动，镜头随光斑缓推，0–3 秒内完成商品关联：琥珀棕玻璃瓶身与香槟金金属盖的小棕瓶眼霜入画，暖光扫过瓶身。",
+        "voiceover": "从容，是一种选择。"
+      },
+      {
+        "id": "ref-scene-el30-light-01",
+        "name": "02 园林呼吸·光斑流动",
+        "start": 6,
+        "end": 11,
+        "visual": "同一光向的侧逆光下，枝叶在墙面与石面投下琥珀色光斑，镜头极缓横移，明暗有呼吸般的起伏，无人物无产品。",
+        "voiceover": "把慢下来的光，留给眼睛。"
+      },
+      {
+        "id": "ref-scene-dc209213-4f5d-4ae9-b08b-e353d16eec89",
+        "name": "03 掌中光泽·琥珀玻璃",
+        "start": 11,
+        "end": 16,
+        "visual": "侧后方暖光中手托起眼霜缓缓转动，琥珀棕玻璃透出蜜色光泽，香槟金盖面泛起细腻砂光，浅景深压成暖棕背景。",
+        "voiceover": "时间会沉淀，也会发光。"
+      },
+      {
+        "id": "ref-scene-el30-cream-01",
+        "name": "04 凝霜触感·质地特写",
+        "start": 16,
+        "end": 20,
+        "visual": "微距下指尖从瓶口挑起一小点半透明凝霜，在暖光里缓缓推开，边缘留下细腻反光与柔和纹理，动作克制舒缓。",
+        "voiceover": "它的质地，像清晨一样安静。"
+      },
+      {
+        "id": "ref-scene-el30-eye-01",
+        "name": "05 双眸神态·自然光下",
+        "start": 20,
+        "end": 25,
+        "visual": "同一光向下，一位成熟女性在园林窗棂光斑里安静睁开双眼，睫毛轻动、自然眨眼，侧光勾出眼部轮廓，神态自然不表演。",
+        "voiceover": "把从容，留给双眸。"
+      },
+      {
+        "id": "ref-scene-aa5848f5-e01f-4faf-ac7e-724cc744a141",
+        "name": "06 英雄镜头＋真实商品收尾",
+        "start": 25,
+        "end": 30,
+        "visual": "前 2 秒暖调柔光下眼霜完整立于石面、镜头极缓推进，光斑沿瓶身滑过；后 3 秒切真实商品图与简洁品牌字标收尾，光线与前一镜一致。",
+        "voiceover": "雅诗兰黛小棕瓶眼霜。"
+      }
+    ]
+  }
+}

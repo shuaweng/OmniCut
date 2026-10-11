@@ -25,6 +25,8 @@ export interface Config {
     agentsHome?: string;
     /** Additional skill roots scanned after project roots and before user roots. */
     customSkillDirs?: string[];
+    /** Explicit relative skill roots within the calling session's cwd. */
+    workspaceSkillDirs?: string[];
     /** Whether host-local skill roots are watched for catalog changes. */
     watch?: boolean;
     /** Whether Chokidar uses polling instead of native filesystem events. */
@@ -51,6 +53,7 @@ export declare class FileSystemSkillProvider implements SkillProvider {
     private readonly dshHome;
     private readonly agentsHome;
     private readonly customSkillDirs;
+    private readonly workspaceSkillDirs;
     private readonly watchManager;
     private readonly bundledSkillDir;
     private disposal;

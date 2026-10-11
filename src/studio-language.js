@@ -5,8 +5,8 @@ const words={
  Playback:'播放方式','Trim Start':'素材入点','Trim End':'素材出点',Trim:'裁剪',Gain:'音量','End Gain':'结束音量','Audio Gain':'原声音量',Mix:'混音','Fade In':'淡入','Fade Out':'淡出',Fade:'淡入淡出',Rate:'播放速度','Min Rate':'最低速度','Max Rate':'最高速度',Speed:'速度',Loop:'循环',Duration:'时长',Start:'开始',End:'结束',Offset:'偏移',Delay:'延迟',Range:'时间范围',Segment:'片段',Content:'内容',Style:'样式',Sound:'声音',Audio:'声音',Performance:'画面',Timeline:'时间线',Media:'素材',Text:'文字',Copy:'文案',Title:'标题',Subtitle:'副标题',Label:'标签',Cue:'字幕段',Captions:'字幕',Padding:'内边距',Margin:'外边距',Border:'边框',Shadow:'阴影',Outline:'描边',Spacing:'间距','Letter Spacing':'字间距','Line Height':'行高','Font Size':'字号','Font Family':'字体','Font Weight':'字重','Text Align':'文字对齐',
  'Source Extent':'素材范围','Until Boundary':'播放至边界',Boundary:'边界',Entrance:'入场',Exit:'离场',Animation:'动画',Motion:'动效',Easing:'缓动',Trigger:'触发',Event:'事件',Item:'项目',Items:'项目',Rank:'排名',Ranking:'排行',Reveals:'揭晓','Tier Board':'分级榜单','Ranking Sounds':'排行音效',Tier:'层级',Entry:'入场方式',Stroke:'描边',Fill:'填充',Intensity:'强度',Round:'圆角',RadiusX:'横向圆角',RadiusY:'纵向圆角',
  contain:'完整显示',cover:'铺满画面','fit-width':'适应宽度','fit-height':'适应高度',native:'原始尺寸','scale-down':'仅缩小',stretch:'拉伸',none:'无',rect:'矩形',rounded:'圆角',ellipse:'椭圆',circle:'圆形',left:'左对齐',right:'右对齐',center:'居中',start:'起始',end:'末尾',top:'顶部',bottom:'底部',justify:'两端对齐',normal:'常规',bold:'粗体',italic:'斜体',direct:'直接出现',drop:'落入',once:'播放一次','once-start':'从头播放一次','once-end':'末尾对齐播放',loop:'循环播放','loop-start':'从头循环播放','loop-end':'末尾对齐循环',
- 'Placed interval; the end frame is exclusive.':'片段占用的时间范围，不含结束帧。',
- "Resolved Use interval; the end frame is exclusive. Timeline gestures follow this Use's author timing.":'片段在时间线上的范围，不含结束帧。',
+ 'Placed interval; the end frame is exclusive.':'片段占用的时间范围。',
+ "Resolved Use interval; the end frame is exclusive. Timeline gestures follow this Use's author timing.":'片段在时间线上的范围。',
  'Rates are multipliers (1 = original speed). Stretch requires both rate bounds.':'1 为原速；拉伸需设置最低与最高速度。',
  'Scales the source into the fitting area left inside the Frame after border and padding.':'素材在边框与内边距以内的缩放方式。',
  'Sets how opaque the sampled picture is drawn.':'调整画面的不透明度。',
@@ -40,14 +40,30 @@ const tracks={'picture.visual':'画面','captions.track':'字幕','mix.audio':'�
 export function studioClipTitle(value){
  if(typeof value!=='string'||/[\u3400-\u9fff]/.test(value))return value;
  const name=value.match(/^shot[-_]?([0-9]+)$/i);if(name)return '镜头 '+Number(name[1]);
- return ({voice:'旁白','voice-level':'旁白音量',endcard:'品牌尾板','bgm-head':'前段配乐','bgm-tail':'收尾配乐','fx-breeze':'环境风声','fx-cap':'开盖音效','fx-lotion':'乳液音效','caption-style':'字幕样式','caption-hidden':'字幕留白','brand-title':'品牌名称','brand-sub':'品牌文案'})[value]??value;
+ const voice=value.match(/^(?:vo|voice)[-_]?([0-9]+)$/i);if(voice)return '旁白 '+Number(voice[1]);
+ return ({voice:'旁白','voice-level':'旁白音量',endcard:'品牌尾板','bgm-head':'前段配乐','bgm-tail':'收尾配乐','music-bed':'背景配乐',impact:'低频冲击','whoosh-claim':'主张转场','whoosh-converge':'汇合转场','whoosh-end':'片尾转场','click-cue':'提示点击','click-home':'首页点击','click-left':'素材点击','click-motion':'动效点击','click-play':'播放点击','click-top':'顶部操作','sfx-hits':'冲击音效','sfx-clicks':'点击音效','sfx-whoosh':'转场音效','fx-breeze':'环境风声','fx-cap':'开盖音效','fx-lotion':'乳液音效','caption-style':'字幕样式','caption-hidden':'字幕留白','brand-title':'品牌名称','brand-sub':'品牌文案'})[value]??value;
 }
 export function localizeStudioSnapshot(snapshot){
  if(snapshot.semantic?.presentation?.label)snapshot.semantic.presentation.label=studioText(snapshot.semantic.presentation.label);
+ const repeatedTitles=new Map();
  for(const track of snapshot.tracks||[]){
-  track.label=tracks[track.label]??studioText(track.label);
-  if(track.binding?.label)track.binding={...track.binding,label:tracks[track.binding.label]??track.binding.label};
-  for(const clip of track.clips||[]){if(clip.display?.title)clip.display={...clip.display,title:studioClipTitle(clip.display.title)};if(clip.inspector)clip.inspector=clip.inspector.map(localizeParameter);}
+  track.label=tracks[track.label]??studioClipTitle(studioText(track.label));
+  if(track.binding?.label)track.binding={...track.binding,label:tracks[track.binding.label]??studioClipTitle(studioText(track.binding.label))};
+  for(const clip of track.clips||[]){
+   if(clip.display?.title){
+    const title=studioClipTitle(clip.display.title);clip.display={...clip.display,title};
+    if(!repeatedTitles.has(title))repeatedTitles.set(title,new Map());
+    const group=repeatedTitles.get(title),identity=clip.authoredId||clip.id;
+    if(!group.has(identity))group.set(identity,{id:identity,start:clip.startFrame||0,clips:[]});
+    const entry=group.get(identity);entry.start=Math.min(entry.start,clip.startFrame||0);entry.clips.push(clip);
+   }
+   if(clip.inspector)clip.inspector=clip.inspector.map(localizeParameter);
+  }
  }
+ // A copied component can declare the same generic title in every scene.
+ // Disambiguate presentation in timeline order, sharing one name across its
+ // audio/visual facets; authored IDs and all mutation handles stay untouched.
+ for(const [title,group] of repeatedTitles){if(group.size<2)continue;const entries=[...group.values()].sort((a,b)=>a.start-b.start||a.id.localeCompare(b.id));entries.forEach((entry,index)=>{for(const clip of entry.clips)clip.display={...clip.display,title:title+' · '+(index+1)};});}
+ for(const track of snapshot.tracks||[]){if(track.clips?.length!==1)continue;const title=track.clips[0].display?.title;if(!title)continue;if(title.startsWith(track.label+' · '))track.label=title;if(track.binding?.label&&title.startsWith(track.binding.label+' · '))track.binding={...track.binding,label:title};}
  return snapshot;
 }

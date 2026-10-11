@@ -7,11 +7,18 @@ import path from 'node:path';
 import crypto from 'node:crypto';
 import { execFile } from 'node:child_process';
 import { promisify } from 'node:util';
+import {AsyncLocalStorage} from 'node:async_hooks';
 import { readStoryboard, patchStoryboard, storyboardLimits } from './storyboard.mjs';
 import { listAssets } from './assets.mjs';
+import {readStoredRecord,CorruptRecordError} from './record-recovery.mjs';
+import {currentVideoId,withVideoContext,DEFAULT_VIDEO_ID,isManagedProduction} from './video-context.mjs';
+import {materializeProjectAssets} from './asset-storage.mjs';
+import {planRoutes} from './production-routes.mjs';
+import {productionCreative,productionSceneDetails} from './production-plan-details.mjs';
 export const run = promisify(execFile);
 export const root = path.resolve(import.meta.dirname, '..');
 export const hypit = path.join(root, 'scripts/hypit.mjs');
+const heldLocks=new AsyncLocalStorage();
 const esc = s => String(s).replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;');
 const unesc = s => s.replaceAll('&quot;','"').replaceAll('&gt;','>').replaceAll('&lt;','<').replaceAll('&amp;','&');
 export function revision(source,style) { return crypto.createHash('sha256').update(source+'\0'+style).digest('hex').slice(0,16); }
@@ -47,17 +54,56 @@ export function patchSource(source,style,change) {
   return {source,style};
 }
 export class ProjectService {
-  constructor(dataRoot=path.join(root,'data'),validator) {this.dataRoot=dataRoot;this.queue=Promise.resolve();this.validator=validator||this.validate.bind(this);}
-  exclusive(fn){ const result=this.queue.then(fn);this.queue=result.catch(()=>{});return result; }
-  dir(id){if(!/^p-[a-f0-9]{12}$/.test(id)) throw Error('项目不存在');return path.join(this.dataRoot,'projects',id);}
-  async list(){const base=path.join(this.dataRoot,'projects');await fs.mkdir(base,{recursive:true});const dirs=await fs.readdir(base);return (await Promise.all(dirs.filter(x=>/^p-[a-f0-9]{12}$/.test(x)).map(x=>this.get(x)))).sort((a,b)=>b.updated.localeCompare(a.updated));}
-  async get(id){const dir=this.dir(id);const [source,style,meta]=await Promise.all([fs.readFile(path.join(dir,'main.svml'),'utf8').catch(e=>{if(e.code==='ENOENT')return '';throw e;}),fs.readFile(path.join(dir,'look.svs'),'utf8').catch(e=>{if(e.code==='ENOENT')return '';throw e;}),fs.readFile(path.join(dir,'project.json'),'utf8').then(JSON.parse)]);return {...meta,...(meta.draft?{template:'draft',draft:true,texts:[],shots:[],components:[],audioTracks:[],music:null,duration:0,output:null,hasImage:false,capabilities:['hypit-source','generate_image','generate_video','generate_audio']}:meta.native?nativeProjection(meta,source):parseSource(source,style)),assets:await listAssets(dir),revision:String(meta.version||0)+':'+revision(source,style),history:meta.history.map(({source,style,nativeFiles,native,...h})=>h)};}
-  plan(id,input){return this.exclusive(async()=>{
-    if(!Array.isArray(input.scenes)||input.scenes.length>30||!Number.isFinite(input.duration)||input.duration<1||input.duration>600||!['9:16','16:9','3:4','4:3','1:1','21:9'].includes(input.ratio))throw Error('制作计划规格无效');
-    const scenes=input.scenes.map(s=>{if(!s||typeof s.name!=='string'||!s.name.trim()||!Number.isFinite(s.start)||!Number.isFinite(s.end)||s.start<0||s.end<=s.start||s.end>input.duration)throw Error('镜头计划时间无效');return {...(typeof s.id==='string'?{id:s.id.slice(0,80)}:{}),name:s.name.slice(0,60),start:s.start,end:s.end,visual:String(s.visual||'').slice(0,240),voiceover:String(s.voiceover||'').slice(0,200)};});
-    const file=path.join(this.dir(id),'project.json'),meta=JSON.parse(await fs.readFile(file,'utf8'));meta.productionPlan={...(meta.productionPlan?.referenceId?{referenceId:meta.productionPlan.referenceId,referenceVersion:meta.productionPlan.referenceVersion}:{}),...(input.referenceId?{referenceId:input.referenceId,referenceVersion:input.referenceVersion}:{}),duration:input.duration,ratio:input.ratio,scenes,updated:new Date().toISOString()};await fs.writeFile(file+'.tmp',JSON.stringify(meta,null,2));await fs.rename(file+'.tmp',file);return this.get(id);
+  constructor(dataRoot=path.join(root,'data'),validator) {this.dataRoot=dataRoot;this.queues=new Map();this.corruptProjects=new Map();this.validator=validator||this.validate.bind(this);}
+  exclusive(projectId,fn){
+    let key=projectId;if(typeof projectId==='function'){fn=projectId;key='creation';}else{this.dir(projectId);key=projectId+':'+this.currentVideoId(projectId);}
+    const inherited=heldLocks.getStore();
+    if(inherited?.get(this)?.get(key)?.active)return Promise.resolve().then(fn);
+    const result=(this.queues.get(key)||Promise.resolve()).then(()=>{
+      const held=new Map(inherited||[]),keys=new Map(held.get(this)||[]),token={active:true};keys.set(key,token);held.set(this,keys);
+      return heldLocks.run(held,async()=>{try{return await fn();}finally{token.active=false;}});
+    }),tail=result.catch(()=>{});
+    this.queues.set(key,tail);tail.then(()=>{if(this.queues.get(key)===tail)this.queues.delete(key);});return result;
+  }
+  projectDir(id){if(!/^p-[a-f0-9]{12}$/.test(id)) throw Error('项目不存在');return path.join(this.dataRoot,'projects',id);}
+  currentVideoId(id){this.projectDir(id);return currentVideoId(id);}
+  dir(id){const base=this.projectDir(id),videoId=this.currentVideoId(id);return videoId===DEFAULT_VIDEO_ID?base:path.join(base,'productions',videoId);}
+  async withVideoContext(id,videoId,fn){return withVideoContext(id,videoId,async()=>{
+    try{const [projectRoot,directory]=await Promise.all([fs.realpath(this.projectDir(id)),fs.realpath(this.dir(id))]);if(videoId!==DEFAULT_VIDEO_ID&&directory!==path.join(projectRoot,'productions',videoId))throw Object.assign(Error('视频不属于当前项目'),{status:404});await fs.access(path.join(directory,'project.json'));}catch(error){if(error.code==='ENOENT')throw Object.assign(Error('视频不属于当前项目'),{status:404});throw error;}
+    return fn();
   });}
-  rename(id,input){return this.exclusive(async()=>{
+  async getVideo(id,videoId=DEFAULT_VIDEO_ID){return this.withVideoContext(id,videoId,()=>this.get(id));}
+  async listVideos(id){
+    const entries=[DEFAULT_VIDEO_ID,...(await fs.readdir(path.join(this.projectDir(id),'productions')).catch(error=>{if(error.code==='ENOENT')return [];throw error;})).filter(isManagedProduction)];
+    return Promise.all(entries.map(videoId=>this.getVideo(id,videoId)));
+  }
+  async createVariant(id,{name,parentVideoId=this.currentVideoId(id),difference=''}={}){
+    return this.withVideoContext(id,parentVideoId,()=>this.exclusive(id,async()=>{
+      const parent=await this.get(id),source=this.dir(id),videoId='v-'+crypto.randomBytes(6).toString('hex'),destination=path.join(this.projectDir(id),'productions',videoId),stage=path.join(this.dataRoot,'staging','variant-'+crypto.randomUUID());
+      await fs.mkdir(path.dirname(destination),{recursive:true});
+      try{
+        await fs.cp(source,stage,{recursive:true,filter:file=>{const rel=path.relative(source,file),parts=rel.split(path.sep);return !parts.some(p=>['.hypit','.git','.env','node_modules'].includes(p))&&!parts.includes('assets')&&!parts.includes('pending.json')&&!/^productions\/v-[a-f0-9]{12}(?:\/|$)/.test(rel);}});
+        const meta=JSON.parse(await fs.readFile(path.join(stage,'project.json'),'utf8'));
+        const base=await this.getVideo(id,DEFAULT_VIDEO_ID),versions=await this.listVideos(id);
+        const versionSuffix=' · 版本 '+(versions.length+1),defaultName=base.name.slice(0,50-versionSuffix.length)+versionSuffix;
+        Object.assign(meta,{id,projectId:id,videoId,parentId:parentVideoId,difference:String(difference).slice(0,240),name:String(name??defaultName).slice(0,50),version:0,history:[],messages:[],updated:new Date().toISOString()});
+        await fs.writeFile(path.join(stage,'project.json'),JSON.stringify(meta,null,2));await fs.rename(stage,destination);await materializeProjectAssets(destination);
+        return this.getVideo(id,videoId);
+      }catch(error){await fs.rm(stage,{recursive:true,force:true});await fs.rm(destination,{recursive:true,force:true});throw error;}
+    }));
+  }
+  markCorrupt(id,error){this.corruptProjects.set(id+':'+this.currentVideoId(id),error);}
+  corruptSummary(id,error){return {id,name:'资料损坏 · '+id,corrupt:true,recoveryError:error.message,template:'corrupt',draft:true,updated:error.diagnostic.detectedAt,revision:null,history:[],assets:[],texts:[],shots:[],components:[],audioTracks:[],output:null,duration:0,hasImage:false,capabilities:[]};}
+  async list(){const base=path.join(this.dataRoot,'projects');await fs.mkdir(base,{recursive:true});const dirs=await fs.readdir(base);return (await Promise.all(dirs.filter(x=>/^p-[a-f0-9]{12}$/.test(x)).map(async id=>{try{return await this.getVideo(id);}catch(error){if(!(error instanceof CorruptRecordError))throw error;this.markCorrupt(id,error);return this.corruptSummary(id,error);}}))).sort((a,b)=>b.updated.localeCompare(a.updated));}
+  async get(id){const dir=this.dir(id),videoId=this.currentVideoId(id),corruptKey=id+':'+videoId;if(this.corruptProjects.has(corruptKey))throw this.corruptProjects.get(corruptKey);await fs.stat(dir).catch(error=>{if(error.code==='ENOENT')throw Object.assign(Error('项目不存在'),{status:404});throw error;});let meta;try{meta=await readStoredRecord(path.join(dir,'project.json'),{label:'项目',validate:m=>Boolean(m&&typeof m==='object'&&!Array.isArray(m)&&m.id===id&&typeof m.name==='string'&&typeof m.updated==='string'&&Array.isArray(m.history)&&m.history.every(h=>h&&typeof h==='object'&&!Array.isArray(h))&&(!m.native||typeof m.native==='object'&&!Array.isArray(m.native)))});}catch(error){if(error instanceof CorruptRecordError)this.markCorrupt(id,error);throw error;}await materializeProjectAssets(dir);const [source,style]=await Promise.all([fs.readFile(path.join(dir,'main.svml'),'utf8').catch(e=>{if(e.code==='ENOENT')return '';throw e;}),fs.readFile(path.join(dir,'look.svs'),'utf8').catch(e=>{if(e.code==='ENOENT')return '';throw e;})]);return {...meta,...(meta.productionPlan?{productionPlan:planRoutes(meta.productionPlan)}:{}),id,projectId:id,videoId,parentId:meta.parentId||null,productionPath:videoId===DEFAULT_VIDEO_ID?'.':'productions/'+videoId,...(meta.draft?{template:'draft',draft:true,texts:[],shots:[],components:[],audioTracks:[],music:null,duration:0,output:null,hasImage:false,capabilities:['hypit-source','generate_image','generate_video','generate_audio']}:meta.native?nativeProjection(meta,source):parseSource(source,style)),assets:await listAssets(dir),revision:String(meta.version||0)+':'+revision(source,style),history:meta.history.map(({source,style,nativeFiles,native,...h})=>h)};}
+  plan(id,input){return this.exclusive(id,async()=>{
+    if(!Array.isArray(input.scenes)||input.scenes.length>30||!Number.isFinite(input.duration)||input.duration<1||input.duration>600||!['9:16','16:9','3:4','4:3','1:1','21:9'].includes(input.ratio))throw Error('制作计划规格无效');
+    const file=path.join(this.dir(id),'project.json'),meta=JSON.parse(await fs.readFile(file,'utf8')),routed=planRoutes(input,meta.productionPlan);
+    const scenes=routed.scenes.map((s,index)=>{if(!s||typeof s.name!=='string'||!s.name.trim()||!Number.isFinite(s.start)||!Number.isFinite(s.end)||s.start<0||s.end<=s.start||s.end>input.duration)throw Error('镜头计划时间无效');const prior=s.id?meta.productionPlan?.scenes?.find(scene=>scene.id===s.id):meta.productionPlan?.scenes?.[index];return {...(typeof s.id==='string'?{id:s.id.slice(0,80)}:{}),route:s.route,name:s.name.slice(0,60),start:s.start,end:s.end,visual:String(s.visual||'').slice(0,1600),voiceover:String(s.voiceover||'').slice(0,1000),...productionSceneDetails(s,prior)};});
+    const creative=input.creative===undefined?meta.productionPlan?.creative:productionCreative(input.creative);
+    meta.productionPlan={...(meta.productionPlan?.referenceId?{referenceId:meta.productionPlan.referenceId,referenceVersion:meta.productionPlan.referenceVersion}:{}),...(input.referenceId?{referenceId:input.referenceId,referenceVersion:input.referenceVersion}:{}),...(creative?{creative}:{}),route:routed.route,duration:input.duration,ratio:input.ratio,scenes,updated:new Date().toISOString()};await fs.writeFile(file+'.tmp',JSON.stringify(meta,null,2));await fs.rename(file+'.tmp',file);return this.get(id);
+  });}
+  rename(id,input){return this.exclusive(id,async()=>{
     if(typeof input.name!=='string'||!input.name.trim()||input.name.trim().length>50||/[\x00-\x1f]/.test(input.name))throw Error('项目名称需为 1–50 个字符');
     const dir=this.dir(id),file=path.join(dir,'project.json'),meta=JSON.parse(await fs.readFile(file,'utf8'));
     if(input.expectedName!==meta.name)throw Object.assign(Error('项目名称已更新，请重新打开'),{status:409});
@@ -65,10 +111,10 @@ export class ProjectService {
     await fs.writeFile(temporary,JSON.stringify(meta,null,2));await fs.rename(temporary,file);return this.get(id);
   });}
   async raw(id){const dir=this.dir(id);return {source:await fs.readFile(path.join(dir,'main.svml'),'utf8'),style:await fs.readFile(path.join(dir,'look.svs'),'utf8')};}
-  async create(name,title,template="product"){if(!["product","hypit-chat"].includes(template))throw Error("未知模板");const templateDir=path.join(root,template==="product"?"template":"templates/hypit-chat");return this.exclusive(async()=>{const id='p-'+crypto.randomBytes(6).toString('hex'),dir=this.dir(id);let source=await fs.readFile(path.join(templateDir,'main.svml'),'utf8');const style=await fs.readFile(path.join(templateDir,'look.svs'),'utf8');if(title)source=patchSource(source,style,{type:'text',id:template==='product'?'title':'conversation.title',text:title}).source;await fs.cp(templateDir,dir,{recursive:true,filter:p=>!p.includes('/.hypit')});try{await fs.writeFile(path.join(dir,'main.svml'),source);await fs.writeFile(path.join(dir,'project.json'),JSON.stringify({id,name:String(name||'未命名商品短片').slice(0,50),updated:new Date().toISOString(),version:0,history:[],messages:[]},null,2));return await this.get(id);}catch(e){await fs.rm(dir,{recursive:true,force:true});throw e;}});}
+  async create(name,title,template="product"){if(!["product","hypit-chat"].includes(template))throw Error("未知模板");const templateDir=path.join(root,template==="product"?"template":"templates/hypit-chat");return this.exclusive(async()=>{const id='p-'+crypto.randomBytes(6).toString('hex'),dir=this.dir(id);let source=await fs.readFile(path.join(templateDir,'main.svml'),'utf8');const style=await fs.readFile(path.join(templateDir,'look.svs'),'utf8');if(title)source=patchSource(source,style,{type:'text',id:template==='product'?'title':'conversation.title',text:title}).source;await fs.cp(templateDir,dir,{recursive:true,filter:p=>!p.includes('/.hypit')});try{if(template==='product'){await fs.copyFile(path.join(root,'fonts/FrameSans-Regular.otf'),path.join(dir,'assets/FrameSans-Regular.otf'));await fs.copyFile(path.join(root,'fonts/OFL-NotoSansCJK.txt'),path.join(dir,'assets/OFL-NotoSansCJK.txt'));}await fs.writeFile(path.join(dir,'main.svml'),source);await fs.writeFile(path.join(dir,'project.json'),JSON.stringify({id,name:String(name||'未命名商品短片').slice(0,50),updated:new Date().toISOString(),version:0,history:[],messages:[]},null,2));return await this.get(id);}catch(e){await fs.rm(dir,{recursive:true,force:true});throw e;}});}
   async createBlank(name,brief=''){return this.exclusive(async()=>{const id='p-'+crypto.randomBytes(6).toString('hex'),dir=this.dir(id);await fs.mkdir(path.join(dir,'assets'),{recursive:true});await fs.copyFile(path.join(root,'template/hypit.runtime.json'),path.join(dir,'hypit.runtime.json'));await fs.writeFile(path.join(dir,'main.svml'),'<?svml using="@hypit/markup@1"?>\n<svml>\n</svml>\n');await fs.writeFile(path.join(dir,'look.svs'),'');await fs.writeFile(path.join(dir,'render.svrun'),'<?svml using="@hypit/run-markup@1"?>\n<svrun version="1"><author source="./main.svml"/><target output="final.video"/></svrun>');await fs.writeFile(path.join(dir,'project.json'),JSON.stringify({id,name:String(name||'未命名项目').slice(0,50),brief:String(brief||'').slice(0,4000),draft:true,updated:new Date().toISOString(),version:0,history:[],messages:[]},null,2));return this.get(id);});}
   async validate(dir){try{const meta=JSON.parse(await fs.readFile(path.join(dir,'project.json'),'utf8').catch(()=>'{"native":null}'));await (this.engine?.run||run)(hypit,['check',path.join(dir,meta.native?.run||'main.svml'),'--workspace',dir,'--json'],{timeout:30000,maxBuffer:2e6});}catch(e){let reason;try{reason=JSON.parse(e.stdout).error?.message;}catch{}throw Error(reason||'视频编译失败，请检查修改');}}
-  async commit(id,expected,transform,label){return this.exclusive(async()=>{
+  async commit(id,expected,transform,label){return this.exclusive(id,async()=>{
     const dir=this.dir(id),old=await this.raw(id);if((await this.get(id)).revision!==expected) throw Object.assign(Error('项目已更新，请刷新后重试'),{status:409});
     let next=await transform(old);const restoreDraft=label==='撤销上次修改'&&!!next.draft;const assets=await listAssets(dir),alignments={};for(const a of assets){const task=a.provenance?.taskId;if(task?.startsWith('audio:')){try{const job=JSON.parse(await fs.readFile(path.join(this.dataRoot,'audio-generations',task.slice(6)+'.json'),'utf8'));if(job.alignment)alignments[a.filename]=job.alignment;}catch{}}}next=resolveComponents(next.source,next.style,assets,alignments);if(next.source.includes('@frame/commerce@1'))await fs.cp(path.join(root,'components/commerce'),path.join(dir,'packages/commerce'),{recursive:true});const stage=path.join(this.dataRoot,'staging',crypto.randomUUID());await fs.mkdir(stage,{recursive:true});
     try{await fs.cp(path.join(dir,'assets'),path.join(stage,'assets'),{recursive:true});try{await fs.cp(path.join(dir,'packages'),path.join(stage,'packages'),{recursive:true});}catch(e){if(e.code!=='ENOENT')throw e;}await fs.writeFile(path.join(stage,'main.svml'),next.source);await fs.writeFile(path.join(stage,'look.svs'),next.style);if(!restoreDraft)await this.validator(stage);
@@ -80,7 +126,14 @@ export class ProjectService {
     }finally{await fs.rm(stage,{recursive:true,force:true});}
   });}
   async writePair(dir,value){for(const [name,text] of [['main.svml',value.source],['look.svs',value.style]]){await fs.writeFile(path.join(dir,name+'.tmp'),text);await fs.rename(path.join(dir,name+'.tmp'),path.join(dir,name));}}
-  async recover(){for(const p of await this.list()){const dir=this.dir(p.id);try{const j=JSON.parse(await fs.readFile(path.join(dir,'pending.json'),'utf8'));await this.writePair(dir,j.next);await fs.writeFile(path.join(dir,'project.json'),JSON.stringify(j.meta,null,2));await fs.unlink(path.join(dir,'pending.json'));}catch(e){if(e.code!=='ENOENT')throw e;}}}
+  async recover(){
+    for(const p of await this.list()){
+      const videos=[DEFAULT_VIDEO_ID,...(await fs.readdir(path.join(this.projectDir(p.id),'productions')).catch(error=>{if(error.code==='ENOENT')return [];throw error;})).filter(isManagedProduction)];
+      for(const videoId of videos){if(p.corrupt&&videoId===DEFAULT_VIDEO_ID)continue;await withVideoContext(p.id,videoId,async()=>{
+        const dir=this.dir(p.id);try{const journal=await readStoredRecord(path.join(dir,'pending.json'),{label:'视频恢复记录',allowMissing:true,validate:j=>Boolean(j&&typeof j==='object'&&typeof j.next?.source==='string'&&typeof j.next?.style==='string'&&j.meta?.id===p.id&&Array.isArray(j.meta.history)&&typeof j.meta.name==='string'&&typeof j.meta.updated==='string')});if(!journal)return;await this.writePair(dir,journal.next);await fs.writeFile(path.join(dir,'project.json'),JSON.stringify(journal.meta,null,2));await fs.unlink(path.join(dir,'pending.json'));}catch(error){if(!(error instanceof CorruptRecordError))throw error;this.markCorrupt(p.id,error);}
+      });}
+    }
+  }
   change(id,expected,change){
     const changes=change.type==='batch'?change.changes:[change];
     if(!Array.isArray(changes)||!changes.length||changes.length>16||changes.some(c=>!c||typeof c!=='object'||c.type==='batch'))throw Error('无效的批量修改');

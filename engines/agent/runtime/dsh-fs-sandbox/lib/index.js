@@ -70,9 +70,8 @@ async function isPathUnder(path, root, caseSensitive = process.platform !== "win
 * `@deepseek-ai/dsh-fs` Service Definition. It extends `LocalFileSystem` so all
 * text-storage mechanics — resolve, stat, read/stream, list, the atomic
 * write and the read-match-write edit critical section — are the local
-* implementation's, verbatim; this package adds only the per-call POLICY fence
-* on the two mutations. Reads pass through untouched: every mode permits
-* reading.
+* implementation's, verbatim; this package adds a per-call POLICY fence
+* on mutations and a deployment-owned protected configuration fence on reads.
 *
 * The fence is a policy check in TRUSTED code over a MODEL-CONTROLLED path,
 * NOT a kernel boundary — the operations are the seam's own (open, rename),
@@ -106,6 +105,58 @@ var SandboxedFileSystem = class extends LocalFileSystem {
 	constructor(ctx, config) {
 		super(ctx, config);
 		this.defaultMode = ctx.sandboxPolicy.defaultMode;
+	}
+	/** Private deployment config is never model-readable, including approved write escalations. */
+	async protectedTarget(target) {
+		const policy = this.ctx.sandboxPolicy.resolve();
+		if (!(policy.protectedPaths?.length || policy.protectedPathPatterns?.length)) return target;
+		const fresh = await super.resolve(String(target.targetKey));
+		let denied = (policy.protectedPathPatterns ?? []).some((pattern) => new RegExp(pattern).test(String(fresh.targetKey)));
+		for (const entry of policy.protectedPaths ?? []) {
+			const root = await super.resolve(entry);
+			if (await isPathUnder(String(fresh.targetKey), String(root.targetKey))) {
+				denied = true;
+				break;
+			}
+		}
+		if (denied) throw new FsError("private deployment configuration is unavailable to model tools", "FS_PROTECTED_CONFIG");
+		return {
+			...fresh,
+			displayPath: target.displayPath
+		};
+	}
+	async resolve(path, opts) {
+		return this.protectedTarget(await super.resolve(path, opts));
+	}
+	async stat(target, signal) {
+		return super.stat(await this.protectedTarget(target), signal);
+	}
+	async lstat(path, opts, signal) {
+		await this.resolve(path, opts);
+		return super.lstat(path, opts, signal);
+	}
+	async readText(target, signal) {
+		return super.readText(await this.protectedTarget(target), signal);
+	}
+	async streamText(target, signal) {
+		return super.streamText(await this.protectedTarget(target), signal);
+	}
+	async readBytes(target, signal, maxBytes) {
+		return super.readBytes(await this.protectedTarget(target), signal, maxBytes);
+	}
+	async readByteRange(target, range, signal) {
+		return super.readByteRange(await this.protectedTarget(target), range, signal);
+	}
+	async listDir(target, signal) {
+		const entries = await super.listDir(await this.protectedTarget(target), signal);
+		const visible = [];
+		for (const entry of entries) try {
+			await this.protectedTarget(entry.target);
+			visible.push(entry);
+		} catch (error) {
+			if (!(error instanceof FsError) || error.code !== "FS_PROTECTED_CONFIG") throw error;
+		}
+		return visible;
 	}
 	/** The deployment default mode — the capability fact the tool layer reads to advertise escalation. */
 	get sandboxMode() {

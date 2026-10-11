@@ -105,7 +105,8 @@ export declare function resolveRgPath(): Promise<string>;
  * (`@deepseek-ai/dsh-tool-call-timeout-policy`) and caller cancellation terminate the
  * process tree.
  *
- * The spawn is unconfined (a plain `ctx.subprocess` call), so `--no-config`
+ * A deployment with protected configuration confines the spawn through its
+ * sandbox; ordinary deployments retain the direct subprocess path. `--no-config`
  * is prepended: a host `RIPGREP_CONFIG_PATH` (or `rg.conf` next to the
  * binary) can otherwise inject `--pre` and make ripgrep execute an arbitrary
  * preprocessor for every matched file. The collect dispositions are the

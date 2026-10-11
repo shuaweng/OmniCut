@@ -22,6 +22,8 @@
 import { existsSync } from 'node:fs'
 import { isAbsolute, join, parse, relative, sep } from 'node:path'
 import type { Context } from '@deepseek-ai/cordis'
+import type {} from '@deepseek-ai/dsh-sandbox-policy'
+import type {} from '@deepseek-ai/dsh-sandbox'
 import { HarnessError } from '@deepseek-ai/dsh-llm'
 import { ItemRetainer, TextRetainer } from '@deepseek-ai/dsh-output-retention'
 import type { RetainedItems } from '@deepseek-ai/dsh-output-retention'
@@ -191,7 +193,8 @@ export function resolveRgPath(): Promise<string> {
  * (`@deepseek-ai/dsh-tool-call-timeout-policy`) and caller cancellation terminate the
  * process tree.
  *
- * The spawn is unconfined (a plain `ctx.subprocess` call), so `--no-config`
+ * A deployment with protected configuration confines the spawn through its
+ * sandbox; ordinary deployments retain the direct subprocess path. `--no-config`
  * is prepended: a host `RIPGREP_CONFIG_PATH` (or `rg.conf` next to the
  * binary) can otherwise inject `--pre` and make ripgrep execute an arbitrary
  * preprocessor for every matched file. The collect dispositions are the
@@ -235,8 +238,15 @@ export async function runRipgrep(
   const workdir = cwd ?? process.cwd()
   let handle: SubprocessHandle
   try {
+    let command = [await resolveRgPath(), '--no-config', ...argv]
+    const policy = ctx.get('sandboxPolicy')?.resolve({ ...(exec.agent?.session ? { session: exec.agent.session } : {}) })
+    if (policy && ((policy.protectedPaths?.length ?? 0) || (policy.protectedPathPatterns?.length ?? 0))) {
+      const sandbox = ctx.get('sandbox')
+      if (!sandbox || policy.mode === 'danger-full-access') throw new SearchError('private configuration protection is unavailable for this search', 'SEARCH_FAILED')
+      command = (await sandbox.confine(command, { ...policy, mode: policy.mode }, exec.signal)).argv
+    }
     handle = ctx.subprocess.spawn({
-      argv: [await resolveRgPath(), '--no-config', ...argv],
+      argv: command,
       cwd: workdir,
       stdio: {
         stdin: 'ignore',

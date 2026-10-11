@@ -5,7 +5,7 @@ import {promises as fs} from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import {ProjectService} from '../server/project.mjs';
-import {createAgentBridge} from '../server/agent.mjs';
+import {createAgentBridge} from './fixtures/isolated-agent-bridge.mjs';
 import {TaskRegistry} from '../server/task-registry.mjs';
 
 const delay=ms=>new Promise(resolve=>setTimeout(resolve,ms));
@@ -13,7 +13,7 @@ const messageText=m=>typeof m.content==='string'?m.content:(m.content||[]).filte
 async function until(check,label){for(let i=0;i<400;i++){if(await check())return;await delay(50);}throw Error('等待超时：'+label);}
 
 test('真实 DSH 同项目两对话隔离任务、停止和重启后的原生接续',{timeout:90000},async t=>{
- const data=await fs.mkdtemp(path.join(os.tmpdir(),'frame-conversations-native-'));
+ const data=await fs.realpath(await fs.mkdtemp(path.join(os.tmpdir(),'frame-conversations-native-')));
  const service=new ProjectService(data,async()=>{}),project=await service.createBlank('本地多对话隔离验证');
  const mcp=path.join(data,'mcp.json');await fs.writeFile(mcp,'{"servers":[]}');
  const jobs=new Map(),requests=[],bridges=[];

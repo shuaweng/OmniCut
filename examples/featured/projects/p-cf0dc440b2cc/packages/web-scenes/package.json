@@ -1,0 +1,15 @@
+{
+  "name": "@omnicut/web-scenes",
+  "version": "0.0.2",
+  "private": true,
+  "type": "module",
+  "hypit": {
+    "activation": "./src/activation.js"
+  },
+  "exports": {
+    ".": "./src/render.js"
+  },
+  "dependencies": {
+    "@omnicut/visual-language": "file:../visual-language"
+  }
+}

@@ -1,0 +1,58 @@
+{
+  "id": "p-7934041f904c",
+  "projectId": "p-7934041f904c",
+  "videoId": "v-default",
+  "name": "雅诗兰黛·把从容留给双眸",
+  "brief": "雅诗兰黛·把从容留给双眸",
+  "draft": false,
+  "updated": "2026-10-07T05:50:23.399Z",
+  "version": 5,
+  "history": [],
+  "messages": [],
+  "native": {
+    "author": "main.svml",
+    "run": "render.svrun",
+    "target": "final.video",
+    "output": {
+      "width": 1920,
+      "height": 1080,
+      "fps": 30
+    },
+    "duration": 15
+  },
+  "productionPlan": {
+    "duration": 15,
+    "ratio": "16:9",
+    "updated": "2026-10-07T05:36:17.442Z",
+    "scenes": [
+      {
+        "name": "园林窗影",
+        "start": 0,
+        "end": 5,
+        "visual": "16:9横版空镜：园林窗棂竹影落在素麻窗帘与木质案几，纱帘被风轻拂，自然风声，无人物出镜",
+        "voiceover": ""
+      },
+      {
+        "name": "眼周触感",
+        "start": 5,
+        "end": 9.2,
+        "visual": "眼周与侧脸局部特写，指尖极轻触碰下眼睑，自然侧光，琥珀棕与香槟金色调",
+        "voiceover": ""
+      },
+      {
+        "name": "琥珀棕质地",
+        "start": 9.2,
+        "end": 12.6,
+        "visual": "手旋开琥珀棕眼霜罐，香槟金盖面反光，膏体微距纹理，真实慢速运动，包装按官方商品图",
+        "voiceover": "把从容，留给双眸。"
+      },
+      {
+        "name": "品牌收尾",
+        "start": 12.6,
+        "end": 15,
+        "visual": "雅诗兰黛小棕瓶眼霜官方包装与品牌字标展示，背景与全片琥珀棕调统一",
+        "voiceover": "雅诗兰黛小棕瓶眼霜。"
+      }
+    ]
+  }
+}

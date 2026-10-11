@@ -2140,6 +2140,19 @@ describe('ChatView', () => {
     expect(view.queryByRole('button', { name: '去充值' })).toBeNull()
   })
 
+  it('shows stream idle timeout recovery guidance and keeps the technical cause collapsed', () => {
+    const timeout = { ...turnError(2, 'TIMEOUT'), message: 'pi-ai stream idle timeout after 300000ms' }
+    const h = makeHarness({ nodes: [user(1, 'try'), timeout] })
+    const view = render(<h.ChatView {...h.props} />)
+    expect(view.getByText('模型暂时没有回应，本轮已停止。可以继续当前对话，工程和素材已保留。')).toBeDefined()
+    expect(view.queryByText('本轮运行失败')).toBeNull()
+    const details = view.container.querySelector('details') as HTMLDetailsElement
+    expect(details.open).toBe(false)
+    expect(within(details).getByText('技术原因')).toBeDefined()
+    expect(within(details).getByText(timeout.message)).toBeDefined()
+    expect(within(details).getByText('TIMEOUT')).toBeDefined()
+  })
+
   it('renders the max-tokens notice with localized guidance, distinct from turn errors', () => {
     const h = makeHarness({ nodes: [user(1, 'try'), assistant(2, 'truncated'), turnMaxTokens(3)] })
     const view = render(<h.ChatView {...h.props} />)

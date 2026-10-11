@@ -324,7 +324,10 @@ export class LocalSandboxProvider extends SandboxProvider {
    */
   async confine(argv: readonly string[], policy: SandboxPolicy, signal?: AbortSignal): Promise<ConfinedArgv> {
     signal?.throwIfAborted()
-    policy = { ...policy, workspaceRoot: canonicalPath(policy.workspaceRoot) }
+    policy = { ...policy, workspaceRoot: canonicalPath(policy.workspaceRoot), protectedPaths: (policy.protectedPaths ?? []).map(canonicalPath) }
+    if (((policy.protectedPaths?.length ?? 0) > 0 || (policy.protectedPathPatterns?.length ?? 0) > 0) && (this.internals.platform ?? process.platform) !== 'darwin') {
+      throw new SandboxUnavailableError(policy.mode, 'private configuration read protection requires the Seatbelt backend on this deployment')
+    }
     if (this.runnerCommand !== undefined) {
       return Promise.resolve<ConfinedArgv>({
         argv: [...this.runnerCommand, ...bwrapProfileArgs(policy), '--', ...argv],

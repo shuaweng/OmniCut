@@ -28,7 +28,7 @@ test('原生动效包从项目保存到库，在独立项目更换文字色彩�
  const data=await fs.mkdtemp(path.join(os.tmpdir(),'frame-motion-')),service=new ProjectService(data),engine=new NativeEngine({service,root,hypit,run});service.engine=engine;
  engine.runtime=new NativeRuntime({root,getConfig:async()=>({})});
  const builds=[];t.after(async()=>{for(const dir of builds)await engine.run(hypit,['runtime','down','--workspace',dir,'--runtime',path.join(dir,'hypit.runtime.json'),'--json'],{timeout:10000}).catch(()=>{});await fs.rm(data,{recursive:true,force:true});});
- const builtin=(await engine.motionLibrary.list())[0],a=await service.createBlank('动效复用验证甲');
+ const builtin=(await engine.motionLibrary.list()).find(item=>item.id==='frame--brand-reveal@1.0.0'),a=await service.createBlank('动效复用验证甲');
  const installed=await engine.motionLibrary.use(a.id,builtin.id),aDir=path.join(data,'workspaces',a.id,'hypit');
  const pkgPath=installed.directory.replace(/^hypit\//,''),pkg=JSON.parse(await fs.readFile(path.join(aDir,pkgPath,'package.json'),'utf8'));
  pkg.version='1.0.1';await fs.writeFile(path.join(aDir,pkgPath,'package.json'),JSON.stringify(pkg,null,2));

@@ -1,0 +1,131 @@
+<?svml using="@hypit/markup@1"?>
+<svml>
+  <import as="pipeline" from="@hypit/media-pipeline@1"/>
+  <import as="audio" from="@hypit/audio-track@1"/>
+  <import as="time" from="@hypit/timeline-author@1"/>
+  <import as="space" from="@hypit/spatial@1"/>
+  <import as="asset" from="@hypit/media@1"/>
+  <import as="typo" from="@hypit/typography-track@1"/>
+  <import as="media" from="@hypit/media-track@1"/>
+  <import as="film" from="@hypit/film@1"/>
+  <import as="render" from="@hypit/render-hyperframes@1"/>
+  <import as="look" source="./look.svs"/>
+
+  <time:Clock id="clock" frame-rate="30"/>
+  <time:Timeline id="program" clock={clock} end="30s"/>
+  <space:Canvas id="canvas" width="1920" height="1080"/>
+  <asset:Font id="font" src="./assets/FrameSans-Regular.otf" weight="400" style="normal"/>
+
+  <!-- 画面框：整幅、字幕安全区、品牌字标位 -->
+  <space:Frame id="full-frame" within={canvas} left="0%" top="0%" right="100%" bottom="100%"/>
+  <space:Frame id="caption-frame" within={canvas} left="22%" top="86%" right="78%" bottom="93.5%"/>
+  <space:Frame id="endcard-product-frame" within={canvas} left="50%" top="7%" right="97%" bottom="93%"/>
+  <space:Frame id="claim-frame" within={canvas} left="7%" top="38%" right="48%" bottom="44.5%"/>
+  <space:Frame id="brand-frame" within={canvas} left="7%" top="55.5%" right="48%" bottom="66%"/>
+  <space:Frame id="name-frame" within={canvas} left="7%" top="56%" right="50%" bottom="63%"/>
+
+  <!-- 收尾：官方商品图裁出瓶身 + 暖米色底图 合成静帧 -->
+  <asset:Image id="endcard-file" src="./assets/6ea0ba52-a9eb-41af-aabe-66ec27a1130c.jpg"/>
+  <space:Extent id="endcard-extent" width="2560" height="1440"/>
+
+  <!-- 01/06 商品正面包装镜头（新生成，承担开场与英雄展示） -->
+  <asset:Video id="jar-file" src="./assets/a1107b29-cfdc-41fb-a67a-d701320e19d1.mp4"/>
+  <pipeline:Normalize id="jar-normal" source={jar-file} clock={clock} video="primary-moving" audio="default" span-authority="video"/>
+
+  <!-- 02 园林光斑 -->
+  <asset:Video id="garden-file" src="./assets/8b72e166-6472-4fb8-8912-6829b9288598.mp4"/>
+  <pipeline:Normalize id="garden-normal" source={garden-file} clock={clock} video="primary-moving" audio="default" span-authority="video"/>
+
+  <!-- 03 持瓶局部细节（不看正面包装） -->
+  <asset:Video id="hand-file" src="./assets/317d10a9-4755-4b2d-a354-e274773f2a8c.mp4"/>
+  <pipeline:Normalize id="hand-normal" source={hand-file} clock={clock} video="primary-moving" audio="default" span-authority="video"/>
+
+  <!-- 04 凝霜触感（只取克制短段） -->
+  <asset:Video id="cream-file" src="./assets/089b890c-3c9b-4c27-9940-5a09b5604997.mp4"/>
+  <pipeline:Normalize id="cream-normal" source={cream-file} clock={clock} video="primary-moving" audio="default" span-authority="video"/>
+
+  <!-- 04b 预先剪好的细节片段：凝霜 / 持瓶 / 眼部 / 眼部去异物（均无音轨，只作画面） -->
+  <asset:Video id="cream-cut-file" src="./assets/cut-cream-detail.mp4"/>
+  <pipeline:Normalize id="cream-cut-normal" source={cream-cut-file} clock={clock} video="primary-moving" audio="none" span-authority="video"/>
+  <asset:Video id="hand-cut-file" src="./assets/商品金盖细节.mp4"/>
+  <pipeline:Normalize id="hand-cut-normal" source={hand-cut-file} clock={clock} video="primary-moving" audio="none" span-authority="video"/>
+  <asset:Video id="eye-old-cut-file" src="./assets/cut-eye-detail-shot.mp4"/>
+  <pipeline:Normalize id="eye-old-cut-normal" source={eye-old-cut-file} clock={clock} video="primary-moving" audio="none" span-authority="video"/>
+  <asset:Video id="eye-cut-file" src="./assets/cut-eye-closeup.mp4"/>
+  <pipeline:Normalize id="eye-cut-normal" source={eye-cut-file} clock={clock} video="primary-moving" audio="none" span-authority="video"/>
+
+  <!-- 05 眼部特写（满幅，新生成） -->
+  <asset:Video id="eye-file" src="./assets/6033a082-b781-4354-a138-4c24fc400c4a.mp4"/>
+  <pipeline:Normalize id="eye-normal" source={eye-file} clock={clock} video="primary-moving" audio="default" span-authority="video"/>
+
+  <asset:Video id="hero-tail-file" src="./assets/商品收束镜头.mp4"/>
+  <pipeline:Normalize id="hero-tail" source={hero-tail-file} clock={clock} video="primary-moving" audio="none" span-authority="video"/>
+  <asset:Audio id="master-file" src="./assets/广告混音母带_v2.wav"/>
+  <pipeline:Normalize id="master-normal" source={master-file} clock={clock} video="none" audio="default" span-authority="audio"/>
+  <audio:Track id="master" timeline={program.timeline}><audio:Item id="master-30s" source={master-normal.media} at="0s" for="30s" gain="1"/></audio:Track>
+  <media:Track id="picture" canvas={canvas} timeline={program.timeline}>
+    <media:Item id="shot-open" media={jar-normal.media} frame={full-frame}
+      appearance={look.media.picture} at="0s" for="5.3s"/>
+    <media:Item id="shot-garden" media={garden-normal.media} frame={full-frame}
+      appearance={look.media.picture} at="5.3s" for="3.6s"/>
+    <media:Item id="shot-hand" media={hand-cut-normal.media} frame={full-frame}
+      appearance={look.media.picture} at="8.9s" for="3.3s"/>
+    <media:Item id="shot-cream" media={cream-cut-normal.media} frame={full-frame}
+      appearance={look.media.picture} at="12.2s" for="1.8s"/>
+    <media:Item id="shot-eye" media={eye-cut-normal.media} frame={full-frame}
+      appearance={look.media.picture} at="14s" for="4.8s"/>
+    <media:Item id="shot-hero" media={hero-tail.media} frame={full-frame}
+      appearance={look.media.picture} at="18.8s" for="5.4s"/>
+    <media:Item id="shot-endcard" image={endcard-file} extent={endcard-extent} frame={full-frame}
+      appearance={look.media.endcard} at="24.2s" for="5.8s"/>
+  </media:Track>
+
+  <!-- 声音：极轻环境音 ＋ 一条 30 秒配乐（旁白时压低、句间平滑恢复）＋ 六句对位旁白 -->
+  <asset:Audio id="narration-file" src="./assets/b4db9210-b46e-4322-aa53-6bb23fa9b018.wav"/>
+  <pipeline:Normalize id="narration-normal" source={narration-file} clock={clock} video="none" audio="default" span-authority="audio"/>
+  <asset:Audio id="music-file" src="./assets/连续配乐·旁白避让.wav"/>
+  <pipeline:Normalize id="music-normal" source={music-file} clock={clock} video="none" audio="default" span-authority="audio"/>
+
+
+  <audio:Track id="score" timeline={program.timeline}>
+    <audio:Item id="music-continuous" source={music-normal.media} at="0s" for="30s" gain="1"/>
+  </audio:Track>
+
+  <audio:Track id="voice" timeline={program.timeline}>
+    <audio:Item id="vo-all" source={narration-normal.media} at="0s" for="29.2s"
+      playback="once-start" trim-start="0s" trim-end="29.2s" gain="1.4" fade-in="2f" fade-out="6f"/>
+  </audio:Track>
+
+  <!-- 字幕：小号白字 + 轻阴影，无粗黑底；结尾品牌字标 -->
+  <typo:Style id="caption-style" recipe={look.text.caption} font={font}>
+    <typo:Fill color="#FDFAF5"/>
+    <typo:Shadow x="0" y="2" blur="14" color="#00000073"/>
+  </typo:Style>
+  <typo:Style id="brand-style" recipe={look.text.endcard-brand} font={font}>
+    <typo:Fill color="#3A2C1E"/>
+    <typo:Shadow x="0" y="2" blur="16" color="#FFFFFFB0"/>
+  </typo:Style>
+  <typo:Style id="name-style" recipe={look.text.endcard-name} font={font}>
+    <typo:Fill color="#8A6A3F"/>
+    <typo:Shadow x="0" y="1" blur="12" color="#FFFFFFA0"/>
+  </typo:Style>
+  <typo:Motion id="soft-in">
+    <typo:ItemKeyframe at="0" opacity="0"/>
+    <typo:ItemKeyframe at="8" opacity="1" easing="ease-out"/>
+  </typo:Motion>
+  <typo:Track id="titles" timeline={program.timeline}>
+    <typo:Area id="cap-1" placement={caption-frame} style={caption-style} motion={soft-in} at="0.64s" for="2.43s">从容，是一种选择。</typo:Area>
+    <typo:Area id="cap-2" placement={caption-frame} style={caption-style} motion={soft-in} at="4.33s" for="2.43s">把慢下来的光，留给眼睛。</typo:Area>
+    <typo:Area id="cap-3" placement={caption-frame} style={caption-style} motion={soft-in} at="8.43s" for="2.73s">时间会沉淀，也会发光。</typo:Area>
+    <typo:Area id="cap-4" placement={caption-frame} style={caption-style} motion={soft-in} at="12.5s" for="2.9s">它的质地，像清晨一样安静。</typo:Area>
+    <typo:Area id="cap-5" placement={caption-frame} style={caption-style} motion={soft-in} at="16.15s" for="2.39s">把从容，留给双眸。</typo:Area>
+    <typo:Area id="endcard-claim" placement={claim-frame} style={name-style} motion={soft-in} at="24.4s" for="5.6s">把从容，留给双眸。</typo:Area>
+  </typo:Track>
+
+  <film:Film id="main" canvas={canvas} timeline={program.timeline} appearance={look.film.main}>
+    <film:Track source={picture.visual}/>
+    <film:Track source={titles.track}/>
+    <film:Track source={master.audio}/>
+  </film:Film>
+  <render:Video id="final" composition={main.composition} timeline={program.timeline}/>
+</svml>

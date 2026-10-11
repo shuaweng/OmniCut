@@ -1,0 +1,9 @@
+{
+  "name": "frame-hypit-project",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@frame/dark-keynote": "file:./packages/frame--dark-keynote-1.0.0",
+    "@omnicut/film": "file:./packages/omnicut--film-1.0.0"
+  }
+}

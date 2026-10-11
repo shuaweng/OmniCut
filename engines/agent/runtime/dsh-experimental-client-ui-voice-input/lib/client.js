@@ -4801,8 +4801,8 @@ Set the \`cycles\` parameter to \`"ref"\` to resolve cyclical schemas with defs.
 			}
 		};
 		//#endregion
-		//#region \0dsh-css:/home/runner/work/deepseek-harness/deepseek-harness/packages/experimental/client-ui-voice-input/src/client/VoiceInput.module.css.mjs
-		const css = ".ddpbLW_trigger{flex:none;width:28px;padding:0}.ddpbLW_triggerAnchor{flex:none;display:inline-flex}.ddpbLW_captureRow{align-items:center;gap:12px;width:100%;min-width:0;min-height:34px;display:flex}.ddpbLW_roundButton{corner-shape:round;background:var(--dsw-specific-selector);border-radius:50%;flex:none;width:32px;height:32px;padding:0}.ddpbLW_roundButton:hover:not(:disabled){background:var(--dsw-alias-interactive-bg-hover-solid)}.ddpbLW_waveform{width:0;min-width:24px;height:24px;color:var(--dsw-alias-label-secondary);flex:1;display:block}.ddpbLW_activityMessage{min-width:0;color:var(--dsw-alias-label-secondary);white-space:nowrap;text-overflow:ellipsis;flex:1;align-items:center;gap:8px;font-size:12px;display:flex;overflow:hidden}.ddpbLW_inlineAction{flex:none}.ddpbLW_preparation{border:.5px solid var(--dsw-alias-border-l1);border-radius:10px;flex-direction:column;gap:10px;margin:12px 0;padding:14px;font-size:13px;display:flex}.ddpbLW_preparation p{margin:0}.ddpbLW_preparationActions{gap:8px;display:flex}.ddpbLW_preparationActions:empty{display:none}.ddpbLW_preparationError{color:var(--dsw-alias-state-error-primary);overflow-wrap:anywhere;font-size:12px}.ddpbLW_downloadFailure{overflow-wrap:anywhere;gap:6px;display:grid}.ddpbLW_summaryRow{flex-wrap:wrap;gap:4px;height:auto;min-height:28px}.ddpbLW_summaryTitle{flex:1;min-width:0}.ddpbLW_metric{color:var(--dsw-alias-label-tertiary);font-size:12px}.ddpbLW_progress{width:100%;height:6px;accent-color:var(--dsw-alias-state-business-primary)}.ddpbLW_steps{flex-direction:column;gap:14px;margin:0;padding:16px 0 2px;list-style:none;display:flex}.ddpbLW_steps li{align-items:flex-start;gap:10px;line-height:18px;display:flex}.ddpbLW_steps li>:first-child{margin-top:1px}.ddpbLW_steps li[data-step-state=pending]{color:var(--dsw-alias-label-tertiary)}.ddpbLW_stepBody{flex:1;min-width:0}.ddpbLW_stepProgress{flex-direction:column;gap:6px;margin-top:6px;display:flex}.ddpbLW_stepProgress small{color:var(--dsw-alias-label-tertiary);overflow-wrap:anywhere;font-size:11px}.ddpbLW_preferences{gap:12px;margin:18px 0;font-size:13px;display:grid}.ddpbLW_preferences label,.ddpbLW_sourceChoice label{grid-template-columns:100px minmax(120px,280px);align-items:center;gap:12px;display:grid}.ddpbLW_preferences select,.ddpbLW_sourceChoice select{border:.5px solid var(--dsw-alias-border-l1);color:inherit;font:inherit;background:0 0;border-radius:6px;padding:6px 10px}.ddpbLW_sourceChoice{gap:6px;display:grid}.ddpbLW_preferences p{margin:0}.ddpbLW_settingsCard{border:.5px solid var(--dsw-alias-border-l1);border-radius:10px;padding:16px;list-style:none}.ddpbLW_settingsCard>p{color:var(--dsw-alias-label-secondary);margin:8px 0 0;font-size:13px}.ddpbLW_setupEstimate{background:var(--dsw-alias-interactive-bg-hover);color:var(--dsw-alias-label-secondary);border-radius:8px;gap:10px;padding:12px;line-height:1.6;display:grid}.ddpbLW_setupEstimate dl{gap:6px;margin:0;display:grid}.ddpbLW_setupEstimate dl>div{grid-template-columns:72px minmax(0,1fr);gap:10px;display:grid}.ddpbLW_setupEstimate dt{color:var(--dsw-alias-label-tertiary)}.ddpbLW_setupEstimate dd{margin:0}.ddpbLW_setupEstimate small{color:var(--dsw-alias-label-tertiary);font-size:12px}";
+		//#region \0dsh-css:/Users/wotar/Desktop/视频Agent/frame/engines/agent/source/packages/experimental/client-ui-voice-input/src/client/VoiceInput.module.css.mjs
+		const css = ".W2I2dW_trigger{flex:none;width:28px;padding:0}.W2I2dW_triggerAnchor{flex:none;display:inline-flex}.W2I2dW_captureRow{align-items:center;gap:12px;width:100%;min-width:0;min-height:34px;display:flex}.W2I2dW_roundButton{corner-shape:round;background:var(--dsw-specific-selector);border-radius:50%;flex:none;width:32px;height:32px;padding:0}.W2I2dW_roundButton:hover:not(:disabled){background:var(--dsw-alias-interactive-bg-hover-solid)}.W2I2dW_waveform{width:0;min-width:24px;height:24px;color:var(--dsw-alias-label-secondary);flex:1;display:block}.W2I2dW_activityMessage{min-width:0;color:var(--dsw-alias-label-secondary);white-space:nowrap;text-overflow:ellipsis;flex:1;align-items:center;gap:8px;font-size:12px;display:flex;overflow:hidden}.W2I2dW_inlineAction{flex:none}.W2I2dW_preparation{border:.5px solid var(--dsw-alias-border-l1);border-radius:10px;flex-direction:column;gap:10px;margin:12px 0;padding:14px;font-size:13px;display:flex}.W2I2dW_preparation p{margin:0}.W2I2dW_preparationActions{gap:8px;display:flex}.W2I2dW_preparationActions:empty{display:none}.W2I2dW_preparationError{color:var(--dsw-alias-state-error-primary);overflow-wrap:anywhere;font-size:12px}.W2I2dW_downloadFailure{overflow-wrap:anywhere;gap:6px;display:grid}.W2I2dW_summaryRow{flex-wrap:wrap;gap:4px;height:auto;min-height:28px}.W2I2dW_summaryTitle{flex:1;min-width:0}.W2I2dW_metric{color:var(--dsw-alias-label-tertiary);font-size:12px}.W2I2dW_progress{width:100%;height:6px;accent-color:var(--dsw-alias-state-business-primary)}.W2I2dW_steps{flex-direction:column;gap:14px;margin:0;padding:16px 0 2px;list-style:none;display:flex}.W2I2dW_steps li{align-items:flex-start;gap:10px;line-height:18px;display:flex}.W2I2dW_steps li>:first-child{margin-top:1px}.W2I2dW_steps li[data-step-state=pending]{color:var(--dsw-alias-label-tertiary)}.W2I2dW_stepBody{flex:1;min-width:0}.W2I2dW_stepProgress{flex-direction:column;gap:6px;margin-top:6px;display:flex}.W2I2dW_stepProgress small{color:var(--dsw-alias-label-tertiary);overflow-wrap:anywhere;font-size:11px}.W2I2dW_preferences{gap:12px;margin:18px 0;font-size:13px;display:grid}.W2I2dW_preferences label,.W2I2dW_sourceChoice label{grid-template-columns:100px minmax(120px,280px);align-items:center;gap:12px;display:grid}.W2I2dW_preferences select,.W2I2dW_sourceChoice select{border:.5px solid var(--dsw-alias-border-l1);color:inherit;font:inherit;background:0 0;border-radius:6px;padding:6px 10px}.W2I2dW_sourceChoice{gap:6px;display:grid}.W2I2dW_preferences p{margin:0}.W2I2dW_settingsCard{border:.5px solid var(--dsw-alias-border-l1);border-radius:10px;padding:16px;list-style:none}.W2I2dW_settingsCard>p{color:var(--dsw-alias-label-secondary);margin:8px 0 0;font-size:13px}.W2I2dW_setupEstimate{background:var(--dsw-alias-interactive-bg-hover);color:var(--dsw-alias-label-secondary);border-radius:8px;gap:10px;padding:12px;line-height:1.6;display:grid}.W2I2dW_setupEstimate dl{gap:6px;margin:0;display:grid}.W2I2dW_setupEstimate dl>div{grid-template-columns:72px minmax(0,1fr);gap:10px;display:grid}.W2I2dW_setupEstimate dt{color:var(--dsw-alias-label-tertiary)}.W2I2dW_setupEstimate dd{margin:0}.W2I2dW_setupEstimate small{color:var(--dsw-alias-label-tertiary);font-size:12px}";
 		const tagId = "@deepseek-ai/dsh-experimental-client-ui-voice-input/VoiceInput.module.css";
 		if (typeof document !== "undefined" && document.querySelector("style[data-plugin-css=" + JSON.stringify(tagId) + "]") === null) {
 			const tag = document.createElement("style");
@@ -4812,28 +4812,28 @@ Set the \`cycles\` parameter to \`"ref"\` to resolve cyclical schemas with defs.
 			document.head.appendChild(tag);
 		}
 		var VoiceInput_module_css_default = {
-			"activityMessage": "ddpbLW_activityMessage",
-			"captureRow": "ddpbLW_captureRow",
-			"downloadFailure": "ddpbLW_downloadFailure",
-			"inlineAction": "ddpbLW_inlineAction",
-			"metric": "ddpbLW_metric",
-			"preferences": "ddpbLW_preferences",
-			"preparation": "ddpbLW_preparation",
-			"preparationActions": "ddpbLW_preparationActions",
-			"preparationError": "ddpbLW_preparationError",
-			"progress": "ddpbLW_progress",
-			"roundButton": "ddpbLW_roundButton",
-			"settingsCard": "ddpbLW_settingsCard",
-			"setupEstimate": "ddpbLW_setupEstimate",
-			"sourceChoice": "ddpbLW_sourceChoice",
-			"stepBody": "ddpbLW_stepBody",
-			"stepProgress": "ddpbLW_stepProgress",
-			"steps": "ddpbLW_steps",
-			"summaryRow": "ddpbLW_summaryRow",
-			"summaryTitle": "ddpbLW_summaryTitle",
-			"trigger": "ddpbLW_trigger",
-			"triggerAnchor": "ddpbLW_triggerAnchor",
-			"waveform": "ddpbLW_waveform"
+			"activityMessage": "W2I2dW_activityMessage",
+			"captureRow": "W2I2dW_captureRow",
+			"downloadFailure": "W2I2dW_downloadFailure",
+			"inlineAction": "W2I2dW_inlineAction",
+			"metric": "W2I2dW_metric",
+			"preferences": "W2I2dW_preferences",
+			"preparation": "W2I2dW_preparation",
+			"preparationActions": "W2I2dW_preparationActions",
+			"preparationError": "W2I2dW_preparationError",
+			"progress": "W2I2dW_progress",
+			"roundButton": "W2I2dW_roundButton",
+			"settingsCard": "W2I2dW_settingsCard",
+			"setupEstimate": "W2I2dW_setupEstimate",
+			"sourceChoice": "W2I2dW_sourceChoice",
+			"stepBody": "W2I2dW_stepBody",
+			"stepProgress": "W2I2dW_stepProgress",
+			"steps": "W2I2dW_steps",
+			"summaryRow": "W2I2dW_summaryRow",
+			"summaryTitle": "W2I2dW_summaryTitle",
+			"trigger": "W2I2dW_trigger",
+			"triggerAnchor": "W2I2dW_triggerAnchor",
+			"waveform": "W2I2dW_waveform"
 		};
 		//#endregion
 		//#region lib/types/client/Waveform.js

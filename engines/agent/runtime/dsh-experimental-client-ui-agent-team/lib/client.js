@@ -8,8 +8,8 @@ window.__ModuleLoader__.load({
 		let react = require("react");
 		let react_dom = require("react-dom");
 		let _deepseek_ai_dsh_client_ui_primitives = require("@deepseek-ai/dsh-client-ui-primitives");
-		//#region \0dsh-css:/home/runner/work/deepseek-harness/deepseek-harness/packages/experimental/client-ui-agent-team/src/client/TeamAction.module.css.mjs
-		const css = ".VoX2oq_root{position:relative}.VoX2oq_trigger{min-height:28px;color:var(--dsw-alias-label-tertiary);cursor:pointer;background:0 0;border:0;border-radius:6px;align-items:center;gap:5px;padding:3px 7px;font-size:12px;display:inline-flex}.VoX2oq_trigger:hover,.VoX2oq_trigger:focus-visible{color:var(--dsw-alias-label-primary)}@container (width<=480px){.VoX2oq_triggerLabel{display:none}}.VoX2oq_count{color:var(--dsw-alias-label-caption);font-variant-numeric:tabular-nums;font-size:12px;font-weight:400;line-height:16px}.VoX2oq_panel{--dsh-scrollbar-thumb:var(--dsw-alias-scrollbar-bg-l2);--dsh-scrollbar-thumb-hover:var(--dsw-alias-scrollbar-hover-l2);z-index:100;box-sizing:border-box;--dsw-elevation-stroke-color:var(--dsw-alias-border-l1);width:min(500px,100vw - 32px);max-height:min(680px,100vh - 32px);box-shadow:var(--dsw-elevation-prominent);border:0;border-radius:12px;flex-direction:column;padding:8px 2px 0;display:flex;position:fixed;overflow:hidden}.VoX2oq_panel:before{content:\"\";z-index:-1;background:var(--dsw-specific-menu);backdrop-filter:var(--dsw-menu-backdrop-filter);border-radius:12px;position:absolute;inset:0}.VoX2oq_panelCompact{width:min(320px,100vw - 32px)}.VoX2oq_panelCompact .VoX2oq_roster{grid-template-columns:minmax(0,1fr)}.VoX2oq_body{--dsh-scrollbar-track-margin:8px;scrollbar-gutter:stable;flex:auto;min-height:0;padding:0 9px 16px 14px;overflow-y:auto}.VoX2oq_taskTitle{align-items:center;gap:8px;display:flex}.VoX2oq_taskTitle strong{font-size:13px;font-weight:500}.VoX2oq_panel h3{color:var(--dsw-alias-label-primary);align-items:center;gap:8px;margin:16px 0 8px 4px;font-size:13px;font-weight:500;display:flex}.VoX2oq_body section:first-of-type h3{margin-top:8px}.VoX2oq_roster{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;display:grid}.VoX2oq_member{--dsw-elevation-stroke-color:var(--dsw-alias-border-l2);min-width:0;box-shadow:var(--dsw-elevation-stroke);background:var(--dsw-alias-bg-layer-2);color:var(--dsw-alias-label-primary);text-align:left;cursor:pointer;border:0;border-radius:8px;align-items:flex-start;gap:8px;padding:10px 12px;display:flex}.VoX2oq_member:disabled{cursor:default}.VoX2oq_memberCurrent{--dsw-elevation-stroke-color:color-mix(in srgb, var(--dsw-alias-state-business-primary) 40%, transparent);box-shadow:var(--dsw-elevation-stroke), inset 0 0 0 1px color-mix(in srgb, var(--dsw-alias-state-business-primary) 40%, transparent)}.VoX2oq_member:not(:disabled):hover,.VoX2oq_member:not(:disabled):focus-visible{--dsw-elevation-stroke-color:var(--dsw-alias-border-l3);box-shadow:var(--dsw-elevation-panel)}.VoX2oq_memberDot{flex:none;align-items:center;height:1lh;display:inline-flex}.VoX2oq_inactiveIcon{color:var(--dsw-alias-label-tertiary)}.VoX2oq_memberText{flex-direction:column;min-width:0;display:flex}.VoX2oq_memberName{align-items:center;gap:5px;min-width:0;display:inline-flex}.VoX2oq_memberNameText,.VoX2oq_memberText small{white-space:nowrap;text-overflow:ellipsis;overflow:hidden}.VoX2oq_memberModel{display:none}.VoX2oq_member:hover .VoX2oq_memberModel,.VoX2oq_member:focus-visible .VoX2oq_memberModel{display:inline}.VoX2oq_currentTag{text-overflow:ellipsis;flex:0 999 auto;min-width:0;padding:0 4px;font-size:10px;line-height:15px;display:inline-block;overflow:hidden}.VoX2oq_memberText small,.VoX2oq_meta{color:var(--dsw-alias-label-tertiary);font-size:11px}.VoX2oq_diagnostic,.VoX2oq_error,.VoX2oq_warning{color:var(--dsw-alias-state-error-primary)}.VoX2oq_tasks{flex-direction:column;gap:7px;display:flex}.VoX2oq_emptyNotice{color:var(--dsw-alias-label-tertiary);margin:16px 0 0 4px;font-size:12px}.VoX2oq_task{border:.5px solid var(--dsw-alias-border-l2);background:var(--dsw-alias-bg-layer-2);border-radius:9px;padding:11px 13px}.VoX2oq_taskState{color:var(--dsw-alias-label-tertiary);align-items:center;gap:6px;margin-left:auto;font-size:11px;display:inline-flex}.VoX2oq_task p{color:var(--dsw-alias-label-secondary);white-space:pre-wrap;margin:5px 0;font-size:12px;line-height:18px}.VoX2oq_clampedDescription{-webkit-line-clamp:2;-webkit-box-orient:vertical;display:-webkit-box;overflow:hidden}.VoX2oq_expandToggle{float:right;color:var(--dsw-alias-label-tertiary);cursor:pointer;background:0 0;border:0;align-items:center;gap:2px;margin-left:10px;padding:0;font-size:11px;line-height:20px;display:inline-flex}.VoX2oq_expandToggle:hover,.VoX2oq_expandToggle:focus-visible{color:var(--dsw-alias-label-primary)}.VoX2oq_expandToggle svg{transition:transform .12s}.VoX2oq_expandToggleOpen{transform:rotate(180deg)}.VoX2oq_meta{line-height:20px}.VoX2oq_meta>span{margin-right:10px}.VoX2oq_notice,.VoX2oq_error{align-items:center;gap:6px;padding:9px;font-size:12px;display:flex}";
+		//#region \0dsh-css:/Users/wotar/Desktop/视频Agent/frame/engines/agent/source/packages/experimental/client-ui-agent-team/src/client/TeamAction.module.css.mjs
+		const css = ".SjB2SW_root{position:relative}.SjB2SW_trigger{min-height:28px;color:var(--dsw-alias-label-tertiary);cursor:pointer;background:0 0;border:0;border-radius:6px;align-items:center;gap:5px;padding:3px 7px;font-size:12px;display:inline-flex}.SjB2SW_trigger:hover,.SjB2SW_trigger:focus-visible{color:var(--dsw-alias-label-primary)}@container (width<=480px){.SjB2SW_triggerLabel{display:none}}.SjB2SW_count{color:var(--dsw-alias-label-caption);font-variant-numeric:tabular-nums;font-size:12px;font-weight:400;line-height:16px}.SjB2SW_panel{--dsh-scrollbar-thumb:var(--dsw-alias-scrollbar-bg-l2);--dsh-scrollbar-thumb-hover:var(--dsw-alias-scrollbar-hover-l2);z-index:100;box-sizing:border-box;--dsw-elevation-stroke-color:var(--dsw-alias-border-l1);width:min(500px,100vw - 32px);max-height:min(680px,100vh - 32px);box-shadow:var(--dsw-elevation-prominent);border:0;border-radius:12px;flex-direction:column;padding:8px 2px 0;display:flex;position:fixed;overflow:hidden}.SjB2SW_panel:before{content:\"\";z-index:-1;background:var(--dsw-specific-menu);backdrop-filter:var(--dsw-menu-backdrop-filter);border-radius:12px;position:absolute;inset:0}.SjB2SW_panelCompact{width:min(320px,100vw - 32px)}.SjB2SW_panelCompact .SjB2SW_roster{grid-template-columns:minmax(0,1fr)}.SjB2SW_body{--dsh-scrollbar-track-margin:8px;scrollbar-gutter:stable;flex:auto;min-height:0;padding:0 9px 16px 14px;overflow-y:auto}.SjB2SW_taskTitle{align-items:center;gap:8px;display:flex}.SjB2SW_taskTitle strong{font-size:13px;font-weight:500}.SjB2SW_panel h3{color:var(--dsw-alias-label-primary);align-items:center;gap:8px;margin:16px 0 8px 4px;font-size:13px;font-weight:500;display:flex}.SjB2SW_body section:first-of-type h3{margin-top:8px}.SjB2SW_roster{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;display:grid}.SjB2SW_member{--dsw-elevation-stroke-color:var(--dsw-alias-border-l2);min-width:0;box-shadow:var(--dsw-elevation-stroke);background:var(--dsw-alias-bg-layer-2);color:var(--dsw-alias-label-primary);text-align:left;cursor:pointer;border:0;border-radius:8px;align-items:flex-start;gap:8px;padding:10px 12px;display:flex}.SjB2SW_member:disabled{cursor:default}.SjB2SW_memberCurrent{--dsw-elevation-stroke-color:color-mix(in srgb, var(--dsw-alias-state-business-primary) 40%, transparent);box-shadow:var(--dsw-elevation-stroke), inset 0 0 0 1px color-mix(in srgb, var(--dsw-alias-state-business-primary) 40%, transparent)}.SjB2SW_member:not(:disabled):hover,.SjB2SW_member:not(:disabled):focus-visible{--dsw-elevation-stroke-color:var(--dsw-alias-border-l3);box-shadow:var(--dsw-elevation-panel)}.SjB2SW_memberDot{flex:none;align-items:center;height:1lh;display:inline-flex}.SjB2SW_inactiveIcon{color:var(--dsw-alias-label-tertiary)}.SjB2SW_memberText{flex-direction:column;min-width:0;display:flex}.SjB2SW_memberName{align-items:center;gap:5px;min-width:0;display:inline-flex}.SjB2SW_memberNameText,.SjB2SW_memberText small{white-space:nowrap;text-overflow:ellipsis;overflow:hidden}.SjB2SW_memberModel{display:none}.SjB2SW_member:hover .SjB2SW_memberModel,.SjB2SW_member:focus-visible .SjB2SW_memberModel{display:inline}.SjB2SW_currentTag{text-overflow:ellipsis;flex:0 999 auto;min-width:0;padding:0 4px;font-size:10px;line-height:15px;display:inline-block;overflow:hidden}.SjB2SW_memberText small,.SjB2SW_meta{color:var(--dsw-alias-label-tertiary);font-size:11px}.SjB2SW_diagnostic,.SjB2SW_error,.SjB2SW_warning{color:var(--dsw-alias-state-error-primary)}.SjB2SW_tasks{flex-direction:column;gap:7px;display:flex}.SjB2SW_emptyNotice{color:var(--dsw-alias-label-tertiary);margin:16px 0 0 4px;font-size:12px}.SjB2SW_task{border:.5px solid var(--dsw-alias-border-l2);background:var(--dsw-alias-bg-layer-2);border-radius:9px;padding:11px 13px}.SjB2SW_taskState{color:var(--dsw-alias-label-tertiary);align-items:center;gap:6px;margin-left:auto;font-size:11px;display:inline-flex}.SjB2SW_task p{color:var(--dsw-alias-label-secondary);white-space:pre-wrap;margin:5px 0;font-size:12px;line-height:18px}.SjB2SW_clampedDescription{-webkit-line-clamp:2;-webkit-box-orient:vertical;display:-webkit-box;overflow:hidden}.SjB2SW_expandToggle{float:right;color:var(--dsw-alias-label-tertiary);cursor:pointer;background:0 0;border:0;align-items:center;gap:2px;margin-left:10px;padding:0;font-size:11px;line-height:20px;display:inline-flex}.SjB2SW_expandToggle:hover,.SjB2SW_expandToggle:focus-visible{color:var(--dsw-alias-label-primary)}.SjB2SW_expandToggle svg{transition:transform .12s}.SjB2SW_expandToggleOpen{transform:rotate(180deg)}.SjB2SW_meta{line-height:20px}.SjB2SW_meta>span{margin-right:10px}.SjB2SW_notice,.SjB2SW_error{align-items:center;gap:6px;padding:9px;font-size:12px;display:flex}";
 		const tagId = "@deepseek-ai/dsh-experimental-client-ui-agent-team/TeamAction.module.css";
 		if (typeof document !== "undefined" && document.querySelector("style[data-plugin-css=" + JSON.stringify(tagId) + "]") === null) {
 			const tag = document.createElement("style");
@@ -19,36 +19,36 @@ window.__ModuleLoader__.load({
 			document.head.appendChild(tag);
 		}
 		var TeamAction_module_css_default = {
-			"body": "VoX2oq_body",
-			"clampedDescription": "VoX2oq_clampedDescription",
-			"count": "VoX2oq_count",
-			"currentTag": "VoX2oq_currentTag",
-			"diagnostic": "VoX2oq_diagnostic",
-			"emptyNotice": "VoX2oq_emptyNotice",
-			"error": "VoX2oq_error",
-			"expandToggle": "VoX2oq_expandToggle",
-			"expandToggleOpen": "VoX2oq_expandToggleOpen",
-			"inactiveIcon": "VoX2oq_inactiveIcon",
-			"member": "VoX2oq_member",
-			"memberCurrent": "VoX2oq_memberCurrent",
-			"memberDot": "VoX2oq_memberDot",
-			"memberModel": "VoX2oq_memberModel",
-			"memberName": "VoX2oq_memberName",
-			"memberNameText": "VoX2oq_memberNameText",
-			"memberText": "VoX2oq_memberText",
-			"meta": "VoX2oq_meta",
-			"notice": "VoX2oq_notice",
-			"panel": "VoX2oq_panel",
-			"panelCompact": "VoX2oq_panelCompact",
-			"root": "VoX2oq_root",
-			"roster": "VoX2oq_roster",
-			"task": "VoX2oq_task",
-			"taskState": "VoX2oq_taskState",
-			"taskTitle": "VoX2oq_taskTitle",
-			"tasks": "VoX2oq_tasks",
-			"trigger": "VoX2oq_trigger",
-			"triggerLabel": "VoX2oq_triggerLabel",
-			"warning": "VoX2oq_warning"
+			"body": "SjB2SW_body",
+			"clampedDescription": "SjB2SW_clampedDescription",
+			"count": "SjB2SW_count",
+			"currentTag": "SjB2SW_currentTag",
+			"diagnostic": "SjB2SW_diagnostic",
+			"emptyNotice": "SjB2SW_emptyNotice",
+			"error": "SjB2SW_error",
+			"expandToggle": "SjB2SW_expandToggle",
+			"expandToggleOpen": "SjB2SW_expandToggleOpen",
+			"inactiveIcon": "SjB2SW_inactiveIcon",
+			"member": "SjB2SW_member",
+			"memberCurrent": "SjB2SW_memberCurrent",
+			"memberDot": "SjB2SW_memberDot",
+			"memberModel": "SjB2SW_memberModel",
+			"memberName": "SjB2SW_memberName",
+			"memberNameText": "SjB2SW_memberNameText",
+			"memberText": "SjB2SW_memberText",
+			"meta": "SjB2SW_meta",
+			"notice": "SjB2SW_notice",
+			"panel": "SjB2SW_panel",
+			"panelCompact": "SjB2SW_panelCompact",
+			"root": "SjB2SW_root",
+			"roster": "SjB2SW_roster",
+			"task": "SjB2SW_task",
+			"taskState": "SjB2SW_taskState",
+			"taskTitle": "SjB2SW_taskTitle",
+			"tasks": "SjB2SW_tasks",
+			"trigger": "SjB2SW_trigger",
+			"triggerLabel": "SjB2SW_triggerLabel",
+			"warning": "SjB2SW_warning"
 		};
 		//#endregion
 		//#region lib/types/client/TeamAction.js

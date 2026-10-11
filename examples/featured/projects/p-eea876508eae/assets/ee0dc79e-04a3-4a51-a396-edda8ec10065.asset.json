@@ -1,0 +1,15 @@
+{
+  "id": "ee0dc79e-04a3-4a51-a396-edda8ec10065",
+  "filename": "ee0dc79e-04a3-4a51-a396-edda8ec10065.wav",
+  "name": "背景配乐.wav",
+  "kind": "audio",
+  "duration": 61,
+  "width": null,
+  "height": null,
+  "hasAudio": true,
+  "created": "2026-10-10T11:40:01.098Z",
+  "provenance": {
+    "provider": "featured",
+    "sourcePath": "assets/omnicut-music-ducked.wav"
+  }
+}

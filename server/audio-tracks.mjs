@@ -32,7 +32,16 @@ export function renderAudioTracks(source,style,tracks){
  const films=tracks.map(t=>`<film:Track source={${t.id}-track.audio}/>`).join('\n');
  for(const [key,value,anchor] of [['FRAME_AUDIO',declarations,'<typo:Style id="title-style"'],['FRAME_AUDIO_FILM',films,'</film:Film>']]){
   const block=`<!-- ${key}_START -->\n${value}\n<!-- ${key}_END -->`,re=new RegExp(`<!-- ${key}_START -->[\\s\\S]*?<!-- ${key}_END -->`);
-  if(re.test(source))source=source.replace(re,()=>block);else if(source.includes(anchor))source=source.replace(anchor,()=>block+'\n'+anchor);else throw Error('当前模板缺少声音插槽');
+  if(re.test(source)){source=source.replace(re,()=>block);continue;}
+  if(key==='FRAME_AUDIO'&&source.includes(anchor)){source=source.replace(anchor,()=>block+'\n'+anchor);continue;}
+  // Code-authored films need no typography template. Use their sole Film as
+  // the insertion boundary, while explicit existing slots keep their location.
+  // Ignore commented examples without changing source offsets.
+  const active=source.replace(/<!--[\s\S]*?-->/g,comment=>' '.repeat(comment.length));
+  const openings=[...active.matchAll(/<film:Film\b[^>]*>/g)],closings=[...active.matchAll(/<\/film:Film\s*>/g)];
+  if(openings.length!==1||closings.length!==1||openings[0].index>=closings[0].index)throw Error('当前工程没有唯一的 Film 声音插槽；请在目标 Film 中明确设置 FRAME_AUDIO_FILM 标记');
+  const index=key==='FRAME_AUDIO'?openings[0].index:closings[0].index;
+  source=source.slice(0,index)+block+'\n'+source.slice(index);
  }
  return {source,style};
 }

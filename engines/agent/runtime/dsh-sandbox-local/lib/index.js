@@ -71,6 +71,9 @@ function seatbeltProfileArgs(policy) {
 	];
 	const roots = writableRoots(policy);
 	if (roots.length > 0) forms.push(`(allow file-write* ${roots.map((root) => `(subpath ${sbplString(root)})`).join(" ")})`);
+	if (policy.protectedPaths?.length || policy.protectedPathPatterns?.length) forms.push("(deny process-info* (target others))");
+	for (const path of policy.protectedPaths ?? []) forms.push(`(deny file-read* file-write* (subpath ${sbplString(path)}))`);
+	for (const pattern of policy.protectedPathPatterns ?? []) forms.push(`(deny file-read* file-write* (regex ${sbplString(pattern)}))`);
 	return ["-p", forms.join(" ")];
 }
 //#endregion
@@ -306,8 +309,10 @@ var LocalSandboxProvider = class extends SandboxProvider {
 		signal?.throwIfAborted();
 		policy = {
 			...policy,
-			workspaceRoot: canonicalPath(policy.workspaceRoot)
+			workspaceRoot: canonicalPath(policy.workspaceRoot),
+			protectedPaths: (policy.protectedPaths ?? []).map(canonicalPath)
 		};
+		if (((policy.protectedPaths?.length ?? 0) > 0 || (policy.protectedPathPatterns?.length ?? 0) > 0) && (this.internals.platform ?? process.platform) !== "darwin") throw new SandboxUnavailableError(policy.mode, "private configuration read protection requires the Seatbelt backend on this deployment");
 		if (this.runnerCommand !== void 0) return Promise.resolve({
 			argv: [
 				...this.runnerCommand,

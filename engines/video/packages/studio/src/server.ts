@@ -1,3 +1,4 @@
+import { createHash } from "node:crypto";
 import { watch } from "node:fs";
 import type { FSWatcher } from "node:fs";
 import { existsSync } from "node:fs";
@@ -33,6 +34,18 @@ export type StudioPluginOptions = {
   readonly workspaceRoot: string;
   readonly buildLibrary?: StudioBuildLibrary;
 };
+
+// Resource ids are minted per compile, so a recompiled film names unchanged
+// media anew. A content tag lets a client reuse bytes it already holds.
+const materialTags = new WeakMap<Uint8Array, string>();
+export function materialTag(bytes: Uint8Array): string {
+  let tag = materialTags.get(bytes);
+  if (tag === undefined) {
+    tag = `"${createHash("sha256").update(bytes).digest("base64url")}"`;
+    materialTags.set(bytes, tag);
+  }
+  return tag;
+}
 
 function json(response: import("node:http").ServerResponse, status: number, value: unknown): void {
   response.statusCode = status;
@@ -558,6 +571,30 @@ export function studioPlugin(options: StudioPluginOptions): Plugin {
           })();
           return;
         }
+        if (request.method === "POST" && url.pathname === "/__studio/refresh") {
+          // A Host that rewrote Source outside Studio asks for one publish of the
+          // files as they are now, instead of restarting the whole Studio process.
+          if (!allowsStudioMutation(request.headers)) {
+            json(response, 403, { error: "Cross-origin Studio refreshes are prohibited." });
+            return;
+          }
+          void (async () => {
+            if (timer !== undefined) clearTimeout(timer);
+            timer = undefined;
+            const attempt = ++requestedRevision;
+            await publish(attempt);
+            // A file event may have superseded this attempt; answer after the
+            // newest publish so the Host never reads a snapshot older than disk.
+            const deadline = Date.now() + 60_000;
+            while ((publishing > 0 || timer !== undefined) && Date.now() < deadline) {
+              await new Promise((done) => setTimeout(done, 25));
+            }
+            if (failure !== undefined && failure.revision >= attempt
+              && (snapshot === undefined || failure.revision > snapshot.revision)) json(response, 500, failure);
+            else json(response, 200, { revision });
+          })();
+          return;
+        }
         if (request.method === "POST" && url.pathname === "/__studio/mutation") {
           if (!allowsStudioMutation(request.headers)) {
             json(response, 403, { error: "Cross-origin Studio mutations are prohibited." });
@@ -690,15 +727,19 @@ export function studioPlugin(options: StudioPluginOptions): Plugin {
               return;
             }
             try {
-              let pending = storyboards.get(storyboardResource);
+              // Keyed by content: a recompile renames the same video, and its
+              // atlas is an ffmpeg pass worth doing once.
+              const tag = materialTag(file.bytes);
+              let pending = storyboards.get(tag);
               if (pending === undefined) {
                 pending = createStudioStoryboard(file);
-                storyboards.set(storyboardResource, pending);
+                storyboards.set(tag, pending);
               }
               const storyboard = await pending;
               response.statusCode = 200;
               response.setHeader("content-type", "image/png");
               response.setHeader("cache-control", "public, max-age=31536000, immutable");
+              response.setHeader("etag", tag);
               response.setHeader("x-hypit-storyboard-count", String(storyboard.count));
               response.setHeader("x-hypit-storyboard-columns", String(storyboard.columns));
               response.setHeader("x-hypit-storyboard-rows", String(storyboard.rows));
@@ -708,7 +749,7 @@ export function studioPlugin(options: StudioPluginOptions): Plugin {
               if (request.method === "HEAD") response.end();
               else response.end(Buffer.from(storyboard.bytes));
             } catch (error) {
-              storyboards.delete(storyboardResource);
+              storyboards.delete(materialTag(file.bytes));
               json(response, 500, { error: error instanceof Error ? error.message : String(error) });
             }
           })();
@@ -737,6 +778,7 @@ export function studioPlugin(options: StudioPluginOptions): Plugin {
           response.setHeader("content-type", file.mediaType);
           response.setHeader("content-length", String(range === undefined ? size : range.endExclusive - range.start));
           response.setHeader("cache-control", "no-store");
+          response.setHeader("etag", materialTag(file.bytes));
           response.setHeader("accept-ranges", "bytes");
           if (range !== undefined) {
             response.setHeader("content-range", `bytes ${range.start}-${range.endExclusive - 1}/${size}`);

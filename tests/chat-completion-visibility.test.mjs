@@ -5,22 +5,23 @@ import vm from 'node:vm';
 
 const source=await readFile(new URL('../harness/frame-ui/client.js',import.meta.url),'utf8');
 
-async function fixture(){
+async function fixture({conversationId='conversation'}={}){
  const entries=[],events=[],cleanups=[],styles=[];
  let plugin,running=false;
+ let eventEntries=[2,3].flatMap(turn=>[
+  {event:{type:'tool/call',data:{turn,callId:'image-'+turn,name:'generate_image'}}},
+  {event:{type:'tool/result',data:{turn,message:{toolCallId:'image-'+turn,content:[{type:'text',text:'{"id":"job"}'}]}}}},
+ ]);
  const nativeTail=()=>null,nativeProcess=()=>null;
  for(const [key,component] of [['turn-tail',nativeTail],['turn-process',nativeProcess]])entries.push({options:{name:'conversation.chat.node',key,priority:0},locale:'chat',inject:()=>({}),component});
  const ctx={
   effect:fn=>{const cleanup=fn();if(typeof cleanup==='function')cleanups.push(cleanup);},
-  sessions:{refresh:async()=>{},binding:()=>({eventSource:{getSnapshot:()=>({entries:[2,3].flatMap(turn=>[
-   {event:{type:'tool/call',data:{turn,callId:'image-'+turn,name:'generate_image'}}},
-   {event:{type:'tool/result',data:{turn,message:{toolCallId:'image-'+turn,content:[{type:'text',text:'{"id":"job"}'}]}}}},
-  ])})}})},layout:{beginNavigation(){}},uiWorkspace:{openSession(){}},
+  sessions:{refresh:async()=>{},binding:()=>({eventSource:{getSnapshot:()=>({entries:eventEntries})}})},layout:{beginNavigation(){}},uiWorkspace:{openSession(){}},
   locale:{addLanguage:()=>()=>{},register:()=>()=>{},getLocale:()=>({active:'zh-Hans-x-frame'})},
   slots:{inject:(_name,fn)=>fn(),entries:name=>entries.filter(entry=>entry.options.name===name),register:(options,component)=>{const entry={options,component};entries.push(entry);return()=>entries.splice(entries.indexOf(entry),1);}},
  };
  const window={addEventListener(){},removeEventListener(){},__ModuleLoader__:{load:({factory})=>{plugin=factory(()=>({createElement:(type,props,...children)=>({type,props,children}),useSyncExternalStore:(_subscribe,get)=>get()}));}}};
- vm.runInNewContext(source,{window,parent:window,location:{origin:'http://frame.test',search:'?frame=1&session=parent&project=project&conversation=conversation'},document:{querySelector:()=>null,createElement:()=>({remove(){}}),head:{append:style=>styles.push(style)}},EventSource:class{constructor(){events.push(this);}close(){}},URLSearchParams,AbortSignal,console,queueMicrotask});
+ vm.runInNewContext(source,{window,parent:window,location:{origin:'http://frame.test',search:'?frame=1&session=parent&project=project&conversation='+conversationId},document:{querySelector:()=>null,createElement:()=>({remove(){}}),head:{append:style=>styles.push(style)}},EventSource:class{constructor(){events.push(this);}close(){}},URLSearchParams,AbortSignal,console,queueMicrotask});
  await plugin.apply(ctx);
  const turns=new Map([1,2,3].map(turn=>[turn,{turn,status:'closed',start:{time:turn*100,seq:turn*10,data:{turn}},end:{time:turn*100+40,seq:turn*10+8,data:{turn,reason:{kind:'completed'}}},steps:[]}]));
  const nodes=new Map([1,2].map(turn=>['user-'+turn,{kind:'user',data:{source:{kind:'user'},time:turn*100+1},location:{kind:'turn',turn:turns.get(turn)}}]));
@@ -35,7 +36,7 @@ async function fixture(){
   const props={node,turn:turns.get(turn),sessionId,turnProcess,useSession:selector=>selector({running}),useChat:selector=>selector(snapshot),t:key=>key};
   return {result:wrapper.component(props),props};
  };
- return {render,entries,styles,nativeTail,nativeProcess,pageOutUsers:()=>{snapshot.order=snapshot.order.filter(key=>nodes.get(key)?.kind!=='user');},setRunning:value=>{running=value;},setLive:value=>events[0].onmessage({data:JSON.stringify({conversationId:'conversation',sessionId:'parent',turnStarted:201,tasks:[],...value})}),dispose:()=>{for(const cleanup of cleanups.reverse())cleanup();}};
+ return {render,entries,styles,nativeTail,nativeProcess,setEntries:value=>{eventEntries=value;},setTurnStatus:(turn,status)=>{turns.get(turn).status=status;},pageOutUsers:()=>{snapshot.order=snapshot.order.filter(key=>nodes.get(key)?.kind!=='user');},setRunning:value=>{running=value;},setLive:value=>events[0].onmessage({data:JSON.stringify({conversationId,sessionId:'parent',turnId:'request-current',turnStarted:201,ownedTasks:[],tasks:[],...value})}),dispose:()=>{for(const cleanup of cleanups.reverse())cleanup();}};
 }
 
 const hasPending=result=>result.children.some(child=>child?.props?.['data-frame-turn-pending']!==undefined);
@@ -44,7 +45,7 @@ test('当前制作轮的等待和自动接续均隐藏结束动作，保留正�
  const f=await fixture();t.after(f.dispose);
  assert.equal(f.entries.filter(entry=>entry.options.key==='turn-tail').length,1,'不替换原生尾部所有者和反馈插槽');
  assert.match(f.styles.map(style=>style.textContent).join(''),/\[data-turn-tail\]:has\(\[data-frame-turn-pending\]\)\s*>\s*\[data-clock="end"\]\s*\{display:none!important/);
- for(const live of [{status:'running'},{status:'waiting'},{status:'idle',awaiting:{id:'wait'}},{status:'idle',resuming:'wait'},{status:'idle',tasks:[{id:'image:1',kind:'image',status:'running',created:new Date(210).toISOString()}]}]){
+ for(const live of [{status:'running'},{status:'waiting'},{status:'idle',awaiting:{id:'wait'}},{status:'idle',resuming:'wait'},{status:'idle',ownedTasks:['image:1'],agentTaskRequests:{'image:1':{turnId:'request-current'}},tasks:[{id:'image:1',kind:'image',status:'running',created:new Date(210).toISOString()}]}]){
   f.setLive(live);
   for(const turn of [2,3]){
    const {result,props}=f.render('turn-tail',{turn});
@@ -97,4 +98,66 @@ test('起始用户消息分页移出窗口后，同一请求的各接续段仍�
  assert.equal(hasPending(f.render('turn-tail',{turn:1}).result),false,'保留请求开始前的已完成历史');
  const {result,props}=f.render('turn-process',{turn:1});
  assert.equal(result.props.node,props.node);
+});
+
+const previewEvents=(turn,id,extra={})=>[
+ {event:{type:'tool/call',data:{turn,callId:id,name:'preview_frames'}}},
+ {event:{type:'tool/result',data:{turn,message:{toolCallId:id,...extra,content:[{type:'text',text:JSON.stringify({previewId:id,frames:[{frame:30,time:1,url:'/sample-assets/sage-tumbler.png'}]})}]}}}},
+];
+const runningPreview=result=>result.children[1].type(result.children[1].props);
+
+test('运行轮已完成的真实选帧立即显示，未发布turn/end也不创建结束尾部',async t=>{
+ const f=await fixture();t.after(f.dispose);f.setRunning(true);f.setTurnStatus(3,'open');f.setLive({status:'running'});f.setEntries([...previewEvents(2,'old'),...previewEvents(3,'current')]);
+ const result=f.render('turn-process').result,view=runningPreview(result);
+ assert.equal(view.props['data-frame-running-previews'],'');assert.equal(view.children[0].props.preview.previewId,'current');assert.equal(view.children[0].props.preview.frames[0].url,'/sample-assets/sage-tumbler.png');
+ assert.equal(f.entries.filter(entry=>entry.options.key==='turn-tail').length,1,'保留原生footer注册，运行预览不调用它');assert.equal(result.children[0].type,f.nativeProcess,'保持原生进度所有者');
+});
+
+test('运行预览忽略失败结果、其他轮次和上一请求live快照',async t=>{
+ const f=await fixture();t.after(f.dispose);f.setRunning(true);f.setTurnStatus(3,'open');f.setLive({status:'running',turnId:'current-request',visualPreviews:[{previewId:'wrong-request',turnId:'old-request',frames:[{url:'/not-current.png'}]}]});f.setEntries([...previewEvents(2,'old'),...previewEvents(3,'failed',{isError:true})]);
+ assert.equal(runningPreview(f.render('turn-process').result),null);
+});
+
+test('原生轮关闭后预览回到tail，此前画面保持折叠历史且没有运行副本',async t=>{
+ const f=await fixture();t.after(f.dispose);f.setRunning(true);f.setTurnStatus(3,'open');f.setLive({status:'running'});f.setEntries([...previewEvents(3,'first'),...previewEvents(3,'second')]);
+ assert.equal(runningPreview(f.render('turn-process').result).children[0].props.preview.previewId,'second');
+ f.setTurnStatus(3,'closed');f.setRunning(false);f.setLive({status:'idle'});assert.equal(f.render('turn-process').result.type,f.nativeProcess);
+ const tail=f.render('turn-tail').result;assert.ok(tail.children.some(child=>child?.props?.preview?.previewId==='second'));const history=tail.children.find(child=>child?.type==='details'&&child.props.className==='frame-media-batch');assert.ok(history);assert.equal(history.props.open,undefined);
+});
+
+const taskEvents=(turn,name,id)=>[
+ {event:{type:'tool/call',data:{turn,callId:id,name}}},
+ {event:{type:'tool/result',data:{turn,message:{toolCallId:id,content:[{type:'text',text:JSON.stringify({id})}]}}}},
+];
+
+test('默认聊天已完成后，手动导出和其他会话任务不能反向重开回复',async t=>{
+ const f=await fixture({conversationId:'project'});t.after(f.dispose);
+ const task={id:'export:manual',kind:'export',conversationId:'project',status:'running',created:new Date(350).toISOString()};
+ for(const live of [
+  {tasks:[task]},
+  {ownedTasks:[task.id],tasks:[task]},
+  {ownedTasks:['export:other'],tasks:[{...task,id:'export:other',conversationId:'another-conversation'}]},
+  {ownedTasks:['export:older'],tasks:[{...task,id:'export:older',created:new Date(110).toISOString()}]},
+  {ownedTasks:['export:earlier-request'],tasks:[{...task,id:'export:earlier-request',turnId:'request-old'}]},
+ ]){
+  f.setLive({status:'idle',...live});
+  assert.equal(hasPending(f.render('turn-tail').result),false,JSON.stringify(live));
+  const {result,props}=f.render('turn-process');assert.equal(result.props.node,props.node,'保留已完成时间与原生footer');
+  const tail=f.render('turn-tail').result,summary=tail.children[0].type(tail.children[0].props);assert.equal(summary.children[1],null,'聊天制作记录不混入其他来源任务');
+ }
+ f.setEntries(taskEvents(1,'export_video','manual'));f.setLive({status:'idle',tasks:[task]});assert.equal(hasPending(f.render('turn-tail').result),false,'旧请求的工具证据不属于当前请求');
+ f.setEntries(taskEvents(3,'get_tasks','manual'));assert.equal(hasPending(f.render('turn-tail').result),false,'项目任务列表工具不会转移任务归属');
+});
+
+test('Agent导出与有当前工具证据的旧任务仍延迟完成，await/resume接续保留',async t=>{
+ const f=await fixture({conversationId:'project'});t.after(f.dispose);
+ const task={id:'export:agent-export',kind:'export',conversationId:'project',status:'running',created:new Date(210).toISOString()};
+ f.setLive({status:'idle',ownedTasks:[task.id],agentTaskRequests:{[task.id]:{turnId:'request-current',rpcId:'rpc-agent-export'}},tasks:[task]});
+ assert.equal(hasPending(f.render('turn-tail').result),true);assert.equal(f.render('turn-process').result.props.t('message.turnProcess.worked'),'正在导出成片');
+ f.setEntries(taskEvents(2,'export_video','agent-export'));f.setLive({status:'idle',tasks:[{...task,created:new Date(100).toISOString()}]});
+ for(const turn of [2,3])assert.equal(hasPending(f.render('turn-tail',{turn}).result),true,'当前请求的原生工具结果兼容旧任务/明确复用');
+ for(const continuation of [{awaiting:{id:'wait',turnId:'request-current',taskIds:[task.id]}},{resuming:'wait'}]){
+  f.setEntries([]);f.setLive({status:'idle',...continuation,tasks:[task]});assert.equal(hasPending(f.render('turn-tail').result),true);
+ }
+ f.setLive({status:'idle',ownedTasks:[task.id],tasks:[{...task,status:'succeeded'}]});assert.equal(hasPending(f.render('turn-tail').result),false,'Agent任务完成后恢复footer');
 });

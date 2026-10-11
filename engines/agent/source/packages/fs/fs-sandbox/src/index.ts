@@ -3,9 +3,8 @@
  * `@deepseek-ai/dsh-fs` Service Definition. It extends `LocalFileSystem` so all
  * text-storage mechanics — resolve, stat, read/stream, list, the atomic
  * write and the read-match-write edit critical section — are the local
- * implementation's, verbatim; this package adds only the per-call POLICY fence
- * on the two mutations. Reads pass through untouched: every mode permits
- * reading.
+ * implementation's, verbatim; this package adds a per-call POLICY fence
+ * on mutations and a deployment-owned protected configuration fence on reads.
  *
  * The fence is a policy check in TRUSTED code over a MODEL-CONTROLLED path,
  * NOT a kernel boundary — the operations are the seam's own (open, rename),
@@ -30,7 +29,7 @@ import { Context } from '@deepseek-ai/cordis'
 import { LocalFileSystem } from '@deepseek-ai/dsh-fs-local'
 import type { Config as LocalConfig } from '@deepseek-ai/dsh-fs-local'
 import { FsError } from '@deepseek-ai/dsh-fs'
-import type { FsEditOutcome, FsEditRequest, FsTarget, FsVersion, FsWriteIntent, FsWriteOutcome } from '@deepseek-ai/dsh-fs'
+import type { FsDirEntry, FsEditOutcome, FsEditRequest, FsInfo, FsPathInfo, FsTarget, FsVersion, FsWriteIntent, FsWriteOutcome } from '@deepseek-ai/dsh-fs'
 import { writableRoots } from '@deepseek-ai/dsh-sandbox'
 import type { SandboxExecutionPolicy, SandboxMode } from '@deepseek-ai/dsh-sandbox'
 import type {} from '@deepseek-ai/dsh-sandbox-policy'
@@ -59,6 +58,52 @@ export class SandboxedFileSystem extends LocalFileSystem {
   constructor(ctx: Context, config: Config) {
     super(ctx, config)
     this.defaultMode = ctx.sandboxPolicy.defaultMode
+  }
+
+  /** Private deployment config is never model-readable, including approved write escalations. */
+  private async protectedTarget(target: FsTarget): Promise<FsTarget> {
+    const policy = this.ctx.sandboxPolicy.resolve()
+    if (!(policy.protectedPaths?.length || policy.protectedPathPatterns?.length)) return target
+    const fresh = await super.resolve(String(target.targetKey))
+    let denied = (policy.protectedPathPatterns ?? []).some(pattern => new RegExp(pattern).test(String(fresh.targetKey)))
+    for (const entry of policy.protectedPaths ?? []) {
+      const root = await super.resolve(entry)
+      if (await isPathUnder(String(fresh.targetKey), String(root.targetKey))) { denied = true; break }
+    }
+    if (denied) throw new FsError('private deployment configuration is unavailable to model tools', 'FS_PROTECTED_CONFIG')
+    return { ...fresh, displayPath: target.displayPath }
+  }
+
+  override async resolve(path: string, opts?: { cwd?: string; signal?: AbortSignal }): Promise<FsTarget> {
+    return this.protectedTarget(await super.resolve(path, opts))
+  }
+  override async stat(target: FsTarget, signal?: AbortSignal): Promise<FsInfo | undefined> {
+    return super.stat(await this.protectedTarget(target), signal)
+  }
+  override async lstat(path: string, opts?: { cwd?: string }, signal?: AbortSignal): Promise<FsPathInfo | undefined> {
+    await this.resolve(path, opts)
+    return super.lstat(path, opts, signal)
+  }
+  override async readText(target: FsTarget, signal?: AbortSignal): Promise<string> {
+    return super.readText(await this.protectedTarget(target), signal)
+  }
+  override async streamText(target: FsTarget, signal?: AbortSignal): Promise<AsyncIterable<string>> {
+    return super.streamText(await this.protectedTarget(target), signal)
+  }
+  override async readBytes(target: FsTarget, signal: AbortSignal | undefined, maxBytes: number): Promise<Uint8Array> {
+    return super.readBytes(await this.protectedTarget(target), signal, maxBytes)
+  }
+  override async readByteRange(target: FsTarget, range: { offset: number; length: number }, signal?: AbortSignal): Promise<Uint8Array> {
+    return super.readByteRange(await this.protectedTarget(target), range, signal)
+  }
+  override async listDir(target: FsTarget, signal?: AbortSignal): Promise<FsDirEntry[]> {
+    const entries = await super.listDir(await this.protectedTarget(target), signal)
+    const visible: FsDirEntry[] = []
+    for (const entry of entries) {
+      try { await this.protectedTarget(entry.target); visible.push(entry) }
+      catch (error) { if (!(error instanceof FsError) || error.code !== 'FS_PROTECTED_CONFIG') throw error }
+    }
+    return visible
   }
 
   /** The deployment default mode — the capability fact the tool layer reads to advertise escalation. */

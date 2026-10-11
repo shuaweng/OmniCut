@@ -212,7 +212,7 @@ export declare const Config: z<Schemastery.ObjectS<NoInfer<{
             high?: number | null;
         } & import("@deepseek-ai/cosmokit").Dict) | null;
         cacheRetention?: "none" | "short" | "long" | null;
-        transport?: "auto" | "sse" | "websocket" | "websocket-cached" | null;
+        transport?: "sse" | "websocket" | "websocket-cached" | "auto" | null;
         timeoutMs?: number | null;
         websocketConnectTimeoutMs?: number | null;
         streamIdleTimeoutMs?: number | null;
@@ -245,7 +245,7 @@ export declare const Config: z<Schemastery.ObjectS<NoInfer<{
             high: z<number, number, "plain">;
         }>>, "plain">;
         cacheRetention: z<"none" | "short" | "long", "none" | "short" | "long", "plain">;
-        transport: z<"auto" | "sse" | "websocket" | "websocket-cached", "auto" | "sse" | "websocket" | "websocket-cached", "plain">;
+        transport: z<"sse" | "websocket" | "websocket-cached" | "auto", "sse" | "websocket" | "websocket-cached" | "auto", "plain">;
         timeoutMs: z<number, number, "plain">;
         websocketConnectTimeoutMs: z<number, number, "plain">;
         streamIdleTimeoutMs: z<number, number, "defined">;
@@ -275,7 +275,7 @@ export declare const Config: z<Schemastery.ObjectS<NoInfer<{
             high?: number | null;
         } & import("@deepseek-ai/cosmokit").Dict) | null;
         cacheRetention?: "none" | "short" | "long" | null;
-        transport?: "auto" | "sse" | "websocket" | "websocket-cached" | null;
+        transport?: "sse" | "websocket" | "websocket-cached" | "auto" | null;
         timeoutMs?: number | null;
         websocketConnectTimeoutMs?: number | null;
         streamIdleTimeoutMs?: number | null;
@@ -308,7 +308,7 @@ export declare const Config: z<Schemastery.ObjectS<NoInfer<{
             high: z<number, number, "plain">;
         }>>, "plain">;
         cacheRetention: z<"none" | "short" | "long", "none" | "short" | "long", "plain">;
-        transport: z<"auto" | "sse" | "websocket" | "websocket-cached", "auto" | "sse" | "websocket" | "websocket-cached", "plain">;
+        transport: z<"sse" | "websocket" | "websocket-cached" | "auto", "sse" | "websocket" | "websocket-cached" | "auto", "plain">;
         timeoutMs: z<number, number, "plain">;
         websocketConnectTimeoutMs: z<number, number, "plain">;
         streamIdleTimeoutMs: z<number, number, "defined">;

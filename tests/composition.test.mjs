@@ -10,7 +10,9 @@ import {importAsset} from '../server/assets.mjs';
 import {compileComposition} from '../server/composition.mjs';
 
 test('共享素材一键编排真实Hypit，局部修改保留其他轨道且不覆盖代码草稿',async t=>{
- const dir=await fs.mkdtemp(path.join(os.tmpdir(),'frame-compose-'));t.after(()=>fs.rm(dir,{recursive:true,force:true}));
+ const dir=await fs.mkdtemp(path.join(os.tmpdir(),'frame-compose-'));
+ // after() hooks run in registration order: stop the runtime before deleting its workspace.
+ let stopRuntime=async()=>{};t.after(async()=>{await stopRuntime();await fs.rm(dir,{recursive:true,force:true});});
  const service=new ProjectService(dir,async()=>{}),engine=new NativeEngine({service,root,hypit,run});service.engine=engine;engine.runtime=new NativeRuntime({root,getConfig:async()=>({})});let p=await service.createBlank('编排验证');
  await run('ffmpeg',['-v','error','-f','lavfi','-i','color=c=orange:s=320x480:r=24:d=2','-y',path.join(dir,'clip.mp4')]);
  await run('ffmpeg',['-v','error','-f','lavfi','-i','sine=frequency=440:duration=2','-y',path.join(dir,'voice.wav')]);
@@ -22,7 +24,7 @@ test('共享素材一键编排真实Hypit，局部修改保留其他轨道且不
  const before=await fs.readFile(path.join(service.dir(p.id),'main.svml'),'utf8');assert.ok(before.includes('&amp; &lt;文字&gt;'));
  const second=await engine.compose(p.id,p.revision,{patch:{audio:[{id:'voice',gain:.8}],texts:[{id:'caption',box:[7,10,93,22]}]}});assert.deepEqual(second.shots,first.shots);assert.equal(second.audio[0].gain,.8);
  const projectDir=service.dir(p.id),runtime=path.join(projectDir,'hypit.runtime.json');
- t.after(()=>run(hypit,['runtime','down','--workspace',projectDir,'--runtime',runtime,'--json'],{timeout:10000}).catch(()=>{}));
+ stopRuntime=()=>run(hypit,['runtime','down','--workspace',projectDir,'--runtime',runtime,'--json'],{timeout:10000}).catch(()=>{});
  const built=JSON.parse((await run(hypit,['build',path.join(projectDir,'render.svrun'),'--workspace',projectDir,'--runtime',runtime,'--follow','--json'],{timeout:120000,maxBuffer:6e6})).stdout);
  const buildId=built.build?.id||built.buildId||built.id,dest=path.join(dir,'preview.mp4');await run(hypit,['get',buildId,'--output','final.video','--to',dest,'--workspace',projectDir,'--json'],{timeout:30000});
  const probe=JSON.parse((await run('ffprobe',['-v','error','-show_streams','-of','json',dest])).stdout);assert.ok(probe.streams.some(s=>s.codec_type==='audio'));assert.equal(probe.streams.find(s=>s.codec_type==='video').width,320);

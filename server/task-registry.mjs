@@ -14,9 +14,9 @@ export class TaskRegistry {
    if(kind==='transcript')result={assetFile:job.assetFile,provider:job.provider,text:job.text,words:job.words,language:job.language,duration:job.actualDuration,unalignedWords:job.unalignedWords||0};
    else if(kind==='reference')result={referenceId:job.id,version:job.version,purpose:job.purpose,analysis:job.analysis,plan:job.plan};
    else if(kind==='export')result={download:job.download,duration:job.duration};
-   else if(job.assetFile)result={assetFile:job.assetFile,projectRevision:job.appliedRevision,provider:job.provider,model:job.model,duration:job.actualDuration,...(kind==='audio'?{alignment:job.alignment||null,audioQuality:job.audioQuality,alignmentSource:job.alignmentSource,words:job.words}:{}),...(kind==='video'?{hasAudio:job.hasAudio,width:job.actualWidth,height:job.actualHeight}: {})};
+   else if(job.assetFile)result={assetFile:job.assetFile,projectRevision:job.appliedRevision,provider:job.provider,model:job.model,duration:job.actualDuration,...(kind==='audio'?{alignment:job.alignment||null,audioQuality:job.audioQuality,alignmentSource:job.alignmentSource,words:job.words,voiceChange:job.voiceChange}:{}),...(kind==='video'?{hasAudio:job.hasAudio,width:job.actualWidth,height:job.actualHeight}: {})};
   }
-  return {id:kind+':'+job.id,kind,name:job.name||job.prompt?.slice(0,28)||job.text?.slice(0,28),failure:job.failure,projectId:job.projectId,status,nativeStatus:job.status,phase:job.phase,created:job.created,updated:job.updated,result,error:job.error||job.applyError||null};
+  return {id:kind+':'+job.id,kind,name:job.name||job.prompt?.slice(0,28)||job.text?.slice(0,28),failure:job.failure,projectId:job.projectId,videoId:job.videoId||'v-default',status,nativeStatus:job.status,phase:job.phase,...(job.progress?{progress:job.progress}:{}),created:job.created,updated:job.updated,result,error:job.error||job.applyError||null};
  }
  list(projectId){return [...this.adapters].flatMap(([kind,a])=>a.list(projectId).map(j=>this.project(kind,j))).sort((a,b)=>(a.created||'').localeCompare(b.created||''));}
  get(projectId,id){const task=this.list(projectId).find(t=>t.id===id);if(!task)throw Error('任务不存在或不属于当前项目');return task;}

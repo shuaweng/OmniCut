@@ -4,6 +4,7 @@ import type { StudioArtifactView, StudioSnapshot } from "../shared.js";
 import { createOverlay } from "./overlay.js";
 import { icon, setIcon } from "./icons.js";
 import { createScrubPreview } from "./scrub-preview.js";
+import { createIsolatedPreview } from "./isolated-preview.js";
 import type { State, Store } from "./selection.js";
 
 export type Stage = {
@@ -37,9 +38,12 @@ export function createStage(store: Store, selectedArtifact: (id: string | undefi
     </div>
     <div class="stage-viewport">
       <div class="stage-scaler">
-        <iframe ${uiAttribute("title", "player.preview")} sandbox="allow-scripts allow-same-origin" allow="autoplay"></iframe>
+        <iframe ${uiAttribute("title", "player.preview")} sandbox="allow-scripts" allow="autoplay"></iframe>
       </div>
     </div>
+    <details class="stage-playback-notice" hidden role="status">
+      <summary>${uiLabel("player.playback-unavailable")}</summary><p></p>
+    </details>
     <div class="stage-progress" hidden>
       <input class="stage-scrubber" type="range" min="0" max="0" value="0" step="0.01" ${uiAttribute("aria-label", "player.media-time")} hidden>
     </div>
@@ -75,31 +79,14 @@ export function createStage(store: Store, selectedArtifact: (id: string | undefi
    * of its enter and exit, and selecting a clip lands the playhead on exactly
    * the frame where that displacement is largest.
    */
-  const measure = (clipId: string): { xPx: number; yPx: number; widthPx: number; heightPx: number; stackOrder: number } | undefined => {
-    const document_ = iframe.contentDocument;
-    if (document_ === null) return undefined;
-    const present = document_.querySelector(`[data-hypit-present-id="${CSS.escape(clipId)}"]`);
-    if (present === null) return undefined;
-    const current = store.current();
-    if (current === undefined) return undefined;
-    const frameRate = fps(current.snapshot);
-    const start = Number(present.getAttribute("data-start"));
-    const end = start + Number(present.getAttribute("data-duration"));
-    if (current.playhead.frame < Math.round(start * frameRate)
-      || current.playhead.frame >= Math.round(end * frameRate)) return undefined;
-    // The present spans the whole canvas; the drawn box is its frame element.
-    const drawn = present?.querySelector(`[data-hypit-element-id="${CSS.escape(`${clipId}:frame`)}"]`)
-      ?? present?.querySelector("[data-hypit-element-id]");
-    if (drawn === null || drawn === undefined) return undefined;
-    for (let ancestor: Element | null = drawn; ancestor !== null; ancestor = ancestor.parentElement) {
-      const style = document_.defaultView!.getComputedStyle(ancestor);
-      if (style.display === "none" || style.visibility === "hidden" || Number(style.opacity) === 0) return undefined;
-    }
-    const box = drawn.getBoundingClientRect();
-    if (box.width === 0 && box.height === 0) return undefined;
-    return { xPx: box.left, yPx: box.top, widthPx: box.width, heightPx: box.height,
-      stackOrder: Number(document_.defaultView!.getComputedStyle(present).zIndex) || 0 };
-  };
+  const picture = createIsolatedPreview(iframe, () => overlay.refresh(), (interaction) => {
+    if (interaction.kind === "pointerdown") { element.dispatchEvent(new CustomEvent("studio:preview-pointerdown", { bubbles: true })); return; }
+    const box = iframe.getBoundingClientRect();
+    const clientX = box.left + interaction.x * box.width / Math.max(1, iframe.offsetWidth);
+    const clientY = box.top + interaction.y * box.height / Math.max(1, iframe.offsetHeight);
+    if (!referencePreview(interaction.frame, clientX, clientY)) scaler.dispatchEvent(new MouseEvent("contextmenu", { bubbles: true, cancelable: true, clientX, clientY }));
+  });
+  const measure = (clipId: string) => picture.measure(clipId);
 
   // The overlay is a sibling of the iframe inside the scaler, so it inherits the
   // letterboxed content box and needs no transform of its own.
@@ -119,6 +106,7 @@ export function createStage(store: Store, selectedArtifact: (id: string | undefi
   let selectionMenu: HTMLElement | undefined;
   const closeSelectionMenu = (): void => { selectionMenu?.remove(); selectionMenu = undefined; };
   scaler.addEventListener("contextmenu", (event) => {
+    if (referencePreview(displayedPreview?.frame, event.clientX, event.clientY)) { event.preventDefault(); return; }
     if (reviewMode) { event.preventDefault(); return; }
     const hits = overlay.hitsAt(event.clientX, event.clientY);
     if (hits.length === 0) return;
@@ -149,23 +137,37 @@ export function createStage(store: Store, selectedArtifact: (id: string | undefi
       else store.clearSelection();
     }
   });
+  viewport.addEventListener("contextmenu", (event) => {
+    if (!scaler.contains(event.target as Node) && referencePreview(displayedPreview?.frame, event.clientX, event.clientY)) event.preventDefault();
+  });
   const play = element.querySelector<HTMLButtonElement>("[data-play]")!;
   const previous = element.querySelector<HTMLButtonElement>("[data-previous]")!;
   const next = element.querySelector<HTMLButtonElement>("[data-next]")!;
   const playIcon = element.querySelector<HTMLElement>("[data-icon]")!;
   const mute = element.querySelector<HTMLButtonElement>("[data-mute]")!;
   const muteIcon = element.querySelector<HTMLElement>("[data-mute-icon]")!;
-
-  type SeekWindow = Window & {
-    __hypitSeekFrame?: (frame: number) => Promise<boolean>;
-    __hypitPlayFrame?: (frame: number) => Promise<boolean>;
-    __hypitSetMuted?: (muted: boolean) => Promise<boolean>;
+  const playbackNotice = element.querySelector<HTMLDetailsElement>(".stage-playback-notice")!;
+  const noticeSummary = playbackNotice.querySelector("summary")!;
+  const noticeMessage = playbackNotice.querySelector("p")!;
+  const clearNotice = (): void => {
+    playbackNotice.hidden = true;
+    delete element.dataset.previewError;
   };
+  const showNotice = (error: unknown, loading = false): void => {
+    uiText(noticeSummary, loading ? "player.preview-unavailable" : "player.playback-unavailable");
+    noticeMessage.textContent = error instanceof Error ? error.message : "请重新加载工作台。";
+    playbackNotice.open = false;
+    playbackNotice.hidden = false;
+    element.dataset.previewError = noticeMessage.textContent;
+  };
+
   let state: State | undefined;
+  let displayedPreview: { snapshot: StudioSnapshot; frame: number } | undefined;
   let mounted = -1;
   let ready = false;
   let playing = false;
   let muted = false;
+  let playbackAttempt = 0;
   let raf = 0;
   // The transport counts frames from where it was last told to be. Jumping to a
   // clip mid-playback moves that origin rather than stopping, so playback
@@ -174,11 +176,30 @@ export function createStage(store: Store, selectedArtifact: (id: string | undefi
   let began = 0;
   let placed = 0;
 
+  const referencePreview = (frame: number | undefined, x: number, y: number): boolean => {
+    if (element.dataset.frameReferences !== "true" || artifactPreview.selected !== undefined) return false;
+    const displayed = displayedPreview;
+    if (!displayed || !Number.isFinite(frame)) return true;
+    const at = Math.max(0, Math.min(Math.round(frame!), displayed.snapshot.space.frameCount - 1));
+    const snapshot = displayed.snapshot;
+    stop();
+    if (state?.snapshot.revision === snapshot.revision) store.seek(at, "video");
+    element.dispatchEvent(new CustomEvent("studio:preview-reference-menu", { bubbles: true, detail: { snapshot, frame: at, x, y } }));
+    return true;
+  };
+  element.addEventListener("studio:preview-reference-request", () => {
+    const box = viewport.getBoundingClientRect();
+    referencePreview(displayedPreview?.frame, box.left + box.width / 2, box.top + box.height / 2);
+  });
+
   const seekPicture = (frame: number): void => {
     const request = ++placed;
-    void (iframe.contentWindow as SeekWindow | null)?.__hypitSeekFrame?.(frame).then((current) => {
-      if (current && request === placed) overlay.refresh();
-    });
+    const snapshot = state?.snapshot;
+    void picture.seek(frame).then((current) => {
+      if (current && request === placed && snapshot?.revision === mounted) {
+        displayedPreview = { snapshot, frame }; overlay.refresh();
+      }
+    }).catch(() => {});
   };
 
   const fps = (snapshot: StudioSnapshot): number =>
@@ -204,6 +225,7 @@ export function createStage(store: Store, selectedArtifact: (id: string | undefi
   const stop = (): void => {
     const wasPlaying = playing;
     playing = false;
+    playbackAttempt++;
     setIcon(playIcon, "play");
     uiAttr(play, "aria-label", "player.play");
     if (raf !== 0) cancelAnimationFrame(raf);
@@ -214,17 +236,27 @@ export function createStage(store: Store, selectedArtifact: (id: string | undefi
     }
   };
 
+  const playbackFailed = (error: unknown, revision: number, attempt: number): void => {
+    if (!playing || muted || mounted !== revision || playbackAttempt !== attempt) return;
+    stop();
+    showNotice(error);
+  };
+
   const toggle = (): void => {
     if (artifactPreview.selected !== undefined) { artifactPreview.toggle(); return; }
     if (state === undefined) return;
     if (playing) { stop(); return; }
+    if (!ready) return;
+    clearNotice();
     playing = true;
+    const attempt = ++playbackAttempt;
+    const revision = mounted;
     setIcon(playIcon, "pause");
     uiAttr(play, "aria-label", "player.pause");
     const total = state.snapshot.space.frameCount;
     const rate = fps(state.snapshot);
     fromFrame = state.playhead.frame >= total - 1 ? 0 : state.playhead.frame;
-    if (ready) (iframe.contentWindow as SeekWindow | null)?.__hypitPlayFrame?.(fromFrame);
+    void picture.play(fromFrame).catch((error) => playbackFailed(error, revision, attempt));
     began = performance.now();
     const step = (now: number): void => {
       const at = fromFrame + Math.round((now - began) / 1000 * rate);
@@ -248,9 +280,11 @@ export function createStage(store: Store, selectedArtifact: (id: string | undefi
     setIcon(muteIcon, muted ? "muted" : "volume");
     uiAttr(mute, "aria-label", muted ? "player.unmute" : "player.mute");
     if (artifactPreview.media !== undefined) artifactPreview.media.muted = muted;
-    (iframe.contentWindow as SeekWindow | null)?.__hypitSetMuted?.(muted);
+    if (muted && ready) clearNotice();
+    const attempt = playbackAttempt, revision = mounted;
+    void picture.mute(muted).catch((error) => playbackFailed(error, revision, attempt));
   };
-  mute.addEventListener("click", () => { muted = !muted; applyMuted(); });
+  mute.addEventListener("click", () => { playbackAttempt++; muted = !muted; applyMuted(); });
 
   const title = element.querySelector<HTMLElement>(".stage-title strong")!;
   const back = element.querySelector<HTMLButtonElement>(".stage-return")!;
@@ -300,6 +334,7 @@ export function createStage(store: Store, selectedArtifact: (id: string | undefi
     const rate = fps(state.snapshot);
     progress.hidden = scrubber.hidden = time.hidden = false;
     scrubber.disabled = !ready;
+    play.disabled = previous.disabled = next.disabled = !ready;
     scrubber.step = String(1 / rate);
     scrubber.max = String(Math.max(0, state.snapshot.space.frameCount - 1) / rate);
     scrubber.value = String(state.playhead.frame / rate);
@@ -318,7 +353,7 @@ export function createStage(store: Store, selectedArtifact: (id: string | undefi
     back.hidden = true;
     compositionTime();
     transport.hidden = mute.hidden = false;
-    play.disabled = previous.disabled = next.disabled = false;
+    play.disabled = previous.disabled = next.disabled = !ready;
     uiAttr(previous, "title", "player.previous-frame");
     uiAttr(previous, "aria-label", "player.previous-frame");
     uiAttr(next, "title", "player.next-frame");
@@ -334,6 +369,7 @@ export function createStage(store: Store, selectedArtifact: (id: string | undefi
 
   const openArtifact = (artifact: StudioArtifactView): void => {
     stop();
+    clearNotice();
     scaler.hidden = true;
     back.hidden = false;
     userText(title, artifact.displayName ?? artifact.output);
@@ -346,14 +382,6 @@ export function createStage(store: Store, selectedArtifact: (id: string | undefi
     selectedArtifact(artifact.id);
   };
 
-  iframe.addEventListener("load", () => {
-    ready = true;
-    compositionTime();
-    if (state !== undefined) seekPicture(state.playhead.frame);
-    applyMuted();
-    // The box could not be measured until now.
-    overlay.refresh();
-  });
 
   new ResizeObserver(fit).observe(viewport);
 
@@ -367,8 +395,22 @@ export function createStage(store: Store, selectedArtifact: (id: string | undefi
       mounted = value.snapshot.revision;
       if (artifactPreview.selected === undefined) stop();
       ready = false;
+      displayedPreview = undefined;
+      clearNotice();
       const preview = value.snapshot.preview;
-      iframe.srcdoc = preview.srcdoc;
+      const loadingRevision = mounted;
+      void picture.load(preview.srcdoc, fps(value.snapshot)).then((loaded) => {
+        if (!loaded || mounted !== loadingRevision) return;
+        displayedPreview = { snapshot: value.snapshot, frame: 0 };
+        clearNotice();
+        ready = true; compositionTime();
+        if (state !== undefined) seekPicture(state.playhead.frame);
+        applyMuted(); overlay.refresh();
+      }).catch((error) => {
+        if (mounted !== loadingRevision) return;
+        ready = false;
+        showNotice(error, true);
+      });
       fit();
     }
     if (first) fit();
@@ -385,8 +427,12 @@ export function createStage(store: Store, selectedArtifact: (id: string | undefi
       began = performance.now();
     }
     if (!ready) return;
-    const frame = (iframe.contentWindow as SeekWindow | null);
-    if (playing) frame?.__hypitPlayFrame?.(value.playhead.frame);
+    if (playing) {
+      const attempt = playbackAttempt;
+      void picture.play(value.playhead.frame).then((current) => {
+        if (current && mounted === value.snapshot.revision) displayedPreview = { snapshot: value.snapshot, frame: value.playhead.frame };
+      }).catch((error) => playbackFailed(error, value.snapshot.revision, attempt));
+    }
     else seekPicture(value.playhead.frame);
     // The overlay subscribed first, so it measured the picture as it was before
     // this seek. Redraw now that the picture has moved.

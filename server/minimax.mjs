@@ -1,4 +1,5 @@
 // Official MiniMax API. All providers feed the same persistent media jobs.
+import {minimaxVideoLimits} from './media-capabilities.mjs';
 export const MINIMAX_BASES = {cn:'https://api.minimax.cn',global:'https://api.minimax.io'};
 export function minimaxConfig(env){
  if(!env.MINIMAX_API_KEY)throw Error('请在模型设置中填写 MiniMax API Key');
@@ -8,9 +9,9 @@ export function minimaxConfig(env){
 export function minimaxVideoBody(values,model,content){
  if(!['MiniMax-H3','MiniMax-H3-Max'].includes(model))throw Error('请选择 MiniMax H3 视频模型');
  const resolution=values.resolution||'768P';
- const allowed=model==='MiniMax-H3'?['768P','2K']:['480P','768P'];
+ const {resolutions:allowed,duration}=minimaxVideoLimits(model);
  if(!allowed.includes(resolution))throw Error(model+' 支持 '+allowed.join(' / ')+'，请选择对应清晰度');
- if(values.duration<(model==='MiniMax-H3'?4:5))throw Error('H3 Max 最短生成 5 秒');
+ if(values.duration<duration.min)throw Error('H3 Max 最短生成 5 秒');
  if(values.ratio==='adaptive'&&content.every(c=>c.type==='text'))throw Error('文生视频请选择明确画幅');
  return {model,content,resolution,duration:values.duration,ratio:values.ratio,aigc_watermark:false};
 }

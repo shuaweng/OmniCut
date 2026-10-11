@@ -11,6 +11,8 @@ import { createHandle } from "./resize.js";
 import { createZoom } from "./zoom.js";
 import { chooseSemanticGesture, semanticGestureSpan } from "../temporal-edit.js";
 import { applyStudioMutation } from "./writeback.js";
+import { codeCaptionCells, frameTrackGroups, frameTrackKind, readableClipName, shortClipName, usesFrameTrackGroups } from "./timeline-presentation.js";
+import type { FrameTrackKind } from "./timeline-presentation.js";
 
 export type Timeline = {
   readonly element: HTMLElement;
@@ -150,6 +152,18 @@ export function createTimeline(store: Store): Timeline {
   const readableWordLabels = new Set<string>();
   let selectedWord: string | undefined;
   let overlapMenu: HTMLElement | undefined;
+  const expandedGroups = new Set<FrameTrackKind>();
+  let hoveredClip: HTMLElement | undefined;
+  let focusedClip: HTMLElement | undefined;
+  const clipTooltip = document.createElement("div");
+  clipTooltip.className = "frame-clip-tooltip";
+  clipTooltip.id = "frame-clip-tooltip";
+  clipTooltip.setAttribute("role", "tooltip");
+  clipTooltip.hidden = true;
+  const tooltipName = document.createElement("strong");
+  const tooltipDetail = document.createElement("span");
+  clipTooltip.append(tooltipName, tooltipDetail);
+  element.append(clipTooltip);
   const closeOverlapMenu = () => { overlapMenu?.remove(); overlapMenu = undefined; };
   element.addEventListener("pointerdown", event => {
     if (!overlapMenu?.contains(event.target as Node)) closeOverlapMenu();
@@ -163,6 +177,39 @@ export function createTimeline(store: Store): Timeline {
     readonly id: string;
     readonly selectionGroup?: string;
   }[] = [];
+  const embeddedTimeline = (): boolean => element.dataset.frameReferences === "true";
+  const showClipTooltip = (): void => {
+    if (!embeddedTimeline() || activeEdit !== undefined) { clipTooltip.hidden = true; return; }
+    const selected = clipNodes.find((item) => item.node.classList.contains("selected"))?.node;
+    const target = hoveredClip?.isConnected ? hoveredClip : focusedClip?.isConnected ? focusedClip : selected;
+    if (target === undefined || !target.dataset.frameClipName) { clipTooltip.hidden = true; return; }
+    const rect = target.getBoundingClientRect();
+    const surface = body.getBoundingClientRect();
+    if (rect.bottom <= surface.top || rect.top >= surface.bottom || rect.right <= surface.left || rect.left >= surface.right) {
+      clipTooltip.hidden = true; return;
+    }
+    tooltipName.textContent = target.dataset.frameClipName;
+    tooltipDetail.textContent = target.dataset.frameClipDetail ?? "";
+    clipTooltip.hidden = false;
+    const width = clipTooltip.offsetWidth;
+    const height = clipTooltip.offsetHeight;
+    const left = Math.max(8, Math.min(rect.left + rect.width / 2 - width / 2, window.innerWidth - width - 8));
+    const preferredTop = rect.top - height - 8;
+    const top = Math.max(8, Math.min(preferredTop < 8 ? rect.bottom + 8 : preferredTop, window.innerHeight - height - 8));
+    clipTooltip.style.left = `${left}px`;
+    clipTooltip.style.top = `${top}px`;
+  };
+  const attachClipTooltip = (node: HTMLElement, name: string, snapshot: StudioSnapshot, start: number, end: number, trackName?: string): void => {
+    node.dataset.frameClipName = name;
+    const duration = ((end - start) / fps(snapshot)).toFixed(2);
+    node.dataset.frameClipDetail = `${trackName ? `${trackName} · ` : ""}${duration} 秒 · ${frameTimecode(snapshot, start)} – ${frameTimecode(snapshot, end)}`;
+    node.setAttribute("aria-label", name);
+    node.addEventListener("pointerenter", () => { hoveredClip = node; showClipTooltip(); });
+    node.addEventListener("pointerleave", () => { if (hoveredClip === node) hoveredClip = undefined; showClipTooltip(); });
+    node.addEventListener("focus", () => { focusedClip = node; showClipTooltip(); });
+    node.addEventListener("blur", () => { if (focusedClip === node) focusedClip = undefined; showClipTooltip(); });
+  };
+  body.addEventListener("scroll", showClipTooltip);
   let semanticNodes: readonly {
     readonly node: HTMLElement;
     readonly id: string;
@@ -187,6 +234,18 @@ export function createTimeline(store: Store): Timeline {
   const fps = (snapshot: StudioSnapshot): number =>
     snapshot.space.frameRate.numerator / snapshot.space.frameRate.denominator;
 
+  type BeatGuide = {frame:number;kind:"beat"|"downbeat"|"accent-candidate";confidence?:number};
+  let beatGuides: readonly BeatGuide[] = [], beatRevision: number | undefined, showBeats = false, snapBeats = false;
+  // Host guides are read-only audio analysis on this very snapshot's frame clock.
+  element.addEventListener("studio:beat-guides", event => {
+    const data = (event as CustomEvent).detail;
+    beatRevision = data?.revision;
+    beatGuides = Array.isArray(data?.guides) ? data.guides.filter((guide: BeatGuide) => Number.isInteger(guide.frame)
+      && guide.frame >= 0 && ["beat", "downbeat", "accent-candidate"].includes(guide.kind)) : [];
+    showBeats = data?.visible === true; snapBeats = data?.snap === true;
+    if (state !== undefined) drawRuler(state.snapshot);
+  });
+
   const snapFrame = (frame: number): number => {
     if (state === undefined || lanes.clientWidth <= 0) return frame;
     const shown = zoom.window();
@@ -200,6 +259,9 @@ export function createTimeline(store: Store): Timeline {
       if (next < distance) { nearest = candidate; distance = next; }
     };
     for (const anchor of state.snapshot.semantic?.anchors ?? []) consider(anchor.frame);
+    if (showBeats && snapBeats && beatRevision === state.snapshot.revision) {
+      for (const guide of beatGuides) if (guide.kind !== "accent-candidate") consider(guide.frame);
+    }
     for (const clip of state.snapshot.tracks.flatMap((track) => track.clips)) {
       consider(clip.startFrame);
       consider(clip.endFrameExclusive);
@@ -217,6 +279,74 @@ export function createTimeline(store: Store): Timeline {
     );
   };
   const frameAt = (clientX: number): number => snapFrame(rawFrameAt(clientX));
+
+  // Hosts can add references without replacing this timeline or deriving frame
+  // positions from CSS widths. Shift-drag uses this timeline's own zoom window.
+  let referenceRange: { startFrame: number; endFrameExclusive: number; trackId?: string } | undefined;
+  let referenceDrag: { from: number; pointerId: number; trackId?: string } | undefined;
+  const referenceOverlay = document.createElement("div");
+  referenceOverlay.className = "frame-reference-range";
+  referenceOverlay.hidden = true;
+  referenceOverlay.setAttribute("aria-hidden", "true");
+  lanes.append(referenceOverlay);
+  const referencesEnabled = () => element.dataset.frameReferences === "true";
+  const referenceFrame = (clientX: number) => Math.max(0, Math.min((state?.snapshot.space.frameCount ?? 1) - 1, frameAt(clientX)));
+  const paintReference = () => {
+    referenceOverlay.hidden = referenceRange === undefined || !referencesEnabled();
+    if (referenceRange === undefined || state === undefined) return;
+    const from = place(referenceRange.startFrame, state.snapshot.space.frameCount, zoom.window());
+    const to = place(referenceRange.endFrameExclusive, state.snapshot.space.frameCount, zoom.window());
+    referenceOverlay.style.left = `${from * 100}%`;
+    referenceOverlay.style.width = `${Math.max(0, to - from) * 100}%`;
+  };
+  const reportReference = () => element.dispatchEvent(new CustomEvent("studio:reference-selection", { bubbles: true, detail: referenceRange }));
+  lanes.addEventListener("pointerdown", event => {
+    if (!referencesEnabled() || event.button !== 0) return;
+    if (!event.shiftKey) { referenceRange = undefined; paintReference(); reportReference(); return; }
+    event.preventDefault(); event.stopImmediatePropagation();
+    const trackId = (event.target as Element).closest<HTMLElement>("[data-track]")?.dataset.track;
+    const from = referenceFrame(event.clientX);
+    referenceDrag = { from, pointerId: event.pointerId, ...(trackId ? { trackId } : {}) };
+    referenceRange = { startFrame: from, endFrameExclusive: from + 1, ...(trackId ? { trackId } : {}) };
+    store.clearSelection(); store.seek(from, "timeline");
+    try { lanes.setPointerCapture(event.pointerId); } catch { /* local gesture */ }
+    paintReference(); reportReference();
+  }, true);
+  lanes.addEventListener("pointermove", event => {
+    if (!referenceDrag || !state) return;
+    event.preventDefault(); event.stopImmediatePropagation();
+    const to = referenceFrame(event.clientX);
+    referenceRange = { startFrame: Math.min(referenceDrag.from, to), endFrameExclusive: Math.max(referenceDrag.from, to) + 1,
+      ...(referenceDrag.trackId ? { trackId: referenceDrag.trackId } : {}) };
+    paintReference(); store.seek(to, "timeline"); reportReference();
+  }, true);
+  const finishReference = (event: PointerEvent) => {
+    if (!referenceDrag) return;
+    event.preventDefault(); event.stopImmediatePropagation();
+    referenceDrag = undefined;
+    try { lanes.releasePointerCapture(event.pointerId); } catch { /* already released */ }
+    if (event.type === "pointercancel") referenceRange = undefined;
+    paintReference(); reportReference();
+  };
+  lanes.addEventListener("pointerup", finishReference, true);
+  lanes.addEventListener("pointercancel", finishReference, true);
+  element.addEventListener("contextmenu", event => {
+    if (!referencesEnabled() || !state || !(event.target instanceof Element) || !event.target.closest("[data-lanes]")) return;
+    event.preventDefault(); event.stopPropagation(); closeOverlapMenu();
+    const target = event.target.closest<HTMLElement>("[data-clip], [data-semantic-segment], [data-semantic-token], [data-semantic-selection], [data-semantic-moment]");
+    const at = referenceFrame(event.clientX);
+    let referenceTarget: Record<string, unknown>;
+    if (referenceRange && at >= referenceRange.startFrame && at < referenceRange.endFrameExclusive) referenceTarget = { kind: "range", ...referenceRange };
+    else if (target?.dataset.clip) referenceTarget = { kind: "clip", entityId: target.dataset.clip };
+    else {
+      const field = ["semanticSegment", "semanticToken", "semanticSelection", "semanticMoment"].find(key => target?.dataset[key]);
+      const kind = { semanticSegment: "semantic-segment", semanticToken: "semantic-token", semanticSelection: "semantic-selection", semanticMoment: "semantic-moment" };
+      const trackId = event.target.closest<HTMLElement>("[data-track]")?.dataset.track;
+      referenceTarget = field ? { kind: kind[field as keyof typeof kind], entityId: target!.dataset[field] }
+        : { kind: "range", startFrame: at, endFrameExclusive: at + 1, ...(trackId ? { trackId } : {}) };
+    }
+    element.dispatchEvent(new CustomEvent("studio:reference-menu", { bubbles: true, detail: { target: referenceTarget, x: event.clientX, y: event.clientY } }));
+  }, true);
 
   const frameTimecode = (snapshot: StudioSnapshot, frame: number): string => {
     const rate = Math.max(1, Math.round(fps(snapshot)));
@@ -452,6 +582,18 @@ export function createTimeline(store: Store): Timeline {
         ruler.append(label);
       }
     }
+    if (showBeats && beatRevision === snapshot.revision) {
+      for (const guide of beatGuides) {
+        const at = place(guide.frame, frameCount, shown);
+        if (at < 0 || at > 1 || guide.frame >= frameCount) continue;
+        const tick = document.createElement("span");
+        tick.className = `frame-beat-tick frame-beat-${guide.kind}`;
+        tick.style.left = `${at * 100}%`;
+        tick.dataset.beatFrame = String(guide.frame);
+        tick.title = `${guide.kind === "downbeat" ? "强拍" : guide.kind === "accent-candidate" ? "重音候选（未确认强拍）" : "估计拍点"} ${(guide.frame / exactRate).toFixed(3)}s`;
+        ruler.append(tick);
+      }
+    }
     // The ruler is sticky while tracks scroll. Keeping the grip inside it makes
     // the current-time marker remain attached to the scale instead of leaving
     // its head behind at the top of the scrolled track stack.
@@ -488,7 +630,7 @@ export function createTimeline(store: Store): Timeline {
       && (groupId === undefined || track.binding.groupId === groupId))
     .sort((left, right) => (left.binding.lane.order ?? 0) - (right.binding.lane.order ?? 0));
 
-  const buildSemanticLane = (snapshot: StudioSnapshot): void => {
+  const buildSemanticLane = (snapshot: StudioSnapshot, includeRuler = true): void => {
     if (snapshot.semantic === undefined || snapshot.semantic.segments.length === 0) {
       return;
     }
@@ -500,7 +642,11 @@ export function createTimeline(store: Store): Timeline {
       ...(snapshot.semantic.selections.length + snapshot.semantic.moments.length > 0
         ? [{ kind: "intent", height: bandHeight }] : []),
     ];
-    const laneHeight = bands.reduce((height, band) => height + band.height, itemMetrics.insetYPx * 2);
+    if (embeddedTimeline()) {
+      const compactBandHeight = (32 - itemMetrics.insetYPx * 2) / bands.length;
+      for (const band of bands) band.height = compactBandHeight;
+    }
+    const laneHeight = embeddedTimeline() ? 32 : bands.reduce((height, band) => height + band.height, itemMetrics.insetYPx * 2);
     const label = createTrackLabel(
       presentation.label ?? "",
       presentation.tone,
@@ -511,7 +657,7 @@ export function createTimeline(store: Store): Timeline {
     if (presentation.label === undefined) uiText(label.querySelector("strong")!, "inspector.timeline");
     uiAttr(label, "title", "timeline.segment-count", { count: snapshot.semantic.segments.length });
     label.classList.add("track-label-semantic");
-    label.style.height = `calc(var(--timeline-ruler-height) + ${laneHeight}px)`;
+    label.style.height = includeRuler ? `calc(var(--timeline-ruler-height) + ${laneHeight}px)` : `${laneHeight}px`;
     labels.append(label);
 
     const lane = document.createElement("div");
@@ -628,6 +774,7 @@ export function createTimeline(store: Store): Timeline {
       const node = document.createElement("button");
       node.type = "button";
       node.className = "semantic-cell semantic-selection";
+      node.dataset.semanticSelection = selection.id;
       node.tabIndex = 0;
       uiAttr(node, "aria-label", "timeline.selection-name", { name: selection.id });
       node.style.left = `${from * 100}%`;
@@ -654,6 +801,7 @@ export function createTimeline(store: Store): Timeline {
       const node = document.createElement("button");
       node.type = "button";
       node.className = "semantic-moment";
+      node.dataset.semanticMoment = moment.id;
       node.tabIndex = 0;
       uiAttr(node, "aria-label", "timeline.moment-name", { name: moment.id });
       node.style.left = `${at * 100}%`;
@@ -696,18 +844,25 @@ export function createTimeline(store: Store): Timeline {
     semanticNodes = nextSemanticNodes;
   };
 
+  let clipSequences = new Map<string, number>();
+  let clipTrackNames = new Map<string, string>();
   const buildTrack = (
     snapshot: StudioSnapshot,
     track: StudioSnapshot["tracks"][number],
     nextClipNodes: { node: HTMLElement; start: number; end: number; id: string; selectionGroup?: string }[],
     attached = false,
+    detail = false,
+    groupKind?: FrameTrackKind,
   ): void => {
+    const kind = groupKind ?? frameTrackKind(track);
+    const embedded = embeddedTimeline();
+    const rowHeight = embedded ? (kind === "caption" ? 28 : kind === "visual" && !detail ? 48 : 32) : track.binding.lane.heightPx;
     const trackBands = track.binding.bands ?? [];
     const banded = trackBands.length > 0;
     const layout = [
-      ...trackBands.filter(band => band.placement === "before"),
-      { id: undefined, heightPx: track.binding.lane.heightPx, display: "content" as const, tone: track.binding.tone },
-      ...trackBands.filter(band => band.placement === "after"),
+      ...trackBands.filter(band => band.placement === "before").map((band) => ({ ...band, heightPx: embedded ? rowHeight : band.heightPx })),
+      { id: undefined, heightPx: rowHeight, display: "content" as const, tone: track.binding.tone },
+      ...trackBands.filter(band => band.placement === "after").map((band) => ({ ...band, heightPx: embedded ? rowHeight : band.heightPx })),
     ];
     const totalHeight = layout.reduce((sum, band) => sum + band.heightPx, 0)
       + (banded ? 2 * itemMetrics.insetYPx : 0);
@@ -722,12 +877,23 @@ export function createTimeline(store: Store): Timeline {
       attached,
     );
     label.classList.add(`track-facet-${track.binding.facet}`);
+    label.dataset.track = track.id;
+    if (embedded) {
+      label.classList.add(`frame-track-${kind}`);
+      label.dataset.frameTrackKind = kind;
+      label.classList.toggle("frame-track-detail", detail);
+    }
     labels.append(label);
 
     const trackBody = document.createElement("div");
     trackBody.className = banded ? "timeline-track timeline-track-banded" : "timeline-track";
     trackBody.dataset.track = track.id;
     trackBody.style.height = `${totalHeight}px`;
+    if (embedded) {
+      trackBody.classList.add(`frame-track-${kind}`);
+      trackBody.dataset.frameTrackKind = kind;
+      trackBody.classList.toggle("frame-track-detail", detail);
+    }
     const materialMounts: {
       readonly target: HTMLElement;
       readonly preview: Extract<StudioSnapshot["tracks"][number]["clips"][number]["display"]["layers"][number], { readonly kind: "preview" }>["preview"];
@@ -737,6 +903,10 @@ export function createTimeline(store: Store): Timeline {
       const laneHeight = band.heightPx;
       const lane = document.createElement("div");
       lane.className = `lane track-tone-${tone} track-facet-${track.binding.facet}${attached ? " lane-attached" : ""}`;
+      if (embedded) {
+        lane.classList.add(`frame-track-${kind}`);
+        lane.dataset.frameTrackKind = kind;
+      }
       lane.style.height = `${laneHeight}px`;
       if (banded) lane.classList.add("track-band", `track-band-${band.display}`);
       if (band.id !== undefined) lane.dataset.band = band.id;
@@ -744,84 +914,105 @@ export function createTimeline(store: Store): Timeline {
       const laneWidth = lanes.clientWidth;
       // Stable order preserves Companion projection order when stack levels tie.
       for (const clip of track.clips.filter(clip => clip.band === band.id).sort((a, b) => a.stackOrder - b.stackOrder)) {
-        const from = place(clip.startFrame, snapshot.space.frameCount, zoom.window());
-        const to = place(clip.endFrameExclusive, snapshot.space.frameCount, zoom.window());
-        if (to <= 0 || from >= 1) continue;
-        const node = document.createElement("button");
-        node.type = "button";
-        node.className = `clip clip-tone-${tone} clip-facet-${track.binding.facet} clip-chrome-${clip.presentation.chrome}`;
-        node.classList.toggle("clip-editable", clip.editHandles.some((handle) => handle.enabled));
-        node.dataset.clip = clip.id;
-        node.setAttribute("aria-label", clip.display.title);
-        node.style.left = `${from * 100}%`;
-        node.style.width = `max(2px, ${Math.max(0, to - from) * 100}%)`;
-        const visibleWidthPx = visibleItemWidth(from, to, laneWidth);
-        node.classList.toggle("clip-preview-wide", visibleWidthPx >= 92);
-        node.title = `${clip.display.title} · ${clip.startFrame}-${clip.endFrameExclusive}f`;
-        node.innerHTML = `<span class="clip-head"><span class="clip-name"></span><span class="clip-meta"></span></span><span class="clip-body"><span class="clip-layers" aria-hidden="true"></span><span class="clip-phases"></span></span><span class="clip-boundary" aria-hidden="true"></span><span class="clip-selection" aria-hidden="true"></span>`;
-        const layers = node.querySelector<HTMLElement>(".clip-layers")!;
-        clip.display.layers.forEach((layer, index) => {
-          const layerNode = document.createElement("span");
-          layerNode.className = `clip-layer clip-layer-${layer.kind} clip-layer-role-${layer.role}`;
-          layerNode.style.zIndex = String(index + 1);
-          if (layer.kind === "text") {
-            layerNode.textContent = layer.text;
-          } else {
-            layerNode.classList.add(`clip-layer-layout-${layer.layout}`);
-            materialMounts.push({ target: layerNode, preview: layer.preview });
+        const cues = embedded && kind === "caption" ? codeCaptionCells(clip, fps(snapshot)) : [];
+        const cells = cues.length > 0 ? cues : [{ name: readableClipName(clip), startFrame: clip.startFrame, endFrameExclusive: clip.endFrameExclusive }];
+        for (const cell of cells) {
+          const from = place(cell.startFrame, snapshot.space.frameCount, zoom.window());
+          const to = place(cell.endFrameExclusive, snapshot.space.frameCount, zoom.window());
+          if (to <= 0 || from >= 1) continue;
+          const node = document.createElement("button");
+          node.type = "button";
+          node.className = `clip clip-tone-${tone} clip-facet-${track.binding.facet} clip-chrome-${clip.presentation.chrome}`;
+          node.classList.toggle("clip-editable", cues.length === 0 && clip.editHandles.some((handle) => handle.enabled));
+          node.dataset.clip = clip.id;
+          node.setAttribute("aria-label", clip.display.title);
+          node.style.left = `${from * 100}%`;
+          node.style.width = `max(2px, ${Math.max(0, to - from) * 100}%)`;
+          const visibleWidthPx = visibleItemWidth(from, to, laneWidth);
+          node.classList.toggle("clip-preview-wide", visibleWidthPx >= 92);
+          if (!embedded) node.title = `${clip.display.title} · ${((clip.endFrameExclusive - clip.startFrame) / fps(snapshot)).toFixed(2)}s`;
+          node.innerHTML = `<span class="clip-head"><span class="clip-name"></span><span class="clip-meta"></span></span><span class="clip-body"><span class="clip-layers" aria-hidden="true"></span><span class="clip-phases"></span></span><span class="clip-boundary" aria-hidden="true"></span><span class="clip-selection" aria-hidden="true"></span>`;
+          const layers = node.querySelector<HTMLElement>(".clip-layers")!;
+          clip.display.layers.forEach((layer, index) => {
+            const layerNode = document.createElement("span");
+            layerNode.className = `clip-layer clip-layer-${layer.kind} clip-layer-role-${layer.role}`;
+            layerNode.style.zIndex = String(index + 1);
+            if (layer.kind === "text") {
+              layerNode.textContent = layer.text;
+            } else {
+              layerNode.classList.add(`clip-layer-layout-${layer.layout}`);
+              materialMounts.push({ target: layerNode, preview: layer.preview });
+            }
+            layers.append(layerNode);
+          });
+          const phaseLayer = node.querySelector<HTMLElement>(".clip-phases")!;
+          for (const phase of clip.temporal?.phases ?? []) {
+            if (phase.endFrameExclusive <= clip.startFrame || phase.startFrame >= clip.endFrameExclusive) continue;
+            const phaseNode = document.createElement("span");
+            phaseNode.className = `clip-phase clip-phase-${phase.role}`;
+            phaseNode.style.left = `${(phase.startFrame - clip.startFrame) / Math.max(1, clip.endFrameExclusive - clip.startFrame) * 100}%`;
+            phaseNode.style.width = `${(phase.endFrameExclusive - phase.startFrame) / Math.max(1, clip.endFrameExclusive - clip.startFrame) * 100}%`;
+            phaseLayer.append(phaseNode);
           }
-          layers.append(layerNode);
-        });
-        const phaseLayer = node.querySelector<HTMLElement>(".clip-phases")!;
-        for (const phase of clip.temporal?.phases ?? []) {
-          if (phase.endFrameExclusive <= clip.startFrame || phase.startFrame >= clip.endFrameExclusive) continue;
-          const phaseNode = document.createElement("span");
-          phaseNode.className = `clip-phase clip-phase-${phase.role}`;
-          phaseNode.style.left = `${(phase.startFrame - clip.startFrame) / Math.max(1, clip.endFrameExclusive - clip.startFrame) * 100}%`;
-          phaseNode.style.width = `${(phase.endFrameExclusive - phase.startFrame) / Math.max(1, clip.endFrameExclusive - clip.startFrame) * 100}%`;
-          phaseLayer.append(phaseNode);
-        }
-        const metaText = clip.presentation.chrome === "point"
-          ? `${(clip.startFrame / fps(snapshot)).toFixed(2)}s`
-          : `${((clip.endFrameExclusive - clip.startFrame) / fps(snapshot)).toFixed(2)}s`;
-        const headerLabel = node.querySelector<HTMLElement>(".clip-name")!;
-        node.querySelector(".clip-meta")!.textContent = metaText;
-        headerLabel.textContent = clip.display.title;
-        node.addEventListener("pointerdown", (event) => {
-          const rect = node.getBoundingClientRect();
-          const edge = Math.min(8, Math.max(4, rect.width / 3));
-          const nearStart = event.clientX - rect.left <= edge;
-          const nearEnd = rect.right - event.clientX <= edge;
-          const handle = clip.editHandles.find((candidate) =>
-            candidate.enabled
-            && ((candidate.gesture === "trim-start" && nearStart)
-              || (candidate.gesture === "trim-end" && nearEnd)
-              || (candidate.gesture === "move" && !nearStart && !nearEnd)));
-          if (handle !== undefined
-            && (handle.gesture === "move" || handle.gesture === "trim-start" || handle.gesture === "trim-end")) {
-            event.stopPropagation();
-            const pointerFrame = handle.coordinate === "semantic-anchor"
-              ? rawFrameAt(event.clientX)
-              : frameAt(event.clientX);
-            activeEdit = {
-              clip,
-              handle,
-              startFrame: pointerFrame,
-              pointerId: event.pointerId,
-              node,
-              originalLeft: node.style.left,
-              originalWidth: node.style.width,
-            };
-            node.classList.add("editing");
-            try { lanes.setPointerCapture(event.pointerId); } catch { /* local pointer */ }
+          const metaText = clip.presentation.chrome === "point"
+            ? `${(clip.startFrame / fps(snapshot)).toFixed(2)}s`
+            : `${((clip.endFrameExclusive - clip.startFrame) / fps(snapshot)).toFixed(2)}s`;
+          const headerLabel = node.querySelector<HTMLElement>(".clip-name")!;
+          node.querySelector(".clip-meta")!.textContent = metaText;
+          headerLabel.textContent = clip.display.title;
+          if (embedded) {
+            const name = cell.name;
+            attachClipTooltip(node, name, snapshot, cell.startFrame, cell.endFrameExclusive, clipTrackNames.get(clip.id) ?? displayTrackName(track));
+            const summary = document.createElement("span");
+            summary.className = kind === "visual" ? "frame-clip-sequence" : "frame-clip-summary";
+            if (kind === "visual") summary.textContent = String(clipSequences.get(clip.id) ?? 1);
+            else {
+              const text = document.createElement("span");
+              text.textContent = shortClipName(name, kind === "audio" ? 8 : 10);
+              summary.append(text);
+            }
+            node.append(summary);
+            if (cues.length > 0) { node.classList.add("frame-clip-cue"); node.dataset.frameCueStart = String(cell.startFrame); }
+          }
+          node.addEventListener("pointerdown", (event) => {
+            if (event.button !== 0 || (referencesEnabled() && event.shiftKey)) return;
+            const rect = node.getBoundingClientRect();
+            const edge = Math.min(8, Math.max(4, rect.width / 3));
+            const nearStart = event.clientX - rect.left <= edge;
+            const nearEnd = rect.right - event.clientX <= edge;
+            // A code caption cell addresses its authored component. Do not
+            // pretend its per-cue boundary is an independent writable entity.
+            const handle = cues.length > 0 ? undefined : clip.editHandles.find((candidate) =>
+              candidate.enabled
+              && ((candidate.gesture === "trim-start" && nearStart)
+                || (candidate.gesture === "trim-end" && nearEnd)
+                || (candidate.gesture === "move" && !nearStart && !nearEnd)));
+            if (handle !== undefined
+              && (handle.gesture === "move" || handle.gesture === "trim-start" || handle.gesture === "trim-end")) {
+              event.stopPropagation();
+              const pointerFrame = handle.coordinate === "semantic-anchor"
+                ? rawFrameAt(event.clientX)
+                : frameAt(event.clientX);
+              activeEdit = {
+                clip,
+                handle,
+                startFrame: pointerFrame,
+                pointerId: event.pointerId,
+                node,
+                originalLeft: node.style.left,
+                originalWidth: node.style.width,
+              };
+              node.classList.add("editing");
+              try { lanes.setPointerCapture(event.pointerId); } catch { /* local pointer */ }
+              store.select(clip.id, "timeline");
+              return;
+            }
             store.select(clip.id, "timeline");
-            return;
-          }
-          store.select(clip.id, "timeline");
-        });
-        node.addEventListener("dblclick", () => store.seek(clip.startFrame, "timeline"));
-        nextClipNodes.push({ node, start: clip.startFrame, end: clip.endFrameExclusive, id: clip.id, ...(clip.selectionGroup === undefined ? {} : { selectionGroup: clip.selectionGroup }) });
-        lane.append(node);
+          });
+          node.addEventListener("dblclick", () => store.seek(cell.startFrame, "timeline"));
+          nextClipNodes.push({ node, start: cell.startFrame, end: cell.endFrameExclusive, id: clip.id, ...(clip.selectionGroup === undefined ? {} : { selectionGroup: clip.selectionGroup }) });
+          lane.append(node);
+        }
       }
       trackBody.append(lane);
     }
@@ -830,8 +1021,81 @@ export function createTimeline(store: Store): Timeline {
     for (const item of materialMounts) mountMaterialPreview(item.target, item.preview);
   };
 
+  const buildTrackGroup = (
+    snapshot: StudioSnapshot,
+    group: typeof frameTrackGroups[number],
+    nextClipNodes: { node: HTMLElement; start: number; end: number; id: string; selectionGroup?: string }[],
+  ): void => {
+    const tracks = snapshot.tracks.filter((track) => frameTrackKind(track) === group.kind);
+    const expanded = expandedGroups.has(group.kind);
+    const height = group.kind === "caption" ? 28 : 32;
+    const label = createTrackLabel(group.label, group.tone, group.icon, `${tracks.length} 条轨道`, height);
+    label.classList.add("frame-track-group", `frame-track-${group.kind}`);
+    label.dataset.frameGroup = group.kind;
+    label.dataset.frameDisclosure = "";
+    label.dataset.frameTrackKind = group.kind;
+    label.setAttribute("role", "button");
+    label.setAttribute("aria-label", `${group.label}，${tracks.length} 条轨道`);
+    label.setAttribute("aria-expanded", String(expanded));
+    label.tabIndex = 0;
+    const count = document.createElement("span");
+    count.className = "frame-group-count";
+    count.textContent = String(tracks.length);
+    label.append(count);
+    const toggle = (): void => {
+      if (expandedGroups.has(group.kind)) expandedGroups.delete(group.kind);
+      else expandedGroups.add(group.kind);
+      if (state !== undefined) { build(state.snapshot); paint(); }
+      // Rebuilding native rows replaces this label. Preserve keyboard focus
+      // on its replacement so the next Enter/Tab acts on the visible group.
+      labels.querySelector<HTMLElement>(`[data-frame-group="${group.kind}"]`)?.focus({ preventScroll: true });
+    };
+    label.addEventListener("click", toggle);
+    label.addEventListener("keydown", (event) => {
+      if (event.key !== "Enter" && event.key !== " ") return;
+      event.preventDefault(); toggle();
+    });
+    labels.append(label);
+    if (expanded) {
+      const heading = document.createElement("div");
+      heading.className = `timeline-track frame-group-lane frame-track-${group.kind}`;
+      heading.dataset.frameGroup = group.kind;
+      heading.style.height = `${height}px`;
+      rows.append(heading);
+      if (group.kind === "caption") buildSemanticLane(snapshot, false);
+      for (const track of tracks) buildTrack(snapshot, track, nextClipNodes, track.binding.lane.attachedTo !== undefined, true);
+      return;
+    }
+    if (tracks.length === 0) {
+      const empty = document.createElement("div");
+      empty.className = `timeline-track frame-group-lane frame-track-${group.kind}`;
+      empty.dataset.frameGroup = group.kind;
+      empty.style.height = `${height}px`;
+      rows.append(empty);
+      return;
+    }
+    // Only author content belongs to the overview. Caption recipe/use bands
+    // retain their original editable rows when this type is expanded.
+    const summaryTrack = {
+      ...tracks[0]!,
+      id: `frame-group:${group.kind}`,
+      clips: tracks.flatMap((track) => track.clips.filter((clip) => clip.band === undefined))
+        .sort((left, right) => (right.endFrameExclusive - right.startFrame) - (left.endFrameExclusive - left.startFrame)),
+      binding: { ...tracks[0]!.binding, label: group.label, tone: group.tone, bands: [], lane: { heightPx: height } },
+    };
+    // Build the same native clip buttons and edit handles, then replace only
+    // the synthetic label. Author ids, frame positions and writebacks survive.
+    buildTrack(snapshot, summaryTrack, nextClipNodes, false, true, group.kind);
+    labels.lastElementChild?.remove();
+    const row = rows.lastElementChild as HTMLElement;
+    row.classList.add("frame-group-lane");
+    row.dataset.frameGroup = group.kind;
+    row.removeAttribute("data-track");
+  };
+
   const build = (snapshot: StudioSnapshot): void => {
     closeOverlapMenu();
+    hoveredClip = undefined; focusedClip = undefined; clipTooltip.hidden = true;
     const scrollTop = body.scrollTop;
     labels.replaceChildren();
     rows.replaceChildren();
@@ -839,10 +1103,18 @@ export function createTimeline(store: Store): Timeline {
     const corner = document.createElement("div");
     corner.className = "label-corner";
     userText(corner, "");
-    if (snapshot.semantic === undefined || snapshot.semantic.segments.length === 0) labels.append(corner);
-    buildSemanticLane(snapshot);
+    const grouped = embeddedTimeline() && usesFrameTrackGroups(snapshot);
+    element.dataset.frameGrouped = String(grouped);
+    const visualClips = snapshot.tracks.filter((track) => frameTrackKind(track) === "visual")
+      .flatMap((track) => track.clips).sort((left, right) => left.startFrame - right.startFrame || left.stackOrder - right.stackOrder);
+    clipSequences = new Map(visualClips.map((clip, index) => [clip.id, index + 1]));
+    clipTrackNames = new Map(snapshot.tracks.flatMap((track) => track.clips.map((clip) => [clip.id, displayTrackName(track)] as const)));
+    if (grouped || snapshot.semantic === undefined || snapshot.semantic.segments.length === 0) labels.append(corner);
+    if (!grouped) buildSemanticLane(snapshot);
     const nextClipNodes: { node: HTMLElement; start: number; end: number; id: string; selectionGroup?: string }[] = [];
-    for (const track of snapshot.tracks) {
+    if (grouped) {
+      for (const group of frameTrackGroups) buildTrackGroup(snapshot, group, nextClipNodes);
+    } else for (const track of snapshot.tracks) {
       const attachedTo = track.binding.lane.attachedTo;
       if (attachedTo !== undefined) continue;
       buildTrack(snapshot, track, nextClipNodes);
@@ -854,9 +1126,11 @@ export function createTimeline(store: Store): Timeline {
     }
     clipNodes = nextClipNodes;
     drawRuler(snapshot);
+    paintReference();
     // Replacing every row briefly collapses the scroll surface. Preserve the
     // vertical reading position when a horizontal pan rebuilds the window.
     body.scrollTop = scrollTop;
+    element.dispatchEvent(new CustomEvent("studio:timeline-layout", { bubbles: true }));
   };
 
   const paint = (): void => {
@@ -895,6 +1169,7 @@ export function createTimeline(store: Store): Timeline {
       item.node.classList.toggle("selected", selected);
       if (item.kind !== "word") item.node.setAttribute("aria-pressed", String(selected));
     }
+    showClipTooltip();
   };
 
   const schedulePaint = (): void => {
@@ -935,16 +1210,19 @@ export function createTimeline(store: Store): Timeline {
     state = value;
     if (value.selection.kind !== "none") selectedWord = undefined;
     if (value.snapshot.revision !== built) {
+      referenceRange = undefined; referenceDrag = undefined; reportReference();
       built = value.snapshot.revision;
       build(value.snapshot);
     }
     schedulePaint();
+    paintReference();
   });
   const resizeObserver = new ResizeObserver(() => {
     if (state !== undefined) scheduleBuild();
   });
   resizeObserver.observe(element);
   resizeObserver.observe(lanes);
+  new MutationObserver(scheduleBuild).observe(element, { attributes: true, attributeFilter: ["data-frame-references"] });
 
   return { element, zoomIn, zoomOut, fit };
 }

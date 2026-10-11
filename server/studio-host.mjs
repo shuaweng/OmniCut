@@ -5,7 +5,7 @@ export function sendStudioResource(req,res,r){
  const headers={'content-type':r.type||'application/octet-stream','cache-control':r.headers?.['cache-control']||'no-store'};
  // These are part of the native storyboard protocol, not optional metadata.
  // Without them the UI cannot consume the atlas and leaves its body unread.
- for(const key of ['content-range','accept-ranges','content-disposition','x-hypit-storyboard-count','x-hypit-storyboard-columns','x-hypit-storyboard-rows','x-hypit-storyboard-tile-width','x-hypit-storyboard-tile-height','x-hypit-storyboard-sample-fps'])if(r.headers?.[key])headers[key]=r.headers[key];
+ for(const key of ['etag','content-range','accept-ranges','content-disposition','x-hypit-storyboard-count','x-hypit-storyboard-columns','x-hypit-storyboard-rows','x-hypit-storyboard-tile-width','x-hypit-storyboard-tile-height','x-hypit-storyboard-sample-fps'])if(r.headers?.[key])headers[key]=r.headers[key];
  if(r.frameRevision)headers['x-frame-revision']=r.frameRevision;
  headers['content-length']=req.method==='HEAD'?(r.headers?.['content-length']||r.body.length):r.body.length;
  res.writeHead(r.status,headers);res.end(req.method==='HEAD'?undefined:r.body);
@@ -15,7 +15,8 @@ export function sendStudioResource(req,res,r){
 // No duplicate parameter serializer, timeline math, XML editor or renderer.
 export class StudioHost{
  constructor({service,engine,studios,notify=()=>{}}){Object.assign(this,{service,engine,studios,notify});this.clientRevisions=new Map();this.serial=Date.now();}
- async mutate(id,input){return this.service.exclusive(async()=>{
+ key(id){return this.studios.key?.(id)||id;}
+ async mutate(id,input){return this.service.exclusive(id,async()=>{
   const p=await this.service.get(id);if(input.revision!==p.revision)throw Error('项目已更新，请重新读取');
   const mutations=input.mutations||[input];
   if(!Array.isArray(mutations)||!mutations.length||mutations.length>100)throw Error('请选择有效的场景修改');
@@ -39,19 +40,24 @@ export class StudioHost{
    if(!/^(session|document|visual\.html|library|surface-preview|artifact|feedback|locales|(?:storyboard|material)\/res_[a-zA-Z0-9._:-]+)$/.test(name))throw Error('未知场景资源');
    let r,p;
    for(let attempt=0;attempt<3;attempt++){
-    r=await this.studios.resource(id,'/__studio/'+name+search,undefined,{method,range});
+    try{r=await this.studios.resource(id,'/__studio/'+name+search,undefined,{method,range});}
+    catch(error){
+     if(!String(error.code||'').startsWith('STUDIO_'))throw error;
+     return {status:error.status||503,type:'application/json; charset=utf-8',frameRevision:error.frameRevision,body:Buffer.from(JSON.stringify({error:error.message,code:error.code,stage:error.code==='STUDIO_PROJECT_COMPILE_FAILED'?'project':'connection',frameRevision:error.frameRevision,...(error.range?{range:error.range}:{})}))};
+    }
     if(name!=='session')break;
     p=await this.service.get(id);
-    if(r.frameRevision===p.revision&&r.sessionPort===this.studios.sessions.get(id)?.port)break;
+    if(r.frameRevision===p.revision&&r.sessionPort===this.studios.sessions.get(this.key(id))?.port)break;
     if(attempt===2)throw Error('工程正在更新，请稍后再读取场景');
    }
    if(/(?:json|html)/.test(r.type||'')){
-    r.body=Buffer.from(r.body.toString().replaceAll('/__studio/','/__studio/projects/'+id+'/'));
-    if(name==='session'){
+    const video=this.service.currentVideoId?.(id)||'v-default',prefix='/__studio/projects/'+id+(video==='v-default'?'':'/videos/'+video)+'/';
+    r.body=Buffer.from(r.body.toString().replaceAll('/__studio/',prefix));
+    if(name==='session'&&r.status===200){
      const data=JSON.parse(r.body),nativeRevision=data.revision;
      const key=p.revision+':'+r.sessionPort+':'+nativeRevision;
-     let current=this.clientRevisions.get(id);
-     if(current?.key!==key){current={key,revision:++this.serial,nativeRevision,frameRevision:p.revision};this.clientRevisions.set(id,current);}
+     let current=this.clientRevisions.get(this.key(id));
+     if(current?.key!==key){current={key,revision:++this.serial,nativeRevision,frameRevision:p.revision};this.clientRevisions.set(this.key(id),current);}
      // A Studio subprocess may restart at revision 1 after an Agent commit.
      // Preserve a monotonic UI revision so upstream Stage/code refresh too.
      data.revision=current.revision;data.frameRevision=p.revision;
@@ -63,10 +69,10 @@ export class StudioHost{
    return r;
   }
   if(!['PUT:source','PUT:artifact-name','POST:mutation','POST:feedback'].includes(method+':'+name))throw Error('不支持的场景操作');
-  return this.service.exclusive(async()=>{
+  return this.service.exclusive(id,async()=>{
    const p=await this.service.get(id);if(revision!==p.revision)throw Error('项目已更新，请刷新场景后重试');
    if(name==='source'||name==='mutation'){
-    const current=this.clientRevisions.get(id);
+    const current=this.clientRevisions.get(this.studios.key(id));
     if(!current||body?.revision!==current.revision||current.frameRevision!==revision)throw Error('场景已更新，请等待画面刷新后重试');
     body={...body,revision:current.nativeRevision};
    }

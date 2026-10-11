@@ -1,0 +1,24 @@
+<?svml using="@hypit/markup@1"?>
+<svml>
+  <import from="@hypit/script@1"/>
+
+  <!-- 台词与配音逐字一致（Susan 完整解说）。|| 只切字幕分句，不改台词与语音时序；
+       语义锚点挂在真实词句上，驱动动效与音效落点。 -->
+  <script id="story">
+    <opening>
+      <HOST> 做一条广告，素材东一个、||西一个，||@{mess!}越剪越乱。
+    </opening>
+    <workbench>
+      <HOST> @{now!}现在，@{mat-image!}图片、@{mat-sound!}声音、||@{mat-caption!}字幕、@{mat-motion!}动效，||@{one-project!}都放进同一个项目里，||@{together!}一起协作。
+    </workbench>
+    <rework>
+      <HOST> @{reference!}看中一条参考片？||@{split!}拆开，@{rewrite!}改成你自己的作品。||@{slow!}中间这段太慢？||@{tell!}跟它说一声，@{swap!}它就换掉。
+    </rework>
+    <claim>
+      <HOST> @{bench!}工作台负责精确，||@{dialog!}对话负责自由。||@{unsatisfied!}哪里不满意，||@{speak!}直接说，@{keep-cut!}让 Agent 继续剪。
+    </claim>
+    <brand>
+      <HOST> @{brand!}OmniCut，@{tagline!}让想法开口。
+    </brand>
+  </script>
+</svml>

@@ -239,6 +239,10 @@ export async function captureStagedVisual(input: CaptureInput, controller: Abort
             let captured: Awaited<ReturnType<typeof captureFrame>>;
             try {
               captured = await stage(`worker ${worker} frame ${frame}`, config.frameTimeoutMs, () => captureFrame(frame));
+            } catch (error) {
+              // Preserve the requested frame for ordinary programme exceptions,
+              // not only timeout errors. This context does not assign blame to a Track.
+              throw new Error(`HyperFrames worker ${worker} frame ${frame}: ${error instanceof Error ? error.message : String(error)}`, { cause: error });
             } finally {
               // Output submission may block behind an earlier frame. Never
               // retain source leases across that independent backpressure.

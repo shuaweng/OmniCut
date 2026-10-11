@@ -4,6 +4,68 @@
   "private": true,
   "type": "module",
   "description": "光线划过，品牌与主张依次揭幕。文字、色彩和时段均可修改。",
-  "hypit": { "activation": "./activation.js" },
-  "frame": { "name": "轻盈揭幕", "import": "@frame/brand-reveal@1" }
+  "hypit": {
+    "activation": "./activation.js"
+  },
+  "frame": {
+    "name": "轻盈揭幕",
+    "import": "@frame/brand-reveal@1",
+    "category": "品牌文字",
+    "tags": [
+      "品牌",
+      "揭幕",
+      "片尾"
+    ],
+    "duration": 4,
+    "aspectRatio": "16:9",
+    "recommendedUses": [
+      "品牌片尾",
+      "产品主张",
+      "实拍文字叠加"
+    ],
+    "parameters": [
+      {
+        "key": "title",
+        "label": "主标题",
+        "type": "text",
+        "default": "把日子，润成诗"
+      },
+      {
+        "key": "subtitle",
+        "label": "副标题",
+        "type": "text",
+        "default": "每一刻，都值得温柔以待"
+      },
+      {
+        "key": "eyebrow",
+        "label": "品牌",
+        "type": "text",
+        "default": "大宝 SOD 蜜"
+      },
+      {
+        "key": "background",
+        "label": "背景颜色",
+        "type": "text",
+        "default": "#f3f5ee"
+      },
+      {
+        "key": "color",
+        "label": "文字颜色",
+        "type": "text",
+        "default": "#163d31"
+      },
+      {
+        "key": "accent",
+        "label": "点缀颜色",
+        "type": "text",
+        "default": "#70947b"
+      },
+      {
+        "key": "z",
+        "label": "图层顺序",
+        "type": "number",
+        "default": 50
+      }
+    ]
+  }
 }

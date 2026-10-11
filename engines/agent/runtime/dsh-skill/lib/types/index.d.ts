@@ -264,6 +264,8 @@ export declare class SkillRegistry extends Service {
      * @returns all sorted winning summaries.
      */
     list(options?: SkillViewOptions): Promise<SkillSummary[]>;
+    /** Refresh one workspace catalog at a host-controlled request boundary. */
+    invalidate(options: Pick<SkillViewOptions, 'cwd'>): void;
     /**
      * Observe the current invocation-neutral catalog and whether discovery completed within a stable revision.
      * Incomplete observations are never cached, allowing consumers to retain last-good state and

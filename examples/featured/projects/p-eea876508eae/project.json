@@ -1,0 +1,23 @@
+{
+  "id": "p-eea876508eae",
+  "projectId": "p-eea876508eae",
+  "videoId": "v-default",
+  "name": "OmniCut · 创意不该困在工具里",
+  "brief": "OmniCut · 创意不该困在工具里",
+  "draft": false,
+  "updated": "2026-10-11T12:11:41.481Z",
+  "version": 7,
+  "history": [],
+  "messages": [],
+  "native": {
+    "author": "main.svml",
+    "run": "render.svrun",
+    "target": "final.video",
+    "output": {
+      "width": 1920,
+      "height": 1080,
+      "fps": 30
+    },
+    "duration": 61
+  }
+}

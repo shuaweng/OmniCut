@@ -1,8 +1,8 @@
 const esc=s=>String(s??'').replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;');
 const icon=name=>`<i data-lucide="${name}" aria-hidden="true"></i>`;
 const logos={creative:'claude-color',ark:'volcengine-color',elevenlabs:'elevenlabs',minimax:'minimax-color',mimo:'xiaomimimo'};
-const mark=id=>logos[id]?`<img class="service-logo ${['elevenlabs','mimo'].includes(id)?'mono':''}" src="/vendor-logos/${logos[id]}.svg" alt="">`:icon(id==='deepseek'?'message-circle':id==='defaults'?'sliders-horizontal':['runninghub','musk'].includes(id)?'cloud':'plug');
-const friendlyModel=value=>String(value||'未选择').replace(/^gpt-image-2[.]5-sunburst$/,'GPT Image 2.5 Sunburst').replace(/^minimax-h3-rh-enhanced$/,'H3 RH Enhanced').replace(/^seedream-v5-pro$/,'Seedream 5 Pro').replace(/^deepseek[-_]?/i,'').replace(/^claude-opus-(\d+)-(\d+)$/,'Opus $1.$2').replace(/^MiniMax-/,'').replace(/^doubao-seedream-5-0-(pro|flash)-\d+$/i,(_,tier)=>`Seedream 5.0 ${tier==='pro'?'Pro':'Flash'}`).replace(/^doubao-seedance-2-0-(mini-)?\d+$/,(_,mini)=>`Seedance 2.0${mini?' Mini':''}`).replace(/^eleven_v(\d+)$/,'Eleven v$1').replace(/^music_v([\d_]+)$/i,(_,v)=>`Music ${v.replaceAll('_','.')}`).replace(/^speech-([\d.]+)-(hd|turbo)$/i,(_,v,q)=>`Speech ${v} ${q.toUpperCase()}`).replace(/^flash$/i,'V4.1 Flash').replace(/^v4-pro$/i,'V4 Pro').replace(/^chat$/i,'Chat').replace(/^reasoner$/i,'Reasoner');
+const mark=id=>logos[id]?`<img class="service-logo ${['elevenlabs','mimo'].includes(id)?'mono':''}" src="/vendor-logos/${logos[id]}.svg" alt="">`:icon(id==='deepseek'?'message-circle':id==='defaults'?'sliders-horizontal':['runninghub','musk','kuaipao'].includes(id)?'cloud':'plug');
+const friendlyModel=value=>String(value||'未选择').replace(/^google\/(?=gemini-)/,'').replace(/^gpt-image-2[.]5-sunburst$/,'GPT Image 2.5 Sunburst').replace(/^gpt-image-2[.]5-([124])k$/,'GPT Image 2.5 · $1K').replace(/^minimax-h3-rh-enhanced$/,'H3 RH Enhanced').replace(/^seedream-v5-pro$/,'Seedream 5 Pro').replace(/^gemini-(\d+(?:\.\d+)?)-(flash|pro)$/i,(_,version,tier)=>`Gemini ${version} ${tier.toLowerCase()==='flash'?'Flash':'Pro'}`).replace(/^deepseek[-_]?/i,'').replace(/^claude-(opus|sonnet)-(\d+)-(\d+)$/,(_,family,major,minor)=>`${family==='opus'?'Opus':'Sonnet'} ${major}.${minor}`).replace(/^MiniMax-/,'').replace(/^doubao-seedream-5-0-(pro|flash)-\d+$/i,(_,tier)=>`Seedream 5.0 ${tier==='pro'?'Pro':'Flash'}`).replace(/^doubao-seedance-2-0-(mini-)?\d+$/,(_,mini)=>`Seedance 2.0${mini?' Mini':''}`).replace(/^eleven_v(\d+)$/,'Eleven v$1').replace(/^music_v([\d_]+)$/i,(_,v)=>`Music ${v.replaceAll('_','.')}`).replace(/^speech-([\d.]+)-(hd|turbo)$/i,(_,v,q)=>`Speech ${v} ${q.toUpperCase()}`).replace(/^flash$/i,'V4.1 Flash').replace(/^v4-pro$/i,'V4 Pro').replace(/^chat$/i,'Chat').replace(/^reasoner$/i,'Reasoner');
 
 export async function openModelSettings({api,onSaved,initialProvider='defaults'}){
  if(document.querySelector('.model-settings'))return;
@@ -25,13 +25,19 @@ export async function openModelSettings({api,onSaved,initialProvider='defaults'}
  const voice=(provider,name,value)=>`<div class="ms-voice">${input(name,'默认音色 ID',value)}<button type="button" class="ms-button" data-voices="${provider}">${icon('list-music')}选择音色</button></div><div class="ms-voice-picker" data-voice-picker="${provider}" hidden></div>`;
  const gateways=[['hiapi','HiAPI'],['beatapi','BeatAPI'],['monid','Monid'],['pollo','Pollo'],['tokendance','TokenDance'],['hypihub','HypiHub']];
  const providers=[
-  {id:'deepseek',name:'任务执行',detail:'对话、任务规划与剪辑操作',status:'agentConfigured',body:
-   group('连接',key('deepseekApiKey',config.agentConfigured,'任务执行'))+
-   group('模型',select('deepseekModel','对话模型',config.model,[['deepseek-flash','V4.1 Flash'],['deepseek-v4-pro','V4 Pro']]))},
+  {id:'deepseek',name:'任务执行',detail:'主力模型负责对话、规划与剪辑操作',status:'agentConfigured',body:
+   `<div data-agent-service="deepseek">${group('连接',key('deepseekApiKey',config.deepseekConfigured,'主力对话'))}${group('模型',select('deepseekModel','对话模型',config.deepseekModel||config.model,[['deepseek-flash','V4.1 Flash'],['deepseek-v4-pro','V4 Pro']]))}${more('接口地址',input('deepseekBaseUrl','对话接口地址',config.deepseekBaseUrl||'https://api.deepseek.com'))}</div>`+
+   `<div data-agent-service="anthropic">${group('Claude 模型',input('agentModel','主力模型 ID',config.agentModel||'claude-sonnet-5-5'))}${group('连接',select('agentKeySource','密钥与接口',config.agentKeySource||'creative',[['creative','沿用创意与理解的连接'],['independent','使用独立连接']])+`<div data-agent-key-source="creative"><p class="ms-note">沿用「创意与理解」的接口地址和已保存密钥；主力模型单独选择，创意仍由原模型负责。</p></div><div data-agent-key-source="independent">${key('agentApiKey',config.agentIndependentConfigured,'主力 Claude')}${input('agentBaseUrl','Claude 接口地址',config.agentBaseUrl||'https://api.anthropic.com')}</div>`)}${more('思考与用量',select('agentReasoningEffort','思考强度',config.agentReasoningEffort||'high',[['high','高 · 复杂规划与编辑'],['medium','中 · 常规任务'],['low','低 · 简单操作']])+input('agentContextWindow','上下文词元上限',config.agentContextWindow||'393216')+input('agentMaxTokens','单次输出词元上限',config.agentMaxTokens||'32768')+'<p class="ms-note">默认 384K 上下文、32K 输出。修改后，同一对话的后续请求使用新模型，已有工程和聊天保留。</p>')}</div>`},
   {id:'creative',name:'创意与理解',detail:'参考拆解、脚本分镜与画面评审',status:'creativeConfigured',body:
    group('连接',key('creativeApiKey',config.creativeConfigured,'创意与理解')+input('creativeBaseUrl','接口地址',config.creativeBaseUrl))+
-   group('模型',input('creativeModel','创意与理解模型',config.creativeModel)+select('creativeEnabled','使用方式',config.creativeEnabled,[['enabled','参与创意、理解与评审'],['disabled','暂停使用']]))+
+   group('模型',input('creativeModel','创意与理解模型',config.creativeModel))+
    more('接口与预算',select('creativeProtocol','接口协议',config.creativeProtocol,[['anthropic-messages','Anthropic Messages'],['openai-completions','OpenAI 兼容']])+'<dl class="ms-facts"><div><dt>上下文上限</dt><dd>384K 词元</dd></div><div><dt>单次输出上限</dt><dd>32K 词元</dd></div></dl>')},
+  {id:'gemini',name:'视频理解',detail:'参考片拆解与成片审查',status:'geminiConfigured',link:'https://aistudio.google.com/apikey',body:
+   group('Gemini 连接',key('geminiApiKey',config.geminiConfigured,'Gemini')+input('geminiBaseUrl','接口地址',config.geminiBaseUrl||'https://generativelanguage.googleapis.com'))+
+   group('模型',input('geminiVideoModel','视频理解模型',config.geminiVideoModel||'gemini-3.8-flash'))+more('接口方式',select('geminiApiMode','Gemini 接口方式',config.geminiApiMode||'generate',[['generate','标准 · generateContent'],['stream','流式 · streamGenerateContent']]))+'<p class="ms-note" data-understanding-note></p>'},
+  {id:'kuaipao',name:'快跑',detail:'图像生成与参考图编辑',status:'kuaipaoConfigured',link:'https://kuaipao.ai/',body:
+   group('连接',key('kuaipaoApiKey',config.kuaipaoConfigured,'快跑'))+
+   group('图像',select('kuaipaoImageModel','图像模型',config.kuaipaoImageModel,[['gpt-image-2.5-1k','GPT Image 2.5 · 1K'],['gpt-image-2.5-2k','GPT Image 2.5 · 2K'],['gpt-image-2.5-4k','GPT Image 2.5 · 4K']]))},
   {id:'musk',name:'Musk API',detail:'图像生成与参考图编辑',status:'muskConfigured',link:'https://muskapi.cc/',body:
    group('连接',key('muskApiKey',config.muskConfigured,'Musk API'))+
    group('图像',select('muskImageModel','图像模型',config.muskImageModel,[['gpt-image-2.5-sunburst','GPT Image 2.5 Sunburst']]))},
@@ -57,50 +63,63 @@ export async function openModelSettings({api,onSaved,initialProvider='defaults'}
    group('配音',select('mimoVoice','默认音色',config.mimoVoice,['mimo_default','冰糖','茉莉','苏打','白桦','Mia','Chloe','Milo','Dean'].map(v=>[v,v==='mimo_default'?'默认音色':v]))+'<dl class="ms-facts"><div><dt>配音模型</dt><dd>MiMo V2.5 TTS</dd></div></dl>')},
   {id:'hypit',name:'扩展服务',detail:'远端执行与本地语音识别',status:'hypitConfigured',body:
    group('远端执行',select('hypitGateway','执行服务',config.hypitGateway,[['none','不启用'],...gateways])+gateways.map(([id,label])=>`<div data-gateway="${id}" ${config.hypitGateway===id?'':'hidden'}>${key(id+'ApiKey',config[id+'Configured'],label)}</div>`).join(''))+
-   group('字幕识别',select('hypitWhisperx','识别方式',config.hypitWhisperx,[['enabled','本地 WhisperX'],['disabled','ElevenLabs']]))}
+   '<p class="ms-note">字幕识别方式在「创作配置」中选择。</p>'}
  ];
- const isConfigured=id=>id==='hypit'?(config.hypitWhisperx==='enabled'||config.hypitGateway!=='none'&&config[config.hypitGateway+'Configured']):Boolean(config[providers.find(p=>p.id===id)?.status]);
+ const isConfigured=id=>id==='deepseek'?((dialog.querySelector('[name=agentProvider]')?.value||config.agentProvider)==='anthropic'?((dialog.querySelector('[name=agentKeySource]')?.value||config.agentKeySource)==='independent'?Boolean(config.agentIndependentConfigured):Boolean(config.creativeConfigured)):Boolean(config.deepseekConfigured)):id==='hypit'?(config.hypitWhisperx==='enabled'||config.hypitGateway!=='none'&&config[config.hypitGateway+'Configured']):Boolean(config[providers.find(p=>p.id===id)?.status]);
  const connectionLabel=id=>isConfigured(id)?id==='hypit'?'已配置':'密钥已保存':'未配置';
  const navButton=p=>`<button type="button" role="tab" id="ms-tab-${p.id}" aria-controls="ms-panel-${p.id}" aria-selected="false" tabindex="-1" data-provider="${p.id}"><span class="ms-nav-mark">${mark(p.id)}</span><span>${p.name}</span><span class="ms-connection-dot" data-dot="${p.id}" data-saved="${isConfigured(p.id)}" aria-label="${connectionLabel(p.id)}"></span></button>`;
- const row=(id,label,description,symbol,control)=>`<div class="ms-purpose" data-purpose="${id}"><span class="ms-purpose-icon">${icon(symbol)}</span><div class="ms-purpose-label"><strong>${label}</strong><span>${description}</span></div><div class="ms-purpose-choice">${control}<span class="ms-model-caption" data-model-caption="${id}"></span></div><button type="button" class="ms-configure" data-configure="${id}" aria-label="配置${label}">${icon('chevron-right')}</button></div>`;
- const fixed=id=>`<span class="ms-fixed-model" data-fixed-model="${id}"></span>`;
+ const row=(id,label,description,symbol,control)=>`<div class="ms-purpose" data-purpose="${id}"><span class="ms-purpose-icon">${icon(symbol)}</span><div class="ms-purpose-label"><strong>${label}</strong><span>${description}</span></div><div class="ms-purpose-choice">${control}<span class="ms-model-caption" data-model-caption="${id}"></span></div><button type="button" class="ms-configure" data-configure="${id}" aria-label="配置${label}的连接">连接设置</button></div>`;
+ const fixed=(label,value)=>`<label class="ms-field"><span>${label}</span><input aria-label="${label}" readonly value="${esc(value)}"></label>`;
+ const navGroup=(title,ids)=>`<span class="ms-nav-caption">${title}</span>${ids.map(id=>navButton(providers.find(p=>p.id===id))).join('')}`;
  dialog.innerHTML=`<header class="ms-top"><div><h2 id="settings-title">模型设置</h2><span>连接服务，选择创作所用的模型</span></div><button type="button" class="ms-close" aria-label="关闭模型设置">${icon('x')}</button></header>
   <form class="ms-layout"><nav class="ms-nav" role="tablist" aria-label="模型设置" aria-orientation="vertical">
    <button type="button" role="tab" id="ms-tab-defaults" aria-controls="ms-panel-defaults" aria-selected="true" data-provider="defaults"><span class="ms-nav-mark">${mark('defaults')}</span><span>创作配置</span></button>
-   <span class="ms-nav-caption">连接配置</span>${providers.slice(0,7).map(navButton).join('')}
-   <span class="ms-nav-caption">更多</span>${providers.slice(7).map(navButton).join('')}
+   ${navGroup('构思与理解',['deepseek','creative','gemini'])}
+   ${navGroup('图像与视频',['kuaipao','musk','runninghub','minimax','ark'])}
+   ${navGroup('声音',['elevenlabs','mimo'])}
+   ${navGroup('扩展',['hypit'])}
   </nav><main class="ms-content">
    <section id="ms-panel-defaults" role="tabpanel" aria-labelledby="ms-tab-defaults" data-panel="defaults" tabindex="0">
     <div class="ms-heading"><div><h3>创作配置</h3></div></div>
     <h4 class="ms-section-title">构思与执行</h4><div class="ms-purpose-list">
-     ${row('agent','任务执行','对话与剪辑','message-circle',fixed('agent'))}
-     ${row('creative','创意策划','脚本与分镜','notebook-pen',fixed('creative'))}
-     ${row('reference','参考理解','拆解画面与节奏','scan-eye',fixed('reference'))}
+     ${row('agent','任务执行','对话与剪辑','message-circle',select('agentProvider','任务执行服务',config.agentProvider||'deepseek',[['deepseek','通用对话接口'],['anthropic','Claude']]))}
+     ${row('creative','创意策划','脚本与分镜','notebook-pen',select('creativeEnabled','创意模型使用方式',config.creativeEnabled,[['enabled','当前创意模型'],['disabled','暂停使用']]))}
+     ${row('reference','参考理解','拆解画面与节奏','scan-eye',select('videoUnderstandingProvider','参考视频服务',config.videoUnderstandingProvider||'creative',[['creative','当前创意模型'],['gemini','Gemini']]))}
+     ${row('review','成片审片','检查画面、声音与字幕','film',select('videoReviewProvider','成片审片服务',config.videoReviewProviderOverride??config.videoReviewProvider??'',[['','沿用参考视频服务'],['creative','当前创意模型'],['gemini','Gemini']]))}
     </div><h4 class="ms-section-title">画面与声音</h4><div class="ms-purpose-list">
      ${row('video','视频生成','将分镜变成镜头','clapperboard',select('videoProvider','视频生成服务',config.videoProvider,[['runninghub','RunningHub'],['minimax','MiniMax'],['seedance','火山方舟']]))}
-     ${row('image','图像生成','产品图与参考画面','image',select('imageProvider','图像生成服务',config.imageProvider,[['musk','Musk API'],['runninghub','RunningHub'],['seedream','火山方舟']]))}
+     ${row('image','图像生成','产品图与参考画面','image',select('imageProvider','图像生成服务',config.imageProvider,[['kuaipao','快跑'],['musk','Musk API'],['runninghub','RunningHub'],['seedream','火山方舟']]))}
      ${row('speech','人声配音','台词与旁白','mic',select('speechProvider','配音服务',config.speechProvider,[['elevenlabs','ElevenLabs'],['minimax','MiniMax'],['mimo','小米 MiMo']]))}
      ${row('music','背景配乐','整片音乐','music-2',select('musicProvider','配乐服务',config.musicProvider,[['elevenlabs','ElevenLabs'],['minimax','MiniMax']]))}
-     ${row('transcript','字幕识别','字幕与人声对齐','captions',fixed('transcript'))}
-     ${row('effects','音效','环境声与动作声','audio-lines',fixed('effects'))}
-    </div>
+     ${row('transcript','字幕识别','字幕与人声对齐','captions',select('hypitWhisperx','字幕识别服务',config.hypitWhisperx,[['enabled','本地 WhisperX'],['disabled','ElevenLabs']]))}
+     ${row('effects','音效','环境声与动作声','audio-lines',fixed('音效服务','ElevenLabs'))}
+    </div><details class="ms-advanced"><summary>开发者选项</summary><label class="ms-developer"><input type="checkbox" data-developer-toggle ${localStorage.getItem('omnicut:developer')==='1'?'checked':''}>显示源码与本地工程工具</label></details>
    </section>
-   ${providers.map(p=>`<section id="ms-panel-${p.id}" role="tabpanel" aria-labelledby="ms-tab-${p.id}" data-panel="${p.id}" tabindex="0" hidden><div class="ms-heading"><span class="ms-heading-logo">${mark(p.id)}</span><div><h3>${p.name}</h3><p>${p.detail}</p></div><span class="ms-badge" data-status="${p.id}" data-saved="${isConfigured(p.id)}">${connectionLabel(p.id)}</span></div>${p.body}${p.link?`<a class="ms-console" href="${p.link}" target="_blank" rel="noopener noreferrer">获取或管理密钥 ${icon('arrow-up-right')}</a>`:''}</section>`).join('')}
+   ${providers.map(p=>`<section id="ms-panel-${p.id}" role="tabpanel" aria-labelledby="ms-tab-${p.id}" data-panel="${p.id}" tabindex="0" hidden><div class="ms-heading"><span class="ms-heading-logo">${mark(p.id)}</span><div><h3>${p.name}</h3><p>${p.detail}</p></div><span class="ms-badge" data-status="${p.id}" data-saved="${isConfigured(p.id)}">${connectionLabel(p.id)}</span></div>${p.body}${p.link?`<a class="ms-console" href="${p.link}" target="_blank" rel="noopener noreferrer"><span data-console-label>获取或管理密钥</span> ${icon('arrow-up-right')}</a>`:''}</section>`).join('')}
   </main><footer class="ms-footer"><p class="ms-feedback" role="status" aria-live="polite"></p><button type="button" class="ms-cancel">取消</button><button type="submit" class="primary ms-save">保存设置</button></footer></form>`;
+ dialog.querySelector('[data-developer-toggle]')?.addEventListener('change',event=>{localStorage.setItem('omnicut:developer',event.target.checked?'1':'0');document.querySelector('#hypit-studio')?.contentWindow.postMessage({type:'frame:studio-config',developerMode:event.target.checked,projectId:location.hash.match(/project\/(p-[a-f0-9]{12})/)?.[1]},location.origin);});
  const form=dialog.querySelector('form'),feedback=dialog.querySelector('.ms-feedback'),save=dialog.querySelector('.ms-save');
  let saving=false,savedValues=new URLSearchParams(new FormData(form)).toString();
  const value=name=>form.elements.namedItem(name)?.value||'';
  const note=(text,error=false)=>{feedback.textContent=text;feedback.classList.toggle('error',error);};
- const purposeProvider=id=>({agent:'deepseek',creative:'creative',reference:'creative',transcript:value('hypitWhisperx')==='enabled'?'hypit':'elevenlabs',image:value('imageProvider')==='seedream'?'ark':value('imageProvider'),effects:'elevenlabs',video:value('videoProvider')==='seedance'?'ark':value('videoProvider'),speech:value('speechProvider'),music:value('musicProvider')})[id];
+ const purposeProvider=id=>({agent:'deepseek',creative:'creative',reference:value('videoUnderstandingProvider')==='gemini'?'gemini':'creative',review:(value('videoReviewProvider')||value('videoUnderstandingProvider'))==='gemini'?'gemini':'creative',transcript:value('hypitWhisperx')==='enabled'?'hypit':'elevenlabs',image:value('imageProvider')==='seedream'?'ark':value('imageProvider'),effects:'elevenlabs',video:value('videoProvider')==='seedance'?'ark':value('videoProvider'),speech:value('speechProvider'),music:value('musicProvider')})[id];
  const refresh=()=>{
-  const models={agent:value('deepseekModel'),creative:value('creativeModel'),transcript:value('hypitWhisperx')==='enabled'?'WhisperX · 中文 / 英文':'Scribe v2',image:value('imageProvider')==='musk'?value('muskImageModel'):value('imageProvider')==='runninghub'?value('runninghubImageModel'):value('seedreamModel'),video:value('videoProvider')==='runninghub'?value('runninghubVideoModel'):value('videoProvider')==='seedance'?value('seedanceModel'):value('minimaxVideoModel'),speech:value('speechProvider')==='minimax'?value('minimaxSpeechModel'):value('speechProvider')==='mimo'?'MiMo V2.5':value('elevenlabsSpeechModel'),music:value('musicProvider')==='minimax'?value('minimaxMusicModel'):value('elevenlabsMusicModel'),effects:'声音设计'};
-  models.reference=models.creative;
+  dialog.querySelectorAll('[data-agent-service]').forEach(el=>el.hidden=el.dataset.agentService!==value('agentProvider'));
+  dialog.querySelectorAll('[data-agent-key-source]').forEach(el=>el.hidden=el.dataset.agentKeySource!==value('agentKeySource'));
+  const understandingProvider=value('videoUnderstandingProvider'),reviewProvider=value('videoReviewProvider')||understandingProvider;
+  const models={agent:value('agentProvider')==='anthropic'?value('agentModel'):value('deepseekModel'),creative:value('creativeModel'),transcript:value('hypitWhisperx')==='enabled'?'WhisperX · 中文 / 英文':'Scribe v2',image:value('imageProvider')==='kuaipao'?value('kuaipaoImageModel'):value('imageProvider')==='musk'?value('muskImageModel'):value('imageProvider')==='runninghub'?value('runninghubImageModel'):value('seedreamModel'),video:value('videoProvider')==='runninghub'?value('runninghubVideoModel'):value('videoProvider')==='seedance'?value('seedanceModel'):value('minimaxVideoModel'),speech:value('speechProvider')==='minimax'?value('minimaxSpeechModel'):value('speechProvider')==='mimo'?'MiMo V2.5':value('elevenlabsSpeechModel'),music:value('musicProvider')==='minimax'?value('minimaxMusicModel'):value('elevenlabsMusicModel'),effects:'声音设计'};
+  models.reference=understandingProvider==='gemini'?value('geminiVideoModel'):models.creative;
+  models.review=reviewProvider==='gemini'?value('geminiVideoModel'):models.creative;
+  const usesGemini=[['参考视频',understandingProvider],['成片审片',reviewProvider]].filter(([,provider])=>provider==='gemini').map(([label])=>label);
+  const geminiConsole=dialog.querySelector('[data-panel="gemini"] .ms-console');
+  let geminiService;try{const url=new URL(value('geminiBaseUrl'));if(url.protocol==='https:'&&url.hostname!=='generativelanguage.googleapis.com')geminiService=url.origin;}catch{}
+  geminiConsole.href=geminiService||'https://aistudio.google.com/apikey';
+  geminiConsole.querySelector('[data-console-label]').textContent=geminiService?'访问服务商':'获取或管理密钥';
+  dialog.querySelector('[data-understanding-note]').textContent=usesGemini.length?`${usesGemini.join('与')}会向 Gemini 接口发送视频和音轨。${usesGemini.length===1?`${usesGemini[0]==='参考视频'?'成片审片':'参考视频'}使用当前创意模型看抽帧画面、读旁白文字。`:''}`:'参考视频与成片审片使用当前创意模型看抽帧画面、读旁白文字。';
   for(const row of dialog.querySelectorAll('[data-purpose]')){
-   const id=row.dataset.purpose,provider=purposeProvider(id),ready=id==='transcript'&&value('hypitWhisperx')==='enabled'||isConfigured(provider),pending=Boolean(value(({deepseek:'deepseekApiKey',creative:'creativeApiKey',ark:'seedanceApiKey',elevenlabs:'elevenlabsApiKey',minimax:'minimaxApiKey',runninghub:'runninghubApiKey',musk:'muskApiKey',mimo:'mimoApiKey'})[provider]));
-   const fixed=row.querySelector('[data-fixed-model]');
-   if(fixed)fixed.textContent=id==='transcript'?(value('hypitWhisperx')==='enabled'?'本地识别':'ElevenLabs'):id==='image'?'火山方舟':id==='effects'?'ElevenLabs':friendlyModel(models[id]);
-   const off=['creative','reference'].includes(id)&&value('creativeEnabled')==='disabled';
-   row.querySelector('[data-model-caption]').textContent=off?'已暂停':pending?'密钥待保存':!ready?'需要填写密钥':['agent','creative','reference'].includes(id)?'已配置':friendlyModel(models[id]);
+   const id=row.dataset.purpose,provider=purposeProvider(id),resolvedUnderstanding=id==='review'?reviewProvider:understandingProvider,ready=['reference','review'].includes(id)?(resolvedUnderstanding==='gemini'?isConfigured('gemini'):isConfigured('creative')):id==='transcript'&&value('hypitWhisperx')==='enabled'||isConfigured(provider),pending=Boolean(value(({deepseek:value('agentProvider')==='anthropic'?(value('agentKeySource')==='creative'?'creativeApiKey':'agentApiKey'):'deepseekApiKey',creative:'creativeApiKey',gemini:['reference','review'].includes(id)&&resolvedUnderstanding!=='gemini'?'creativeApiKey':'geminiApiKey',ark:'seedanceApiKey',elevenlabs:'elevenlabsApiKey',minimax:'minimaxApiKey',runninghub:'runninghubApiKey',musk:'muskApiKey',kuaipao:'kuaipaoApiKey',mimo:'mimoApiKey'})[provider]));
+   const off=(id==='creative'||['reference','review'].includes(id)&&resolvedUnderstanding!=='gemini')&&value('creativeEnabled')==='disabled';
+   row.querySelector('[data-model-caption]').textContent=off?'已暂停':pending?'密钥待保存':!ready?'需要填写密钥':friendlyModel(models[id]);
    row.dataset.needsKey=String(!off&&!ready&&!pending);
    row.querySelector('[data-configure]').title=ready?'修改配置':'填写密钥';
   }
@@ -139,9 +158,9 @@ export async function openModelSettings({api,onSaved,initialProvider='defaults'}
   try{
    if(Object.keys(payload).length){const result=await api('/api/settings','POST',payload);if(!dialog.isConnected)return;config={...config,...result};onSaved?.(config);}
    for(const p of providers){const saved=isConfigured(p.id),status=dialog.querySelector('[data-status="'+p.id+'"]'),dot=dialog.querySelector('[data-dot="'+p.id+'"]');status.textContent=connectionLabel(p.id);status.dataset.saved=String(saved);dot.dataset.saved=String(saved);dot.setAttribute('aria-label',connectionLabel(p.id));}
-   dialog.querySelectorAll('.ms-secret input').forEach(field=>{field.value='';field.type='password';const name=field.name.replace('ApiKey','Configured'),saved=name==='deepseekConfigured'?config.agentConfigured:config[name];field.placeholder=saved?'已保存密钥，填写可替换':'粘贴 API Key';});
+   dialog.querySelectorAll('.ms-secret input').forEach(field=>{field.value='';field.type='password';const name=field.name.replace('ApiKey','Configured'),saved=name==='agentConfigured'?config.agentIndependentConfigured:config[name];field.placeholder=saved?'已保存密钥，填写可替换':'粘贴 API Key';});
    dialog.querySelectorAll('[data-reveal]').forEach(button=>{button.setAttribute('aria-label','显示新输入的密钥');button.innerHTML=icon('eye');});
-   for(const name of Object.keys(payload)){const field=form.elements.namedItem(name),saved=name==='deepseekModel'?config.model:config[name];if(!name.endsWith('ApiKey')&&field&&typeof saved==='string')field.value=saved;}
+   for(const name of Object.keys(payload)){const field=form.elements.namedItem(name),saved=name==='videoReviewProvider'?(config.videoReviewProviderOverride??config.videoReviewProvider):config[name];if(!name.endsWith('ApiKey')&&field&&typeof saved==='string')field.value=saved;}
    savedValues=new URLSearchParams(new FormData(form)).toString();refresh();note(config.agentConfigured&&!config.agentReady?'设置已保存，助手连接需要重启':'设置已保存');window.lucide?.createIcons();
   }catch(error){note(error.message,true);}finally{saving=false;save.disabled=false;save.textContent='保存设置';}
  };

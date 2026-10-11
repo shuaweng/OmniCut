@@ -38,9 +38,9 @@
   "license": "MIT",
   "peerDependencies": {
     "@deepseek-ai/dsh-credentials": "0.2.0-rc.2",
+    "@deepseek-ai/dsh-invariants": "0.2.0-rc.2",
     "@deepseek-ai/dsh-llm": "0.2.0-rc.2",
-    "@deepseek-ai/cordis": "~4.0.4",
-    "@deepseek-ai/dsh-invariants": "0.2.0-rc.2"
+    "@deepseek-ai/cordis": "~4.0.4"
   },
   "private": true
 }

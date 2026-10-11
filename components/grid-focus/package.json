@@ -1,0 +1,123 @@
+{
+  "name": "@frame/grid-focus",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "网格单元波浪激活，中心焦点向外传递秩序。",
+  "hypit": {
+    "activation": "./activation.js"
+  },
+  "frame": {
+    "name": "焦点矩阵",
+    "category": "空间图形",
+    "tags": [
+      "矩阵",
+      "网格",
+      "焦点"
+    ],
+    "duration": 4,
+    "aspectRatio": "16:9",
+    "parameters": [
+      {
+        "key": "title",
+        "label": "主标题",
+        "type": "text",
+        "default": "让秩序 生长"
+      },
+      {
+        "key": "subtitle",
+        "label": "说明文案",
+        "type": "text",
+        "default": "从一个焦点，连接更多可能"
+      },
+      {
+        "key": "background",
+        "label": "背景颜色",
+        "type": "text",
+        "default": "#162329"
+      },
+      {
+        "key": "color",
+        "label": "文字颜色",
+        "type": "text",
+        "default": "#f1f1df"
+      },
+      {
+        "key": "accent",
+        "label": "主点缀颜色",
+        "type": "text",
+        "default": "#c4d88d"
+      },
+      {
+        "key": "secondary",
+        "label": "次点缀颜色",
+        "type": "text",
+        "default": "#496c72"
+      },
+      {
+        "key": "x",
+        "label": "水平位置 %",
+        "type": "number",
+        "default": 50,
+        "min": -50,
+        "max": 150,
+        "step": 1
+      },
+      {
+        "key": "y",
+        "label": "垂直位置 %",
+        "type": "number",
+        "default": 50,
+        "min": -50,
+        "max": 150,
+        "step": 1
+      },
+      {
+        "key": "scale",
+        "label": "整体缩放",
+        "type": "number",
+        "default": 1,
+        "min": 0.25,
+        "max": 2,
+        "step": 0.05
+      },
+      {
+        "key": "speed",
+        "label": "动作速度",
+        "type": "number",
+        "default": 1,
+        "min": 0.25,
+        "max": 3,
+        "step": 0.1
+      },
+      {
+        "key": "intensity",
+        "label": "运动幅度",
+        "type": "number",
+        "default": 1,
+        "min": 0,
+        "max": 2,
+        "step": 0.1
+      },
+      {
+        "key": "transparent",
+        "label": "透明背景 true / false",
+        "type": "text",
+        "default": "false"
+      },
+      {
+        "key": "z",
+        "label": "图层顺序",
+        "type": "number",
+        "default": 50,
+        "step": 1
+      }
+    ],
+    "recommendedUses": [
+      "矩阵镜头",
+      "品牌与信息讲解",
+      "实拍上的可编辑叠加"
+    ],
+    "import": "@frame/grid-focus@1"
+  }
+}

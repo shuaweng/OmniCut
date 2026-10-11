@@ -131,14 +131,22 @@ function TurnErrorItem({ node, t }: {
   node: TurnErrorNode
   t: ChatViewSlotProps['t']
 }) {
+  const streamIdleTimeout = node.code === 'TIMEOUT' && /\bstream idle timeout\b/i.test(node.message)
   return (
     <div className={css.turnErrorRow} role="status">
       <StateDot state="error" className={css.turnErrorDot} />
       <div className={css.turnErrorCopy}>
-        <span className={css.turnErrorTitle}>{node.code === 'ACCOUNT_SIGNED_OUT' ? t('message.accountStopped') : t('message.turnError')}</span>
-        <span className={css.turnErrorMessage}>{failureMessage(node.message, node.code, t)}</span>
+        {!streamIdleTimeout && <span className={css.turnErrorTitle}>{node.code === 'ACCOUNT_SIGNED_OUT' ? t('message.accountStopped') : t('message.turnError')}</span>}
+        <span className={css.turnErrorMessage}>{streamIdleTimeout ? t('message.failure.streamIdleTimeout') : failureMessage(node.message, node.code, t)}</span>
+        {streamIdleTimeout && <details className={css.retryRow}>
+          <summary className={css.retrySummary}>{t('message.failure.details')}</summary>
+          <div className={css.retryDetails}>
+            <code className={css.turnErrorCode}>{node.code}</code>
+            <span>{node.message}</span>
+          </div>
+        </details>}
       </div>
-      {node.code !== undefined && <code className={css.turnErrorCode}>{node.code}</code>}
+      {!streamIdleTimeout && node.code !== undefined && <code className={css.turnErrorCode}>{node.code}</code>}
     </div>
   )
 }

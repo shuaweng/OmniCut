@@ -7,8 +7,8 @@ window.__ModuleLoader__.load({
 		let _deepseek_ai_dsh_client_ui_slots = require("@deepseek-ai/dsh-client-ui-slots");
 		let react_jsx_runtime = require("react/jsx-runtime");
 		let react = require("react");
-		//#region \0dsh-css:/home/runner/work/deepseek-harness/deepseek-harness/packages/client/ui-settings-plugins/src/client/PluginsSettingsSection.module.css.mjs
-		const css = ".pbvGtq_section{max-width:760px;color:var(--dsw-alias-label-primary);flex-direction:column;gap:12px;display:flex}.pbvGtq_heading{margin:0;font-size:18px;font-weight:600}.pbvGtq_intro{color:var(--dsw-alias-label-tertiary);margin:0;font-size:13px}.pbvGtq_tabs{border-bottom:.5px solid var(--dsw-alias-border-l2);align-items:flex-end;gap:22px;margin-top:2px;display:flex}.pbvGtq_tab{color:var(--dsw-alias-label-tertiary);font:inherit;cursor:pointer;background:0 0;border:0;padding:7px 1px 9px;font-size:13px;line-height:20px;position:relative}.pbvGtq_tab:hover,.pbvGtq_tab[data-active=true]{color:var(--dsw-alias-label-primary)}.pbvGtq_tab[data-active=true]:after,.pbvGtq_tab:focus-visible:after{background:var(--dsw-alias-label-primary);content:\"\";border-radius:2px 2px 0 0;height:2px;position:absolute;bottom:-1px;left:0;right:0}.pbvGtq_tab:focus-visible{outline:var(--dsw-focus-ring-width) solid var(--dsw-focus-ring-color,var(--dsw-alias-state-business-primary));outline-offset:2px;color:var(--dsw-alias-label-primary);border-radius:2px}.pbvGtq_panel{min-width:0;padding-top:2px}.pbvGtq_cards{flex-direction:column;gap:10px;margin:0;padding:0;list-style:none;display:flex}.pbvGtq_empty{color:var(--dsw-alias-label-tertiary);margin:0;font-size:13px}.pbvGtq_configurable{flex-direction:column;gap:10px;display:flex}.pbvGtq_presetSettings{flex-direction:column;gap:8px;display:flex}.pbvGtq_presetSettingsTitle{margin:0;font-size:15px;font-weight:600;line-height:22px}";
+		//#region \0dsh-css:/Users/wotar/Desktop/视频Agent/frame/engines/agent/source/packages/client/ui-settings-plugins/src/client/PluginsSettingsSection.module.css.mjs
+		const css = ".z21dCa_section{max-width:760px;color:var(--dsw-alias-label-primary);flex-direction:column;gap:12px;display:flex}.z21dCa_heading{margin:0;font-size:18px;font-weight:600}.z21dCa_intro{color:var(--dsw-alias-label-tertiary);margin:0;font-size:13px}.z21dCa_tabs{border-bottom:.5px solid var(--dsw-alias-border-l2);align-items:flex-end;gap:22px;margin-top:2px;display:flex}.z21dCa_tab{color:var(--dsw-alias-label-tertiary);font:inherit;cursor:pointer;background:0 0;border:0;padding:7px 1px 9px;font-size:13px;line-height:20px;position:relative}.z21dCa_tab:hover,.z21dCa_tab[data-active=true]{color:var(--dsw-alias-label-primary)}.z21dCa_tab[data-active=true]:after,.z21dCa_tab:focus-visible:after{background:var(--dsw-alias-label-primary);content:\"\";border-radius:2px 2px 0 0;height:2px;position:absolute;bottom:-1px;left:0;right:0}.z21dCa_tab:focus-visible{outline:var(--dsw-focus-ring-width) solid var(--dsw-focus-ring-color,var(--dsw-alias-state-business-primary));outline-offset:2px;color:var(--dsw-alias-label-primary);border-radius:2px}.z21dCa_panel{min-width:0;padding-top:2px}.z21dCa_cards{flex-direction:column;gap:10px;margin:0;padding:0;list-style:none;display:flex}.z21dCa_empty{color:var(--dsw-alias-label-tertiary);margin:0;font-size:13px}.z21dCa_configurable{flex-direction:column;gap:10px;display:flex}.z21dCa_presetSettings{flex-direction:column;gap:8px;display:flex}.z21dCa_presetSettingsTitle{margin:0;font-size:15px;font-weight:600;line-height:22px}";
 		const tagId = "@deepseek-ai/dsh-client-ui-settings-plugins/PluginsSettingsSection.module.css";
 		if (typeof document !== "undefined" && document.querySelector("style[data-plugin-css=" + JSON.stringify(tagId) + "]") === null) {
 			const tag = document.createElement("style");
@@ -18,17 +18,17 @@ window.__ModuleLoader__.load({
 			document.head.appendChild(tag);
 		}
 		var PluginsSettingsSection_module_css_default = {
-			"cards": "pbvGtq_cards",
-			"configurable": "pbvGtq_configurable",
-			"empty": "pbvGtq_empty",
-			"heading": "pbvGtq_heading",
-			"intro": "pbvGtq_intro",
-			"panel": "pbvGtq_panel",
-			"presetSettings": "pbvGtq_presetSettings",
-			"presetSettingsTitle": "pbvGtq_presetSettingsTitle",
-			"section": "pbvGtq_section",
-			"tab": "pbvGtq_tab",
-			"tabs": "pbvGtq_tabs"
+			"cards": "z21dCa_cards",
+			"configurable": "z21dCa_configurable",
+			"empty": "z21dCa_empty",
+			"heading": "z21dCa_heading",
+			"intro": "z21dCa_intro",
+			"panel": "z21dCa_panel",
+			"presetSettings": "z21dCa_presetSettings",
+			"presetSettingsTitle": "z21dCa_presetSettingsTitle",
+			"section": "z21dCa_section",
+			"tab": "z21dCa_tab",
+			"tabs": "z21dCa_tabs"
 		};
 		//#endregion
 		//#region lib/types/client/PluginsSettingsSection.js

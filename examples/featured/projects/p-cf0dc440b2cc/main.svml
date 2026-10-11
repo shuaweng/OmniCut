@@ -1,0 +1,170 @@
+<?svml using="@hypit/markup@1"?>
+<svml>
+  <import as="copy" source="./authors/script.svml"/>
+  <import as="assets" source="./authors/assets.svml"/>
+  <!-- 每段真实语音的字符时间戳（ElevenLabs 字级对齐，按段切分） -->
+  <import as="vo1" source="./speech/vo-1.svml"/>
+  <import as="vo2" source="./speech/vo-2.svml"/>
+  <import as="vo3" source="./speech/vo-3.svml"/>
+  <import as="vo4" source="./speech/vo-4.svml"/>
+  <import as="votag" source="./speech/vo-tag.svml"/>
+  <import as="speech" from="@frame/speech@1"/>
+  <import as="pipeline" from="@hypit/media-pipeline@1"/>
+  <import as="time" from="@hypit/timeline-author@1"/>
+  <import as="performance" from="@hypit/performance@1"/>
+  <import as="audio" from="@hypit/audio-track@1"/>
+  <import as="caption" from="@hypit/caption@1"/>
+  <import as="caption-fine" from="@hypit/caption-fine@1"/>
+  <import as="linecaption" from="@omnicut/single-line-captions@1"/>
+  <import as="film" from="@hypit/film@1"/>
+  <import as="render" from="@hypit/render-hyperframes@1"/>
+  <import as="spatial" from="@hypit/spatial@1"/>
+  <import as="gfx" from="@omnicut/opening-system@1"/>
+  <import as="omnicut" from="@omnicut/web-scenes@2"/>
+  <import as="look" source="./recipes/composition.svs"/>
+
+  <!-- 两条真实成片：只取画面，原声不进成片 -->
+  <pipeline:Normalize id="dabao-media" source={assets.work-dabao} clock={assets.clock} video="primary-moving" audio="none" span-authority="video"/>
+  <pipeline:Normalize id="estee-media" source={assets.work-estee} clock={assets.clock} video="primary-moving" audio="none" span-authority="video"/>
+
+  <!-- 人物表演：四段真实口播；音轨保留给语义对齐读取，混音只用一条人声轨 -->
+  <pipeline:Normalize id="host-1-media" source={assets.host-1} clock={assets.clock} video="primary-moving" audio="default" span-authority="video"/>
+  <pipeline:Normalize id="host-2-media" source={assets.host-2} clock={assets.clock} video="primary-moving" audio="default" span-authority="video"/>
+  <pipeline:Normalize id="host-3-media" source={assets.host-3} clock={assets.clock} video="primary-moving" audio="default" span-authority="video"/>
+  <pipeline:Normalize id="host-4-media" source={assets.host-4} clock={assets.clock} video="primary-moving" audio="default" span-authority="video"/>
+
+  <!-- 语义 Take：把真实字级时序绑到稿子上 -->
+  <speech:Take id="take-opening" narrative={copy.story} segment={copy.story.segment.opening} media={host-1-media.media} evidence={vo1.alignment}/>
+  <speech:Take id="take-workbench" narrative={copy.story} segment={copy.story.segment.workbench} media={host-2-media.media} evidence={vo2.alignment}/>
+  <speech:Take id="take-rework" narrative={copy.story} segment={copy.story.segment.rework} media={host-3-media.media} evidence={vo3.alignment}/>
+  <speech:Take id="take-claim" narrative={copy.story} segment={copy.story.segment.claim} media={host-4-media.media} evidence={vo4.alignment}/>
+  <pipeline:Normalize id="votag-media" source={assets.vo-tag} clock={assets.clock} video="none" audio="default" span-authority="audio"/>
+  <speech:Take id="take-brand" narrative={copy.story} segment={copy.story.segment.brand} media={votag-media.media} evidence={votag.alignment}/>
+
+  <!-- 一条时间线：人物表演按语序落位 -->
+  <!-- 落点＝真实句尾停顿：0 / 5.44 / 12 / 19.92 / 27.2s，片尾留 1.6s 品牌定格 -->
+  <time:Timeline id="program" clock={assets.clock} end="31.4s">
+    <time:Take source={take-opening.take}/>
+    <time:Take source={take-workbench.take} at="163f"/>
+    <time:Take source={take-rework.take} at="360f"/>
+    <time:Take source={take-claim.take} at="598f"/>
+    <time:Take source={take-brand.take} at="816f"/>
+  </time:Timeline>
+
+  <!-- 人物取景：开场近景 → 右上圆窗 → 半屏 → 近景 → 出场 -->
+  <spatial:Frame id="full-frame" within={assets.canvas} left="0%" top="0%" right="100%" bottom="100%"/>
+  <spatial:AnchoredFrame id="host-inset" within={assets.canvas} x="92%" y="8%" width="360px" height="360px" anchor="top-right"/>
+  <spatial:Frame id="half-frame" within={assets.canvas} left="0%" top="0%" right="100%" bottom="52%"/>
+  <performance:Style id="host-hidden" frame={full-frame} appearance={look.media.hidden}/>
+  <gfx:Framing id="close-framing" shape="rect" radius="0" zoom="1.5" focus-y="26" border="0" ring="0"/>
+  <gfx:Framing id="circle-framing" zoom="1.62" focus-y="24" ring="5" ring-color="#FF6B35"/>
+  <gfx:Framing id="half-framing" shape="rect" radius="0" zoom="1.3" focus-y="24" border="0" ring="0"/>
+  <gfx:Framing id="shrink-framing" from-zoom="1.5" to-zoom="1.62" from-focus-y="26" to-focus-y="24" ring-color="#FF6B35"/>
+  <gfx:PortraitInset id="host-close" frame={full-frame} options={close-framing.options}/>
+  <gfx:PortraitInset id="host-circle" frame={host-inset} options={circle-framing.options}/>
+  <gfx:PortraitInset id="host-half" frame={half-frame} options={half-framing.options}/>
+  <gfx:PortraitTransition id="host-shrink" from={full-frame} to={host-inset} options={shrink-framing.options}/>
+  <performance:Track id="presenter" timeline={program.timeline} canvas={assets.canvas}>
+    <performance:Use style={host-hidden}/>
+    <performance:Use start="program.start" end-source={copy.story.moment.now} end="moment.cue" style={host-close}/>
+    <performance:Use start-source={copy.story.moment.now} start="moment.cue" end-source={copy.story.segment.claim} end="segment.start" style={host-circle}/>
+    <performance:Use at={copy.story.moment.now} for="14f" style={host-shrink}/>
+    <performance:Use start-source={copy.story.segment.claim} start="segment.start" end-source={copy.story.moment.unsatisfied} end="moment.cue" style={host-half}/>
+    <performance:Use start-source={copy.story.moment.unsatisfied} start="moment.cue" end-source={copy.story.segment.brand} end="segment.start" style={host-close}/>
+    <performance:Use during={copy.story.segment.brand} style={host-hidden}/>
+  </performance:Track>
+
+  <!-- 信息动效：真实素材卡汇入工作台 -->
+  <omnicut:Workbench id="workbench-scene" timeline={program.timeline} canvas={assets.canvas} font={assets.font}
+    start-source={copy.story.segment.workbench} start="segment.start" end-source={copy.story.segment.rework} end="segment.start"
+    bench={assets.shot-workbench} still={assets.work-still}>
+    <omnicut:Beat name="now" at={copy.story.moment.now}/>
+    <omnicut:Beat name="matImage" at={copy.story.moment.mat-image}/>
+    <omnicut:Beat name="matSound" at={copy.story.moment.mat-sound}/>
+    <omnicut:Beat name="matCaption" at={copy.story.moment.mat-caption}/>
+    <omnicut:Beat name="matMotion" at={copy.story.moment.mat-motion}/>
+    <omnicut:Beat name="oneProject" at={copy.story.moment.one-project}/>
+    <omnicut:Beat name="together" at={copy.story.moment.together}/>
+  </omnicut:Workbench>
+
+  <!-- 参考改编：参考卡拆开重组，真实运动样片全程占主画面 -->
+  <omnicut:Rework id="rework-scene" timeline={program.timeline} canvas={assets.canvas} font={assets.font}
+    start-source={copy.story.segment.rework} start="segment.start" end-source={copy.story.moment.tell} end="moment.cue"
+    refpanel={assets.shot-reference} sample={dabao-media.media}>
+    <omnicut:Beat name="reference" at={copy.story.moment.reference}/>
+    <omnicut:Beat name="split" at={copy.story.moment.split}/>
+    <omnicut:Beat name="rewrite" at={copy.story.moment.rewrite}/>
+    <omnicut:Beat name="slow" at={copy.story.moment.slow}/>
+  </omnicut:Rework>
+
+  <!-- 一句话修改：样片当场换成另一条真实镜头，指令与时间线作叠层 -->
+  <omnicut:Adjust id="adjust-scene" timeline={program.timeline} canvas={assets.canvas} font={assets.font}
+    start-source={copy.story.moment.tell} start="moment.cue" end-source={copy.story.segment.claim} end="segment.start"
+    swapped={estee-media.media}>
+    <omnicut:Beat name="tell" at={copy.story.moment.tell}/>
+    <omnicut:Beat name="swap" at={copy.story.moment.swap}/>
+  </omnicut:Adjust>
+
+  <!-- 主张双卡：随两句台词出现，人物回全屏时退场 -->
+  <omnicut:Claim id="claim-scene" timeline={program.timeline} canvas={assets.canvas} font={assets.font}
+    start-source={copy.story.segment.claim} start="segment.start" end-source={copy.story.moment.unsatisfied} end="moment.cue">
+    <omnicut:Beat name="bench" at={copy.story.moment.bench}/>
+    <omnicut:Beat name="dialog" at={copy.story.moment.dialog}/>
+  </omnicut:Claim>
+
+  <!-- 品牌收束：卡片回到中心，落成正式标志 -->
+  <omnicut:Brand id="brand-scene" timeline={program.timeline} canvas={assets.canvas} font={assets.font}
+    start-source={copy.story.segment.brand} start="segment.start" end="program.end">
+    <omnicut:Beat name="brand" at={copy.story.moment.brand}/>
+    <omnicut:Beat name="tagline" at={copy.story.moment.tagline}/>
+  </omnicut:Brand>
+
+  <!-- 声音：只有一份人声；人物视频的画面被 Performance 呈现，其自带音轨不进成片 -->
+  <pipeline:Normalize id="vo1-media" source={assets.vo-1} clock={assets.clock} video="none" audio="default" span-authority="audio"/>
+  <pipeline:Normalize id="vo2-media" source={assets.vo-2} clock={assets.clock} video="none" audio="default" span-authority="audio"/>
+  <pipeline:Normalize id="vo3-media" source={assets.vo-3} clock={assets.clock} video="none" audio="default" span-authority="audio"/>
+  <pipeline:Normalize id="vo4-media" source={assets.vo-4} clock={assets.clock} video="none" audio="default" span-authority="audio"/>
+  <audio:Track id="voice" timeline={program.timeline}>
+    <audio:Item id="vo-1" source={vo1-media.media} at="0s" for="4.8s" playback="once" gain="1.88"/>
+    <audio:Item id="vo-2" source={vo2-media.media} at="163f" for="6.0s" playback="once" gain="1.88"/>
+    <audio:Item id="vo-3" source={vo3-media.media} at="360f" for="7.36s" playback="once" gain="1.88"/>
+    <audio:Item id="vo-4" source={vo4-media.media} at="598f" for="6.72s" playback="once" gain="1.88"/>
+    <audio:Item id="vo-tag" source={votag-media.media} at="816f" for="2.56s" playback="once" gain="1.88"/>
+  </audio:Track>
+  <pipeline:Normalize id="bgm-media" source={assets.music} clock={assets.clock} video="none" audio="default" span-authority="audio"/>
+  <pipeline:Normalize id="sfx-media" source={assets.sfx-hit} clock={assets.clock} video="none" audio="default" span-authority="audio"/>
+  <audio:Track id="events" timeline={program.timeline}>
+    <audio:Item id="sfx-land-1" source={sfx-media.media} at={copy.story.moment.mat-image} for="0.9s" playback="once" gain="0.85" fade-out="0.25s"/>
+    <audio:Item id="sfx-land-2" source={sfx-media.media} at={copy.story.moment.mat-sound} for="0.9s" playback="once" gain="0.85" fade-out="0.25s"/>
+    <audio:Item id="sfx-land-3" source={sfx-media.media} at={copy.story.moment.mat-caption} for="0.9s" playback="once" gain="0.85" fade-out="0.25s"/>
+    <audio:Item id="sfx-motion" source={sfx-media.media} at={copy.story.moment.mat-motion} for="0.9s" playback="once" gain="0.8" fade-out="0.25s"/>
+    <audio:Item id="sfx-flip" source={sfx-media.media} at={copy.story.moment.split} for="0.9s" playback="once" gain="0.8" fade-out="0.25s"/>
+    <audio:Item id="sfx-cut" source={sfx-media.media} at={copy.story.moment.swap} for="0.9s" playback="once" gain="0.9" fade-out="0.2s"/>
+  </audio:Track>
+
+  <audio:Track id="music" timeline={program.timeline}>
+    <audio:Item id="bgm" source={bgm-media.media} at="0.3s" for="31s" playback="loop" gain="0.20" fade-in="0.8s" fade-out="2.1s"/>
+  </audio:Track>
+
+  <!-- 字幕：与真实字级时序共用一条时间线 -->
+  <caption:Hidden id="hidden-captions"/>
+  <caption-fine:Style id="caption-base" recipe={look.caption.primary} font={assets.font}/>
+  <linecaption:Track id="captions" timeline={program.timeline} document={copy.story.caption}>
+    <linecaption:Use style={caption-base}/>
+  </linecaption:Track>
+
+  <!-- 合成与最终导出 -->
+  <film:Film id="main" canvas={assets.canvas} timeline={program.timeline} appearance={look.film.main}>
+    <film:Track source={workbench-scene.track}/>
+    <film:Track source={rework-scene.track}/>
+    <film:Track source={adjust-scene.track}/>
+    <film:Track source={claim-scene.track}/>
+    <film:Track source={brand-scene.track}/>
+    <film:Track source={presenter.visual}/>
+    <film:Track source={voice.audio}/>
+    <film:Track source={events.audio}/>
+    <film:Track source={music.audio}/>
+    <film:Track source={captions.track}/>
+  </film:Film>
+  <render:Video id="final" composition={main.composition} timeline={program.timeline}/>
+</svml>

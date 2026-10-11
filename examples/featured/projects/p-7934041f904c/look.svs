@@ -1,0 +1,9 @@
+<?svml using="@hypit/svs@1"?>
+<sheet version="1">
+  text.caption { size: 48; weight: 400; stack-order: 30; align: center; }
+  text.endcard-name { size: 64; weight: 400; stack-order: 30; align: center; tracking: 8; }
+  text.endcard-tag { size: 32; weight: 400; stack-order: 30; align: center; tracking: 14; }
+  media.picture { stack-order: 1; fit: cover; }
+  media.endcard { stack-order: 1; fit: contain; }
+  film.main { background: #e6e9ee; }
+</sheet>

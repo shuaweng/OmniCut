@@ -1,0 +1,17 @@
+{
+  "id": "9003382c-852a-4dd0-8295-427aad28510d",
+  "projectId": "p-eea876508eae",
+  "videoId": "v-dfb6950b128b",
+  "name": "OmniCut · 代码界面版·成片",
+  "created": "2026-10-10T16:11:54.275Z",
+  "status": "done",
+  "duration": 61,
+  "output": {
+    "width": 1920,
+    "height": 1080,
+    "fps": 30
+  },
+  "fileSize": 2400374,
+  "revision": "13:f7a087ad8341bca7",
+  "runtimeStopped": true
+}

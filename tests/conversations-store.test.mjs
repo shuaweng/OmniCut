@@ -68,3 +68,48 @@ test('renaming, archiving, restoring and active conversation survive restarts',a
  await f.restart();const restored=(await f.store.list(projectId)).conversations.find(s=>s.id===added.id);
  assert.equal(restored.archived,false);assert.equal(restored.title,'保留的第二版讨论');assert.equal(f.store.activeId(projectId),added.id);
 });
+
+test('corrupt conversations and active pointer are isolated without overwriting the original files',async t=>{
+ const dir=await fs.mkdtemp(path.join(os.tmpdir(),'frame-conversations-corrupt-'));t.after(()=>fs.rm(dir,{recursive:true,force:true}));
+ const chats=path.join(dir,'chats');await fs.mkdir(chats);const damaged='{broken fixture',active='{broken active';
+ await fs.writeFile(path.join(chats,projectId+'.json'),damaged);await fs.writeFile(path.join(chats,'active.json'),active);
+ await fs.writeFile(path.join(chats,otherProjectId+'.json'),JSON.stringify({messages:[{role:'user',text:'Healthy history'}],status:'idle'}));
+ const store=await new ConversationStore(dir).init(),list=await store.list(projectId);
+ assert.equal(list.recoveryDiagnostics.length,2);assert.equal(list.conversations.length,1);assert.match(list.activeConversationId,/^c-/);
+ assert.equal(store.get(otherProjectId).messages[0].text,'Healthy history');
+ assert.throws(()=>store.ensure(projectId),/资料损坏/);
+ assert.equal(await fs.readFile(path.join(chats,projectId+'.json'),'utf8'),damaged);assert.equal(await fs.readFile(path.join(chats,'active.json'),'utf8'),active);
+ const recovery=store.ensure(projectId,list.activeConversationId);recovery.messages.push({role:'user',text:'New healthy history'});await store.persist(recovery.id);
+ const restarted=await new ConversationStore(dir).init(),again=await restarted.list(projectId);
+ assert.equal(again.activeConversationId,recovery.id);assert.equal(again.conversations.length,1);assert.equal(restarted.get(recovery.id).messages[0].text,'New healthy history');
+ assert.equal(await fs.readFile(path.join(chats,projectId+'.json'),'utf8'),damaged);assert.equal(await fs.readFile(path.join(chats,'active.json'),'utf8'),active);
+});
+
+test('valid JSON with invalid conversation structure is diagnosed and healthy conversations remain usable',async t=>{
+ const dir=await fs.mkdtemp(path.join(os.tmpdir(),'frame-conversations-schema-'));t.after(()=>fs.rm(dir,{recursive:true,force:true}));
+ const chats=path.join(dir,'chats');await fs.mkdir(chats);const id='c-001122334455';
+ await fs.writeFile(path.join(chats,id+'.json'),JSON.stringify({projectId,messages:[null]}));
+ const store=await new ConversationStore(dir).init();assert.equal(store.recoveryDiagnostics.length,1);assert.throws(()=>store.ensure(projectId,id),/资料损坏/);
+ const added=await store.create(projectId);assert.equal(store.ensure(projectId,added.id).status,'idle');
+ assert.deepEqual(JSON.parse(await fs.readFile(path.join(chats,id+'.json'),'utf8')),{projectId,messages:[null]});
+});
+
+test('manual createConversationJob keeps display ownership without claiming an Agent request',async t=>{
+ const f=await fixture(t),added=await f.store.create(projectId),state=f.store.get(added.id);state.turnId='request-preview';
+ const source=await fs.readFile(new URL('../server/index.mjs',import.meta.url),'utf8');
+ const helper=source.slice(source.indexOf('async function createConversationJob('),source.indexOf('const server=http.createServer('));
+ assert.match(helper,/ownTask\(projectId,cid,kind,job,\{kind:'user'\}\)/);
+ const bridge={state:(pid,cid)=>f.store.ensure(pid,cid),async ownTask(pid,cid,kind,job,origin){f.store.ensure(pid,cid);f.store.own(cid,kind,job,origin);await f.store.queue;}};
+ const createConversationJob=new Function('agentBridge',helper+'\nreturn createConversationJob;')(bridge);
+ const manual={id:'manual-export',status:'running'};
+ await createConversationJob(projectId,{conversationId:added.id},'export',async()=>manual);
+ assert.equal(f.store.owner(projectId,'export',manual.id),added.id,'手动产物继续显示于提交时会话');
+ assert.equal(state.agentTaskRequests,undefined,'手动HTTP入口不能凭当前聊天turnId创建Agent请求证据');
+ const agent={id:'agent-export',status:'running'};
+ f.store.own(added.id,'export',agent,{kind:'agent',turnId:'request-preview',rpcId:'rpc-export'});
+ assert.deepEqual(state.agentTaskRequests['export:agent-export'],{turnId:'request-preview',rpcId:'rpc-export'});
+ state.turnId='request-next';f.store.own(added.id,'export',agent,{kind:'user'});
+ assert.equal(state.agentTaskRequests['export:agent-export'].turnId,'request-preview','手动复用不把旧Agent任务归入新请求');
+ await f.restart();assert.deepEqual(f.store.get(added.id).agentTaskRequests,{'export:agent-export':{turnId:'request-preview',rpcId:'rpc-export'}});
+ assert.equal(f.store.owner(projectId,'export',manual.id),added.id);
+});

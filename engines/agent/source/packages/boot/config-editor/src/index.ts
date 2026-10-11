@@ -5,7 +5,7 @@ import { isDeepStrictEqual } from 'node:util'
 import { Context, FiberState, Service, resolveConfig } from '@deepseek-ai/cordis'
 import { entryListSchema, type PatchOptions } from '@deepseek-ai/cordis-plugin-include'
 import yaml from 'js-yaml'
-import type { Entry, EntryOptions } from '@deepseek-ai/cordis-plugin-loader'
+import { interpolate, type Entry, type EntryOptions } from '@deepseek-ai/cordis-plugin-loader'
 import type {} from '@deepseek-ai/dsh-hmr'
 import { composeEntries, loadProfileDirectory, readProfilePatches, reconcileProfilePatches } from '@deepseek-ai/dsh-app-boot'
 import { withFileLock, writeFileAtomic } from '@deepseek-ai/dsh-atomic-write'
@@ -100,7 +100,10 @@ export class ConfigEditor extends Service {
         const next = change(current, inherited)
         const fiber = entry.fiber
         if (fiber.state !== FiberState.ACTIVE) throw new Error('Configuration plugin is no longer active')
-        const resolved: unknown = fiber.ctx.waterfall(fiber, 'internal/config', next, () => next)
+        // Validate the effective configuration while preserving untouched
+        // expressions in the persisted profile (including credential refs).
+        const effectiveNext = interpolate(fiber.ctx, next)
+        const resolved: unknown = fiber.ctx.waterfall(fiber, 'internal/config', effectiveNext, () => effectiveNext)
         resolveConfig(fiber.runtime as NonNullable<typeof fiber.runtime>, resolved)
         let before: string
         try { before = await readFile(path, 'utf8') }

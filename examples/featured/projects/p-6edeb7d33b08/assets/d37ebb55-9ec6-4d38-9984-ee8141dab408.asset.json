@@ -1,0 +1,15 @@
+{
+  "id": "d37ebb55-9ec6-4d38-9984-ee8141dab408",
+  "filename": "d37ebb55-9ec6-4d38-9984-ee8141dab408.mp3",
+  "name": "中文旁白.mp3",
+  "kind": "audio",
+  "duration": 29,
+  "width": null,
+  "height": null,
+  "hasAudio": true,
+  "created": "2026-10-08T15:46:49.330Z",
+  "provenance": {
+    "provider": "featured",
+    "sourcePath": "assets/voice-days-arranged.mp3"
+  }
+}

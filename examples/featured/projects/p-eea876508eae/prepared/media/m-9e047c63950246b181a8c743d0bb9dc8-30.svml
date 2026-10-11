@@ -1,0 +1,5 @@
+<?svml using="@hypit/markup@1"?>
+<svml>
+  <import as="asset" from="@hypit/media@1"/>
+  <asset:Image id="asset" src="../../assets/9e047c63-9502-46b1-81a8-c743d0bb9dc8.png"/>
+</svml>

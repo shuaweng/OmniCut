@@ -4,6 +4,7 @@ import { isDeepStrictEqual } from "node:util";
 import { Service, resolveConfig } from "@deepseek-ai/cordis";
 import { entryListSchema } from "@deepseek-ai/cordis-plugin-include";
 import yaml from "js-yaml";
+import { interpolate } from "@deepseek-ai/cordis-plugin-loader";
 import { composeEntries, loadProfileDirectory, readProfilePatches, reconcileProfilePatches } from "@deepseek-ai/dsh-app-boot";
 import { withFileLock, writeFileAtomic } from "@deepseek-ai/dsh-atomic-write";
 import { Scalar, isMap, isSeq, parseDocument, visit } from "yaml";
@@ -79,7 +80,8 @@ var ConfigEditor = class extends Service {
 				const next = change(current, inherited);
 				const fiber = entry.fiber;
 				if (fiber.state !== 2) throw new Error("Configuration plugin is no longer active");
-				const resolved = fiber.ctx.waterfall(fiber, "internal/config", next, () => next);
+				const effectiveNext = interpolate(fiber.ctx, next);
+				const resolved = fiber.ctx.waterfall(fiber, "internal/config", effectiveNext, () => effectiveNext);
 				resolveConfig(fiber.runtime, resolved);
 				let before;
 				try {

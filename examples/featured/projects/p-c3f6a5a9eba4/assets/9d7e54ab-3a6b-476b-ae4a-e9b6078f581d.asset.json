@@ -1,0 +1,17 @@
+{
+  "id": "9d7e54ab-3a6b-476b-ae4a-e9b6078f581d",
+  "filename": "9d7e54ab-3a6b-476b-ae4a-e9b6078f581d.mp4",
+  "name": "视频素材.mp4",
+  "kind": "video",
+  "duration": 1.791667,
+  "videoDuration": 1.791667,
+  "width": 2560,
+  "height": 1440,
+  "hasAudio": false,
+  "created": "2026-10-07T06:57:40.875Z",
+  "poster": "9d7e54ab-3a6b-476b-ae4a-e9b6078f581d.preview.jpg",
+  "provenance": {
+    "provider": "featured",
+    "sourcePath": "assets/cut-eye-detail-shot.mp4"
+  }
+}

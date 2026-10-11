@@ -152,7 +152,7 @@ function artifactCard(artifact: StudioArtifactView, open: (artifact: StudioArtif
     build: artifact.build,
     output: artifact.output,
   });
-  const href = `/__studio/artifact?${query.toString()}`;
+  const href = studioResourceUrl(`/__studio/artifact?${query.toString()}`);
 
   link.dataset.artifactId = artifact.id;
   link.dataset.build = artifact.build;
@@ -568,3 +568,4 @@ export function createLibraryPane(code: CodePane, openArtifact: (artifact: Studi
     refresh: async () => { if (active !== "source") await refresh(active); },
   };
 }
+import { studioResourceUrl } from "./resource-url.js";

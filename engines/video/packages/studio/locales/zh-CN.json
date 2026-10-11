@@ -157,6 +157,8 @@
     "player.pause": "暂停",
     "player.play": "播放",
     "player.preview": "预览",
+    "player.preview-unavailable": "预览暂不可用",
+    "player.playback-unavailable": "声音暂不可用",
     "player.previous-frame": "上一帧",
     "player.unmute": "取消静音",
     "source.changed-outside-studio": "文件已在外部更改",

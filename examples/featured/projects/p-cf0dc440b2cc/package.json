@@ -1,0 +1,11 @@
+{
+  "name": "frame-hypit-project",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@omnicut/opening-system": "file:packages/opening-system",
+    "@omnicut/web-scenes": "file:packages/web-scenes",
+    "@omnicut/visual-language": "file:packages/visual-language",
+    "@omnicut/single-line-captions": "file:packages/single-line-captions"
+  }
+}

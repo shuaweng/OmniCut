@@ -3,9 +3,8 @@
  * `@deepseek-ai/dsh-fs` Service Definition. It extends `LocalFileSystem` so all
  * text-storage mechanics — resolve, stat, read/stream, list, the atomic
  * write and the read-match-write edit critical section — are the local
- * implementation's, verbatim; this package adds only the per-call POLICY fence
- * on the two mutations. Reads pass through untouched: every mode permits
- * reading.
+ * implementation's, verbatim; this package adds a per-call POLICY fence
+ * on mutations and a deployment-owned protected configuration fence on reads.
  *
  * The fence is a policy check in TRUSTED code over a MODEL-CONTROLLED path,
  * NOT a kernel boundary — the operations are the seam's own (open, rename),
@@ -28,7 +27,7 @@
 import { Context } from '@deepseek-ai/cordis';
 import { LocalFileSystem } from '@deepseek-ai/dsh-fs-local';
 import type { Config as LocalConfig } from '@deepseek-ai/dsh-fs-local';
-import type { FsEditOutcome, FsEditRequest, FsTarget, FsVersion, FsWriteIntent, FsWriteOutcome } from '@deepseek-ai/dsh-fs';
+import type { FsDirEntry, FsEditOutcome, FsEditRequest, FsInfo, FsPathInfo, FsTarget, FsVersion, FsWriteIntent, FsWriteOutcome } from '@deepseek-ai/dsh-fs';
 import type { SandboxExecutionPolicy, SandboxMode } from '@deepseek-ai/dsh-sandbox';
 /**
  * Plugin config: the local backend's knobs verbatim (`cwd` resolution default
@@ -49,6 +48,24 @@ export declare class SandboxedFileSystem extends LocalFileSystem {
     static inject: string[];
     private readonly defaultMode;
     constructor(ctx: Context, config: Config);
+    /** Private deployment config is never model-readable, including approved write escalations. */
+    private protectedTarget;
+    resolve(path: string, opts?: {
+        cwd?: string;
+        signal?: AbortSignal;
+    }): Promise<FsTarget>;
+    stat(target: FsTarget, signal?: AbortSignal): Promise<FsInfo | undefined>;
+    lstat(path: string, opts?: {
+        cwd?: string;
+    }, signal?: AbortSignal): Promise<FsPathInfo | undefined>;
+    readText(target: FsTarget, signal?: AbortSignal): Promise<string>;
+    streamText(target: FsTarget, signal?: AbortSignal): Promise<AsyncIterable<string>>;
+    readBytes(target: FsTarget, signal: AbortSignal | undefined, maxBytes: number): Promise<Uint8Array>;
+    readByteRange(target: FsTarget, range: {
+        offset: number;
+        length: number;
+    }, signal?: AbortSignal): Promise<Uint8Array>;
+    listDir(target: FsTarget, signal?: AbortSignal): Promise<FsDirEntry[]>;
     /** The deployment default mode — the capability fact the tool layer reads to advertise escalation. */
     get sandboxMode(): SandboxMode;
     /**

@@ -1,25 +1,30 @@
+import {mountMotionGallery} from '/motion-gallery.js';
 const esc=value=>String(value??'').replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;');
 
 export async function openMotionLibrary({api,projectId,onChoose}){
  if(document.querySelector('.motion-library'))return;
  const previous=document.activeElement,dialog=document.createElement('dialog');
  dialog.className='motion-library';dialog.setAttribute('aria-labelledby','motion-library-title');
- dialog.innerHTML='<header class="motion-library-heading"><div><h2 id="motion-library-title">动效库</h2><p>换文案、换素材，沿用喜欢的动效。</p></div><button type="button" aria-label="关闭动效库"><i data-lucide="x"></i></button></header><div class="motion-library-body" role="status">正在读取动效…</div>';
- const release=()=>{for(const media of dialog.querySelectorAll('video')){media.pause();media.removeAttribute('src');media.load();}};
- const close=()=>{release();dialog.close();dialog.remove();previous?.focus();};
+ dialog.innerHTML='<header class="motion-library-heading"><h2 id="motion-library-title">动效库</h2><button type="button" aria-label="关闭动效库"><i data-lucide="x"></i></button></header><div class="motion-library-body"><div data-project-motions></div><div data-motion-gallery></div></div>';
+ let view,closed=false;
+ const close=()=>{if(closed)return;closed=true;view?.destroy();dialog.close();dialog.remove();if(previous?.isConnected)previous.focus();};
  dialog.querySelector('header button').onclick=close;
  dialog.addEventListener('cancel',event=>{event.preventDefault();close();});
  document.body.append(dialog);dialog.showModal();window.lucide?.createIcons();
- const body=dialog.querySelector('.motion-library-body');
- async function load(){
+ view=mountMotionGallery({element:dialog.querySelector('[data-motion-gallery]'),api,projectId,onUse:item=>{close();onChoose({...item.motion,motionParameters:item.motionParameters,motionSegment:item.motionSegment});}});
+ async function loadProjectPackages(){
+  if(!projectId)return;
+  const section=dialog.querySelector('[data-project-motions]');
   try{
-   const items=await api('/api/motion-library'+(projectId?'?projectId='+encodeURIComponent(projectId):''));
-   if(!dialog.isConnected)return;
-   body.removeAttribute('role');
-   body.innerHTML=items.length?'<div class="motion-library-grid">'+items.map(item=>`<article class="motion-library-card"><div class="motion-library-preview">${item.preview?`<video src="/api/motion-library/${encodeURIComponent(item.id)}/preview" preload="metadata" controls controlslist="nodownload" muted loop playsinline ${window.matchMedia('(prefers-reduced-motion: reduce)').matches?'':'autoplay'} aria-label="${esc(item.name)}动效示例"></video>`:'<i data-lucide="layers-2"></i>'}</div><div class="motion-library-copy"><div class="motion-library-title"><h3>${esc(item.name)}</h3><span>${item.origin==='builtin'?'内置':'我的动效'}</span></div><p>${esc(item.description||'可编辑动效组件')}</p><button type="button" class="primary" data-motion="${esc(item.id)}">用这个创作<i data-lucide="arrow-up-right"></i></button></div></article>`).join('')+'</div>':'<p class="motion-library-empty">还没有保存的动效。对助手说「把这段动效保存到动效库」，下次就能继续使用。</p>';
-   for(const button of body.querySelectorAll('[data-motion]'))button.onclick=()=>{const item=items.find(x=>x.id===button.dataset.motion);close();onChoose(item);};
-   window.lucide?.createIcons();
-  }catch(error){if(!dialog.isConnected)return;body.innerHTML='<p class="motion-library-empty">'+esc(error.message)+'</p><button type="button" class="secondary" data-retry>重新读取</button>';body.querySelector('[data-retry]').onclick=load;}
+   const [packages,items]=await Promise.all([api('/api/projects/'+projectId+'/motion-packages'),api('/api/motion-library')]);if(closed)return;
+   const available=packages.filter(item=>!item.unavailable&&!items.some(saved=>saved.id===item.id));
+   section.innerHTML=available.length?'<details class="motion-project-packages"><summary>保存项目动效</summary>'+available.map(item=>'<div><span><strong>'+esc(item.name)+'</strong></span><button type="button" class="secondary" data-save-motion="'+esc(item.directory)+'">保存到动效库</button></div>').join('')+'</details>':'';
+   for(const button of section.querySelectorAll('[data-save-motion]'))button.onclick=async()=>{
+    const item=available.find(value=>value.directory===button.dataset.saveMotion);button.disabled=true;button.textContent='正在保存…';
+    try{await api('/api/projects/'+projectId+'/motion-save','POST',{directory:item.directory,name:item.name});await view.refresh();await loadProjectPackages();}
+    catch(error){if(closed)return;button.disabled=false;button.textContent='保存到动效库';let message=section.querySelector('[role=alert]');if(!message){message=document.createElement('p');message.setAttribute('role','alert');section.append(message);}message.textContent=error.message;}
+   };
+  }catch(error){if(closed)return;section.textContent='项目动效暂时未能读取';}
  }
- await load();return dialog;
+ await loadProjectPackages();return dialog;
 }

@@ -1,0 +1,222 @@
+{
+  "builtin": {
+    "hypit": {
+      "title": "视频制作",
+      "summary": "从参考和素材出发，制作可以继续编辑的视频。",
+      "icon": "clapperboard",
+      "category": "制作基础"
+    },
+    "frame-ad-creative": {
+      "title": "广告创意",
+      "summary": "写广告文案与分镜，找到适合商品的创意方向。",
+      "icon": "lightbulb",
+      "category": "广告创意"
+    },
+    "frame-commercial-video": {
+      "title": "商业广告",
+      "summary": "将镜头、旁白、字幕与配乐剪成一条完整广告。",
+      "icon": "film",
+      "category": "广告创意"
+    },
+    "frame-presenter-video": {
+      "title": "人物口播",
+      "summary": "制作人物讲解、数字人口播和产品演示。",
+      "icon": "mic-vocal",
+      "category": "讲解与口播"
+    },
+    "video-workspace": {
+      "title": "剪辑与动效",
+      "summary": "用代码制作文字动画、转场和可复用的动效。",
+      "icon": "code-xml",
+      "category": "代码动效"
+    },
+    "motion-direction": {
+      "title": "动效编排",
+      "summary": "根据镜头要表达的内容，选择动效、安排节奏和衔接。",
+      "icon": "move-3d",
+      "category": "代码动效"
+    }
+  },
+  "catalog": [
+    {
+      "name": "minimax-h3-prompting",
+      "title": "MiniMax H3 提示词",
+      "summary": "按文生、首帧、首尾帧与多参考模式写结构化镜头、声景与配乐。",
+      "icon": "wand-sparkles",
+      "category": "视频生成",
+      "source": {
+        "label": "MiniMax H3 官方技能 · h3-prompt-writing",
+        "url": "https://github.com/MiniMax-AI/MiniMax-H3/tree/main/skills"
+      }
+    },
+    {
+      "name": "minimal-product-ad",
+      "title": "极简产品广告",
+      "summary": "三张锚定画面、单一主动作与画内一行文案的高级质感短片。",
+      "icon": "box",
+      "category": "广告创意",
+      "source": {
+        "label": "MiniMax H3 官方技能 · minimalist-product-ad-generator",
+        "url": "https://github.com/MiniMax-AI/MiniMax-H3/tree/main/skills"
+      }
+    },
+    {
+      "name": "brand-promo-film",
+      "title": "品牌宣传片",
+      "summary": "一个主体、一个目标、一次转折，30–60 秒完整品牌叙事。",
+      "icon": "megaphone",
+      "category": "广告创意",
+      "source": {
+        "label": "MiniMax H3 官方技能 · brand-promo-video-generator；Lemo-Opuscar 导演原则",
+        "url": "https://github.com/lemomo-ai/lemo-opuscar"
+      }
+    },
+    {
+      "name": "papercraft-explainer",
+      "title": "纸艺定格讲解",
+      "summary": "剪纸、拼贴与定格质感，把概念和流程讲明白。",
+      "icon": "scissors",
+      "category": "镜头与风格",
+      "source": {
+        "label": "MiniMax H3 官方技能 · papercraft-stop-motion / paper-collage",
+        "url": "https://github.com/MiniMax-AI/MiniMax-H3/tree/main/skills"
+      }
+    },
+    {
+      "name": "lyric-music-video",
+      "title": "歌词音乐视频",
+      "summary": "按歌曲结构组织画面，歌词逐句卡拍，副歌用最强母题。",
+      "icon": "music",
+      "category": "社媒与音乐",
+      "source": {
+        "label": "MiniMax H3 官方技能 · music-video-subtitle-generator",
+        "url": "https://github.com/MiniMax-AI/MiniMax-H3/tree/main/skills"
+      }
+    },
+    {
+      "name": "code-camera-language",
+      "title": "代码镜头语言",
+      "summary": "把推拉摇移、视差与焦点转移写成按帧计算的相机。",
+      "icon": "camera",
+      "category": "镜头与风格",
+      "source": {
+        "label": "Lemo-Opuscar · DIRECTOR / TECHNIQUE",
+        "url": "https://github.com/lemomo-ai/lemo-opuscar",
+        "license": "MIT"
+      }
+    },
+    {
+      "name": "code-film-styles",
+      "title": "代码短片风格库",
+      "summary": "瑞士平面、水墨、剪纸、全息、像素等 16 种风格卡。",
+      "icon": "palette",
+      "category": "镜头与风格",
+      "source": {
+        "label": "Lemo-Opuscar · 43 种影片风格",
+        "url": "https://github.com/lemomo-ai/lemo-opuscar",
+        "license": "MIT"
+      }
+    },
+    {
+      "name": "kinetic-typography",
+      "title": "动态字排",
+      "summary": "按语义与节拍设计逐字、逐词的进场、强调与停留。",
+      "icon": "type",
+      "category": "代码动效",
+      "source": {
+        "label": "Opus 5.5 动效作品整理 · 动态字排",
+        "url": "https://github.com/zhuyansen/awesome-opus-5.5-video"
+      }
+    },
+    {
+      "name": "product-ui-motion",
+      "title": "产品界面演示",
+      "summary": "点击、输入、生成到结果出现的完整操作链与焦点标注。",
+      "icon": "monitor-smartphone",
+      "category": "代码动效",
+      "source": {
+        "label": "Prompt Motion · Product UI 分类",
+        "url": "https://prompt-motion.com/"
+      }
+    },
+    {
+      "name": "data-story-motion",
+      "title": "数据故事动效",
+      "summary": "先背景、后变化、再结论，用图表讲一个数字。",
+      "icon": "chart-no-axes-combined",
+      "category": "代码动效",
+      "source": {
+        "label": "Opus 5.5 动效作品整理 · 数据可视化",
+        "url": "https://github.com/yihui-dev/awesome-opus5-5-videos",
+        "license": "MIT"
+      }
+    },
+    {
+      "name": "beat-sync-edit",
+      "title": "卡点剪辑",
+      "summary": "切点、重音动作与字幕都绑定到配乐拍点。",
+      "icon": "audio-waveform",
+      "category": "剪辑与声音",
+      "source": {
+        "label": "Claude 视频技能合集 · 节奏剪辑类",
+        "url": "https://github.com/zhuyansen/awesome-claude-video-skills"
+      }
+    },
+    {
+      "name": "explainer-short",
+      "title": "知识讲解短片",
+      "summary": "问题、比喻、分步拆解、一句话总结的讲解结构。",
+      "icon": "graduation-cap",
+      "category": "讲解与口播",
+      "source": {
+        "label": "Claude 视频技能合集 · Explainers",
+        "url": "https://github.com/zhuyansen/awesome-claude-video-skills"
+      }
+    },
+    {
+      "name": "social-hook-shorts",
+      "title": "短视频开头钩子",
+      "summary": "前 3 秒钩子、竖屏安全区与 2–4 秒一次的信息更新。",
+      "icon": "zap",
+      "category": "社媒与音乐",
+      "source": {
+        "label": "Claude 视频技能合集 · Shorts & Social",
+        "url": "https://github.com/zhuyansen/awesome-claude-video-skills"
+      }
+    },
+    {
+      "name": "logo-sting",
+      "title": "品牌标志演绎",
+      "summary": "汇聚、描边、遮罩或光扫完成 2–5 秒的标志出场。",
+      "icon": "stamp",
+      "category": "代码动效",
+      "source": {
+        "label": "Opus 5.5 动效作品整理 · Logo reveal",
+        "url": "https://github.com/zhuyansen/awesome-opus-5.5-video"
+      }
+    },
+    {
+      "name": "motion-prompt-brief",
+      "title": "动效创作简报",
+      "summary": "把一句想法扩写成时长、风格锚点、运动词汇与分段时间表。",
+      "icon": "pen-line",
+      "category": "代码动效",
+      "source": {
+        "label": "Opus 5.5 动效提示词规律",
+        "url": "https://github.com/zhuyansen/awesome-opus-5.5-video"
+      }
+    },
+    {
+      "name": "sound-design-layers",
+      "title": "三层声音设计",
+      "summary": "环境声、材质音效与让位配乐，J 切 L 切带动转场。",
+      "icon": "headphones",
+      "category": "剪辑与声音",
+      "source": {
+        "label": "Lemo-Opuscar · 声音设计模型",
+        "url": "https://github.com/lemomo-ai/lemo-opuscar",
+        "license": "MIT"
+      }
+    }
+  ]
+}

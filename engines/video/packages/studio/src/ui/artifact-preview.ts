@@ -29,7 +29,7 @@ export function createArtifactPreview(changed: () => void) {
     const current = generation;
     selected = artifact;
     element.hidden = false;
-    const url = `/__studio/artifact?${new URLSearchParams({ build: artifact.build, output: artifact.output })}`;
+    const url = studioResourceUrl(`/__studio/artifact?${new URLSearchParams({ build: artifact.build, output: artifact.output })}`);
     const error = document.createElement("p");
     error.className = "stage-media-error";
     error.hidden = true;
@@ -98,3 +98,4 @@ export function createArtifactPreview(changed: () => void) {
     get media() { return media; },
   };
 }
+import { studioResourceUrl } from "./resource-url.js";

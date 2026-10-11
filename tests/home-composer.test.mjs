@@ -6,7 +6,7 @@ import os from 'node:os';
 import path from 'node:path';
 import {SlotCore} from '@deepseek-ai/dsh-client-ui-slots';
 import {ProjectService} from '../server/project.mjs';
-import {createAgentBridge} from '../server/agent.mjs';
+import {createAgentBridge} from './fixtures/isolated-agent-bridge.mjs';
 
 test('native composer can be shadowed without re-declaring its attachment slot',()=>{
  const core=new SlotCore();

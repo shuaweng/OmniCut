@@ -163,6 +163,8 @@ export declare const zh: {
     'message.failure.accountSignedOut': string;
     'message.failure.accountSignInRequired': string;
     'message.failure.quota': string;
+    'message.failure.streamIdleTimeout': string;
+    'message.failure.details': string;
     'message.turnError': string;
     'message.maxTokens': string;
     'message.maxTokens.hint': string;
@@ -354,6 +356,8 @@ export declare const en: {
     'message.failure.accountSignedOut': string;
     'message.failure.accountSignInRequired': string;
     'message.failure.quota': string;
+    'message.failure.streamIdleTimeout': string;
+    'message.failure.details': string;
     'message.turnError': string;
     'message.maxTokens': string;
     'message.maxTokens.hint': string;

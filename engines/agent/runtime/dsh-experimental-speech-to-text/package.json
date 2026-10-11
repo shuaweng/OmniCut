@@ -36,12 +36,12 @@
   ],
   "license": "MIT",
   "dependencies": {
-    "@deepseek-ai/schemastery": "~3.18.4",
-    "@deepseek-ai/dsh-brand": "0.2.0-rc.2"
+    "@deepseek-ai/dsh-brand": "0.2.0-rc.2",
+    "@deepseek-ai/schemastery": "~3.18.4"
   },
   "peerDependencies": {
-    "@deepseek-ai/dsh-settings": "0.2.0-rc.2",
     "@deepseek-ai/cordis": "~4.0.4",
+    "@deepseek-ai/dsh-settings": "0.2.0-rc.2",
     "@deepseek-ai/cordis-plugin-loader": "~1.0.5"
   },
   "peerDependenciesMeta": {

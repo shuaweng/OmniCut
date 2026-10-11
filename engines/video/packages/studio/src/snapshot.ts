@@ -5,7 +5,9 @@ import { composeParameterDeclarations } from "./parameters.js";
  * The Timeline owns the work range. Companions project selectable entities onto
  * that range without extending it or requiring component-specific editor code.
  */
-import { relative } from "node:path";
+import { relative, resolve, dirname } from "node:path";
+import { createHash } from "node:crypto";
+import type { AudioTrack } from "@hypit/composition";
 
 import type { MarkupSurfaceRegistryLike } from "@hypit/markup";
 import { compositionTypes } from "@hypit/composition";
@@ -40,6 +42,51 @@ type Present = {
 
 /** Sound is placed in samples rather than frames, in the canonical 48 kHz. */
 const SAMPLE_RATE = 48_000;
+
+/** Follow compiler-resolved identities, never display labels or id prefixes. */
+function audioSourceFacts(built: Preview, placement: Placement | undefined, clip: Clip, root: string): Pick<NonNullable<Clip["audio"]>, "sourceReference" | "sourceSignature" | "sourceAssetPath"> {
+  const nodes = built.source.observations.placements.flatMap(owner => [owner,
+    ...owner.children.map(child => ({ ...child, module: owner.module, surface: child.tag.split(":").at(-1)?.toLowerCase() }))]);
+  const node = placement?.children.find(child => child.id === clip.authoredId)
+    ?? nodes.find(item => item.id === clip.authoredId && item.range.start === clip.elementRange?.start && item.range.end === clip.elementRange?.end);
+  const sourceReference = node?.resolvedReferenceAttributes?.source;
+  if (sourceReference === undefined) return {};
+  let ref = sourceReference, direct = true, sourceAssetPath: string | undefined;
+  const chain: unknown[] = [], seen = new Set<string>();
+  for (let count = 0; count < 20 && !seen.has(ref); count++) {
+    seen.add(ref);
+    const matches = nodes.filter(item => item.outputs?.includes(ref) || item.records?.includes(ref));
+    if (matches.length !== 1) { direct = false; break; }
+    const owner = matches[0]!;
+    chain.push({ module: owner.module, surface: owner.surface, attributes: owner.attributes, references: owner.resolvedReferenceAttributes });
+    if (owner.module?.name === "@hypit/media" && owner.surface === "audio" && typeof owner.attributes.src === "string") {
+      const path = relative(root, resolve(dirname(resolve(root, owner.sourcePath)), owner.attributes.src)).replaceAll("\\", "/");
+      if (direct && !path.startsWith("../") && path !== "..") sourceAssetPath = path;
+      break;
+    }
+    if (owner.module?.name !== "@hypit/media-pipeline" || owner.surface !== "synchronized-media") direct = false;
+    const next = owner.resolvedReferenceAttributes?.source;
+    if (next === undefined) { direct = false; break; }
+    ref = next;
+  }
+  return { sourceReference, sourceSignature: createHash("sha256").update(JSON.stringify({ sourceReference, chain })).digest("hex"), ...(sourceAssetPath === undefined ? {} : { sourceAssetPath }) };
+}
+
+function clipAudioFacts(built: Preview, placement: Placement | undefined, clip: Clip, value: unknown, root: string, frameRate: {numerator:number;denominator:number}): Clip["audio"] | undefined {
+  const track = value as AudioTrack;
+  if (track.kind !== "audio") return undefined;
+  const rate = frameRate.numerator / frameRate.denominator;
+  const matches = track.clips.filter(item => (item.subjectId ?? item.id) === clip.authoredId
+    && item.target.startSample / SAMPLE_RATE >= clip.startFrame / rate - 1 / rate
+    && item.target.endSampleExclusive / SAMPLE_RATE <= clip.endFrameExclusive / rate + 1 / rate);
+  if (matches.length !== 1) return undefined;
+  const item = matches[0]!;
+  return { resource: item.artifact.resource, timelineStart: item.target.startSample / SAMPLE_RATE,
+    timelineEnd: item.target.endSampleExclusive / SAMPLE_RATE, trimStart: item.source.startSample / SAMPLE_RATE,
+    trimEnd: item.source.endSampleExclusive / SAMPLE_RATE, playbackRate: item.playbackRate,
+    loop: item.source.loop, phase: item.source.phaseSample / SAMPLE_RATE,
+    ...audioSourceFacts(built, placement, clip, root) };
+}
 
 type AudioClip = {
   readonly id: string;
@@ -267,7 +314,11 @@ export function snapshot(registry: StudioCompanionRegistry, built: Preview, inpu
     });
     const clips: Clip[] = drafts
       .filter(({ draft }) => draft.lane === undefined)
-      .map(({ draft, inspector, editHandles }) => sealStudioClip(item.outputRef, draft, binding, editHandles, inspector));
+      .map(({ draft, inspector, editHandles }) => {
+        const clip = sealStudioClip(item.outputRef, draft, binding, editHandles, inspector);
+        const audio = clipAudioFacts(built, placement, clip, item.value, input.workspaceRoot, input.frameRate);
+        return audio === undefined ? clip : { ...clip, audio };
+      });
     const provenance: CandidateProvenance = {
       output: item.name,
       outputRef: item.outputRef,

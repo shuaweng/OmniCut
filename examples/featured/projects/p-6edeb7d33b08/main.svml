@@ -1,0 +1,115 @@
+<?svml using="@hypit/markup@1"?>
+<svml>
+  <import from="@hypit/script@1"/>
+  <import as="time" from="@hypit/timeline-author@1"/>
+  <import as="space" from="@hypit/spatial@1"/>
+  <import as="asset" from="@hypit/media@1"/>
+  <import as="pipe" from="@hypit/media-pipeline@1"/>
+  <import as="media" from="@hypit/media-track@1"/>
+  <import as="audio" from="@hypit/audio-track@1"/>
+  <import as="sound" from="@hypit/sound@1"/>
+  <import as="speech" from="@frame/speech@1"/>
+  <import as="caption" from="@hypit/caption-fine@1"/>
+  <import as="cap" from="@hypit/caption@1"/>
+  <import as="typo" from="@hypit/typography-track@1"/>
+  <import as="fonts" from="@hypit/fonts-open@1"/>
+  <import as="film" from="@hypit/film@1"/>
+  <import as="render" from="@hypit/render-hyperframes@1"/>
+  <import as="evidence" source="./speech/voice-days-arranged.svml"/>
+  <import as="look" source="./look.svs"/>
+
+  <script id="story">
+    <voice>清晨，园子醒得很慢。||风从廊下穿过，||叶尖留着一滴露。||我也给自己，留一点润。||轻轻抹开，||柔软，就贴着日子。||大宝SOD蜜，||把日子润成诗。</voice>
+  </script>
+
+  <space:Canvas id="canvas" width="1920" height="1080"/>
+  <space:Frame id="full" within={canvas} left="0%" top="0%" right="100%" bottom="100%"/>
+  <space:Frame id="endcard-title-frame" within={canvas} left="8.9%" top="33%" right="60%" bottom="41.9%"/>
+  <space:Frame id="endcard-sub-frame" within={canvas} left="8.9%" top="44.8%" right="60%" bottom="49%"/>
+  <time:Clock id="clock" frame-rate="30"/>
+
+  <asset:Audio id="voice-file" src="./assets/voice-days-arranged.mp3"/>
+  <pipe:Normalize id="voice-media" source={voice-file} clock={clock} video="none" audio="default" span-authority="audio"/>
+  <speech:Take id="voice-take" narrative={story} segment={story.segment.voice} media={voice-media.media} evidence={evidence.alignment}/>
+
+  <time:Timeline id="program" clock={clock} end="30s">
+    <time:Take source={voice-take.take}/>
+  </time:Timeline>
+
+  <sound:Style id="voice-level"/>
+  <sound:Track id="voice-sound" timeline={program.timeline}>
+    <sound:Use style={voice-level}/>
+  </sound:Track>
+
+  <asset:Video id="shot1-file" src="./assets/4c4ea46c-0c91-43be-a6ef-6c8bf125dcc0.mp4"/>
+  <pipe:Normalize id="shot1-media" source={shot1-file} clock={clock} video="primary-moving" audio="none" span-authority="video"/>
+  <asset:Video id="shot2-file" src="./assets/3844c2fd-596f-44b3-a784-883931eff72e.mp4"/>
+  <pipe:Normalize id="shot2-media" source={shot2-file} clock={clock} video="primary-moving" audio="none" span-authority="video"/>
+  <asset:Video id="shot3-file" src="./assets/f9a41c85-7c67-4c79-bd03-214c517a9393.mp4"/>
+  <pipe:Normalize id="shot3-media" source={shot3-file} clock={clock} video="primary-moving" audio="none" span-authority="video"/>
+  <asset:Video id="shot4-file" src="./assets/61af1b27-dbfd-4926-824a-fa268a62a3cc.mp4"/>
+  <pipe:Normalize id="shot4-media" source={shot4-file} clock={clock} video="primary-moving" audio="none" span-authority="video"/>
+  <asset:Video id="shot5-file" src="./assets/08bf5bdd-6ddd-4951-befc-0f18ebbb94dc.mp4"/>
+  <pipe:Normalize id="shot5-media" source={shot5-file} clock={clock} video="primary-moving" audio="none" span-authority="video"/>
+  <asset:Video id="shot6-file" src="./assets/b199a557-5da1-4bb3-afdc-3e089c6d249d.mp4"/>
+  <pipe:Normalize id="shot6-media" source={shot6-file} clock={clock} video="primary-moving" audio="none" span-authority="video"/>
+  <asset:Video id="shot7-file" src="./assets/e0a117a2-5ee4-4a32-96f2-007ee918a3c9.mp4"/>
+  <pipe:Normalize id="shot7-media" source={shot7-file} clock={clock} video="primary-moving" audio="none" span-authority="video"/>
+  <asset:Video id="shot8-file" src="./assets/1dfabe94-3ce1-4f56-995b-1054423f832b.mp4"/>
+  <pipe:Normalize id="shot8-media" source={shot8-file} clock={clock} video="primary-moving" audio="none" span-authority="video"/>
+  <asset:Image id="endcard-file" src="./assets/endcard-plate.png"/>
+  <space:Extent id="endcard-extent" width="1920" height="1080"/>
+
+  <media:Track id="picture" timeline={program.timeline} canvas={canvas}>
+    <media:Item id="shot1" media={shot1-media.media} frame={full} appearance={look.media.clip} at="0s" for="2.5s"/>
+    <media:Item id="shot2" media={shot2-media.media} frame={full} appearance={look.media.clip} at="2.5s" for="3s"/>
+    <media:Item id="shot3" media={shot3-media.media} frame={full} appearance={look.media.clip} at="5.5s" for="2.5s"/>
+    <media:Item id="shot4" media={shot4-media.media} frame={full} appearance={look.media.clip} at="8s" for="3.5s"/>
+    <media:Item id="shot5" media={shot5-media.media} frame={full} appearance={look.media.clip} at="11.5s" for="2s"/>
+    <media:Item id="shot6" media={shot6-media.media} frame={full} appearance={look.media.clip} at="13.5s" for="3.5s"/>
+    <media:Item id="shot7" media={shot7-media.media} frame={full} appearance={look.media.clip} at="17s" for="4s"/>
+    <media:Item id="shot8" media={shot8-media.media} frame={full} appearance={look.media.clip} at="21s" for="3.5s"/>
+    <media:Item id="endcard" image={endcard-file} extent={endcard-extent} frame={full} appearance={look.media.endcard} motion={look.motion.endcard-in} at="24.5s" for="5.5s"/>
+  </media:Track>
+
+  <asset:Audio id="bgm-file" src="./assets/585ff57a-7d20-494b-8cc5-56a2b56b8d00.mp3"/>
+  <pipe:Normalize id="bgm-media" source={bgm-file} clock={clock} video="none" audio="default" span-authority="audio"/>
+
+  <audio:Track id="music" timeline={program.timeline}>
+    <audio:Item id="bgm-head" source={bgm-media.media} at="0s" for="24.5s" gain="0.6" fade-in="30f"/>
+    <audio:Item id="bgm-tail" source={bgm-media.media} at="24.5s" for="5.5s" trim-start="17s" trim-end="22.5s" gain="0.68" fade-out="45f"/>
+  </audio:Track>
+  <asset:Font id="caption-font" src="./assets/FrameSans-Regular.otf" weight="400" style="normal"/>
+  <fonts:Face id="brand-face" family="noto-serif-sc" weight="600" style="normal"/>
+  <fonts:Face id="brand-face-light" family="noto-serif-sc" weight="400" style="normal"/>
+  <caption:Style id="caption-style" recipe={look.caption.primary} font={caption-font}/>
+  <cap:Hidden id="caption-hidden"/>
+  <caption:Track id="captions" document={story.caption} timeline={program.timeline}>
+    <caption:Use style={caption-style}/>
+    <caption:Use at="2.4s" for="0.71s" style={caption-hidden}/>
+    <caption:Use at="9.2s" for="4.87s" style={caption-hidden}/>
+    <caption:Use at="15.36s" for="3.11s" style={caption-hidden}/>
+    <caption:Use at="20.88s" for="4.71s" style={caption-hidden}/>
+    <caption:Use at="24.5s" for="5.5s" style={caption-hidden}/>
+  </caption:Track>
+
+  <typo:Style id="title-style" recipe={look.text.brand} font={brand-face}>
+    <typo:Fill color="#2B2521"/>
+  </typo:Style>
+  <typo:Style id="sub-style" recipe={look.text.tagline} font={brand-face-light}>
+    <typo:Fill color="#5F564A"/>
+  </typo:Style>
+  <typo:Track id="titles" timeline={program.timeline}>
+    <typo:Area id="brand-title" placement={endcard-title-frame} style={title-style} at="25.5s" for="4.5s">大宝SOD蜜</typo:Area>
+    <typo:Area id="brand-sub" placement={endcard-sub-frame} style={sub-style} at="27.1s" for="2.9s">把日子润成诗</typo:Area>
+  </typo:Track>
+
+  <film:Film id="main" canvas={canvas} timeline={program.timeline} appearance={look.film.main}>
+    <film:Track source={picture.visual}/>
+    <film:Track source={voice-sound.audio}/>
+    <film:Track source={music.audio}/>
+    <film:Track source={captions.track}/>
+    <film:Track source={titles.track}/>
+  </film:Film>
+  <render:Video id="final" composition={main.composition} timeline={program.timeline}/>
+</svml>

@@ -1,5 +1,5 @@
 import { Context, Service } from '@deepseek-ai/cordis';
-import type { Entry } from '@deepseek-ai/cordis-plugin-loader';
+import { type Entry } from '@deepseek-ai/cordis-plugin-loader';
 declare module '@deepseek-ai/cordis' {
     interface Context {
         /** Persistent edits to the active profile's plugin configuration. */

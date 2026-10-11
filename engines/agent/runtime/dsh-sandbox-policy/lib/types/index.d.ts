@@ -45,6 +45,8 @@ export interface Config {
      * `process.cwd()`). Normal agent calls use their session cwd instead.
      */
     workspaceRoot?: string;
+    protectedPaths?: string[];
+    protectedPathPatterns?: string[];
 }
 /** Inputs that select the sandbox policy for one capability call. */
 export interface SandboxPolicyRequest {
@@ -75,6 +77,8 @@ export declare class SandboxPolicyService extends Service {
     readonly defaultMode: SandboxMode;
     /** The absolute `workspace-write` fallback root for calls without a session cwd. */
     readonly workspaceRoot: string;
+    readonly protectedPaths: readonly string[];
+    readonly protectedPathPatterns: readonly string[];
     constructor(ctx: Context, config: Config);
     /**
      * Resolve the complete policy for one capability call. An approved explicit

@@ -399,9 +399,11 @@ export class ApiSessionAgentController {
   private liveAgent(sessionId: SessionId): ApiSessionAgentResult | undefined {
     const agent = this.ctx.agents.get(sessionId)
     if (agent === undefined) return undefined
-    return hasApiSessionSubagentOwner(this.ctx, agent.session, agent)
-      ? { error: apiSessionSubagentOwnershipError(sessionId) }
-      : { agent }
+    if (hasApiSessionSubagentOwner(this.ctx, agent.session, agent)) return { error: apiSessionSubagentOwnershipError(sessionId) }
+    // Product integrations can create or resume the Agent before the native
+    // controller sees it. Adopt the same durable model selection on that path.
+    this.installSelection(agent)
+    return { agent }
   }
 
   private async resume(sessionId: SessionId, supplied?: SessionObservation): Promise<Agent> {

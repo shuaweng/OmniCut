@@ -169,8 +169,8 @@ window.__ModuleLoader__.load({
 			});
 		}
 		//#endregion
-		//#region \0dsh-css:/home/runner/work/deepseek-harness/deepseek-harness/packages/session-query/session-log-export/src/client/HeaderAction.module.css.mjs
-		const css = ".nL4_yW_moreButton{width:28px;color:var(--dsw-alias-label-secondary);flex:none;padding:0}.nL4_yW_moreButton svg{width:15px;height:15px}";
+		//#region \0dsh-css:/Users/wotar/Desktop/视频Agent/frame/engines/agent/source/packages/session-query/session-log-export/src/client/HeaderAction.module.css.mjs
+		const css = ".NBhBXa_moreButton{width:28px;color:var(--dsw-alias-label-secondary);flex:none;padding:0}.NBhBXa_moreButton svg{width:15px;height:15px}";
 		const tagId = "@deepseek-ai/dsh-session-log-export/HeaderAction.module.css";
 		if (typeof document !== "undefined" && document.querySelector("style[data-plugin-css=" + JSON.stringify(tagId) + "]") === null) {
 			const tag = document.createElement("style");
@@ -179,7 +179,7 @@ window.__ModuleLoader__.load({
 			tag.textContent = css;
 			document.head.appendChild(tag);
 		}
-		var HeaderAction_module_css_default = { "moreButton": "nL4_yW_moreButton" };
+		var HeaderAction_module_css_default = { "moreButton": "NBhBXa_moreButton" };
 		//#endregion
 		//#region lib/types/client/HeaderAction.js
 		/**

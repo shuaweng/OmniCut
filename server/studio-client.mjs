@@ -11,6 +11,10 @@ export async function buildStudioClient(root,{outputDirectory=path.join(root,'da
  const require=createRequire(path.join(upstream,'package.json'));
  const {build}=await import(pathToFileURL(require.resolve('vite')).href);
  const directory=outputDirectory;
+ // The dynamic entry kept its filename after its child import changed in a
+ // rebuild. Give the entire JS graph one build namespace so immutable caches
+ // cannot keep an old entry importing the previous editor implementation.
+ const buildId=Date.now().toString(36);
  await build({configFile:false,root:path.join(root,'src/hypit-studio'),base:'/hypit-studio/',logLevel:'warn',
   plugins:[{name:'frame-hypit-host',enforce:'pre',transform(code,id){
    if(id.split('?')[0]===path.join(upstream,'src/ui/timeline.ts')){
@@ -27,7 +31,7 @@ export async function buildStudioClient(root,{outputDirectory=path.join(root,'da
    // Only adapt presentation strings; preserve upstream controls and mutations.
    code=code.replace('const editable = parameter.edit !== undefined', 'parameter = frameLocalizeParameter(parameter);\n  const editable = parameter.edit !== undefined');
    return 'import { localizeParameter as frameLocalizeParameter } from '+JSON.stringify(language)+';\n'+code+'\nexport { store, applySnapshot, applyFailure };\n';
-  }}],build:{outDir:directory,emptyOutDir:true,target:'esnext',sourcemap:false}});
+  }}],build:{outDir:directory,emptyOutDir:true,target:'esnext',sourcemap:false,rollupOptions:{output:{entryFileNames:`assets/[name]-${buildId}-[hash].js`,chunkFileNames:`assets/[name]-${buildId}-[hash].js`}}}});
  return async function serve(pathname,res){
   const name=pathname.slice('/hypit-studio/'.length)||'index.html';
   if(name.split('/').some(x=>!x||x==='..'||x.startsWith('.'))){res.writeHead(404);res.end();return;}

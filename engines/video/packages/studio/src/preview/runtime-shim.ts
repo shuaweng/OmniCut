@@ -56,6 +56,7 @@ function shim(): string {
     });
   }
   var audioContext;
+  var audioStarting;
   var programmeAudio = [];
   for (var element of document.querySelectorAll('.hypit-studio-audio')) {
     programmeAudio.push({
@@ -113,6 +114,7 @@ function shim(): string {
   }
 
   function seekDecoded(element, target) {
+    if (element.error) return Promise.resolve();
     if (Math.abs(element.currentTime - target) < 0.0005 && element.readyState >= 2) return Promise.resolve();
     return new Promise(function (resolve) {
       var done = function () {
@@ -125,6 +127,39 @@ function shim(): string {
       try { element.currentTime = target; }
       catch (error) { done(); }
     });
+  }
+
+  function audioPlaybackError(error) {
+    if (error && error.name === 'NotAllowedError') return Error('声音播放被浏览器阻止，请重新点击播放。');
+    if (error && (error.name === 'NotSupportedError' || error.code === 4)) return Error('音轨格式无法播放。');
+    if (error && error.code === 3) return Error('音轨无法解码，请重新加载工作台。');
+    return Error('音轨播放失败，请重新加载工作台。');
+  }
+
+  // MediaElementSource sends all sound through this context. A successful
+  // element.play() alone cannot prove that the context is producing sound.
+  function resumeProgrammeAudio() {
+    if (!programmeAudio.length || muted) return Promise.resolve();
+    if (!audioContext) {
+      try { audioContext = new AudioContext(); }
+      catch (error) { return Promise.reject(Error('浏览器无法启动声音播放器，请重新加载工作台。')); }
+    }
+    if (audioContext.state === 'running') return Promise.resolve();
+    if (audioContext.state === 'closed') return Promise.reject(Error('声音播放器已关闭，请重新加载工作台。'));
+    if (audioStarting) return audioStarting;
+    audioStarting = new Promise(function (resolve, reject) {
+      var timer = setTimeout(function () {
+        if (muted || !playing || audioContext.state === 'running') resolve();
+        else reject(Error('声音尚未启动，请重新点击播放。'));
+      }, 1500);
+      // Safari can interrupt a running context when the page loses focus.
+      Promise.resolve(audioContext.resume()).then(function () {
+        clearTimeout(timer);
+        if (muted || !playing || audioContext.state === 'running') resolve();
+        else reject(Error('声音尚未启动，请重新点击播放。'));
+      }, function (error) { clearTimeout(timer); reject(audioPlaybackError(error)); });
+    }).finally(function () { audioStarting = undefined; });
+    return audioStarting;
   }
 
   function placeHyperframes(seconds) {
@@ -208,6 +243,7 @@ function shim(): string {
       var element = record.element;
       element.muted = muted || scrubbing;
       if (!inside) { element.pause(); continue; }
+      if (!scrubbing && !muted && element.error) throw audioPlaybackError(element.error);
       var interval = Math.max(0, record.mediaEnd - record.mediaStart);
       var advanced = (local + frameSeconds / 2) * record.rate;
       var target = record.mediaStart + advanced;
@@ -222,7 +258,10 @@ function shim(): string {
         placeAudioGain(record, currentSeconds + frameSeconds / 2);
         if (element.paused) {
           var started = element.play();
-          if (started) started.catch(function () {});
+          if (started) waits.push(started.catch(function (error) {
+            if (!playing || muted || error && error.name === 'AbortError') return;
+            throw audioPlaybackError(error);
+          }));
         }
       }
     }
@@ -232,7 +271,8 @@ function shim(): string {
 
   window.__hypitSetMuted = function (value) {
     muted = !!value;
-    return apply(currentSeconds, !playing);
+    var resumed = playing ? resumeProgrammeAudio() : Promise.resolve();
+    return Promise.all([Promise.resolve().then(function () { return apply(currentSeconds, !playing); }), resumed]).then(function (results) { return results[0]; });
   };
   window.__hypitSeekFrame = function (frame) {
     playing = false;
@@ -240,9 +280,12 @@ function shim(): string {
   };
   window.__hypitPlayFrame = function (frame) {
     playing = true;
-    if (programmeAudio.length && !audioContext) audioContext = new AudioContext();
-    if (audioContext && audioContext.state === 'suspended') audioContext.resume();
-    return apply(frame / fps, false);
+    if (programmeAudio.length && !audioContext) {
+      try { audioContext = new AudioContext(); }
+      catch (error) { return Promise.reject(Error('浏览器无法启动声音播放器，请重新加载工作台。')); }
+    }
+    var resumed = resumeProgrammeAudio();
+    return Promise.all([Promise.resolve().then(function () { return apply(frame / fps, false); }), resumed]).then(function (results) { return results[0]; });
   };
   window.__hypitFrameReady = apply(0, true);
   window.addEventListener('load', function () { window.__hypitFrameReady = apply(currentSeconds, true); });

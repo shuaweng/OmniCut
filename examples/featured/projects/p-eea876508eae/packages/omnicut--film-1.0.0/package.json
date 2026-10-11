@@ -1,0 +1,11 @@
+{
+  "name": "@omnicut/film",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "license": "MIT",
+  "description": "OmniCut 宣传片镜头系统：真实截图取景镜头、概念图运动空间、品牌片尾与字幕。",
+  "hypit": {
+    "activation": "./activation.js"
+  }
+}

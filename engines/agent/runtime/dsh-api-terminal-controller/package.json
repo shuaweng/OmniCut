@@ -54,13 +54,13 @@
     "@xterm/addon-serialize": "^0.14.0",
     "zod": "^4.4.3",
     "@deepseek-ai/dsh-deque": "0.2.0-rc.2",
+    "@deepseek-ai/schemastery": "~3.18.4",
     "@deepseek-ai/dsh-lazy-require": "0.2.0-rc.2",
-    "@deepseek-ai/dsh-typert-protocol": "0.2.0-rc.2",
-    "@deepseek-ai/schemastery": "~3.18.4"
+    "@deepseek-ai/dsh-typert-protocol": "0.2.0-rc.2"
   },
   "peerDependencies": {
-    "@deepseek-ai/cordis": "~4.0.4",
-    "@deepseek-ai/dsh-subprocess": "0.2.0-rc.2"
+    "@deepseek-ai/dsh-subprocess": "0.2.0-rc.2",
+    "@deepseek-ai/cordis": "~4.0.4"
   },
   "files": [
     "lib/index.js",

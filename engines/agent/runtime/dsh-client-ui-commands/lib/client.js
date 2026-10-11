@@ -1162,8 +1162,8 @@ window.__ModuleLoader__.load({
 			return n;
 		}
 		//#endregion
-		//#region \0dsh-css:/home/runner/work/deepseek-harness/deepseek-harness/packages/client/ui-commands/src/client/PopupSelectView.module.css.mjs
-		const css = ".mufS8W_card{box-sizing:border-box;z-index:100;--dsh-scrollbar-thumb:var(--dsw-alias-scrollbar-bg-l2);--dsh-scrollbar-thumb-hover:var(--dsw-alias-scrollbar-hover-l2);--dsw-elevation-stroke-color:var(--dsw-alias-border-l1);min-width:min(220px,100%);max-width:100%;max-height:320px;box-shadow:var(--dsw-elevation-prominent);border:0;outline:none;flex-direction:column;padding:3px;display:flex;position:absolute;bottom:calc(100% + 4px);left:0;right:0;overflow:hidden}.mufS8W_viewport{flex-direction:column;min-height:0;display:flex;overflow-y:auto}.mufS8W_row{border-radius:var(--dsw-radius-md);cursor:pointer;color:var(--dsw-alias-label-primary);align-items:center;gap:6px;padding:5px 7px;font-size:12px;display:flex}.mufS8W_rowActive{background:var(--dsw-alias-interactive-bg-hover)}.mufS8W_label{flex:0 auto;align-items:baseline;gap:4px;min-width:0;display:flex}.mufS8W_labelText{white-space:nowrap;text-overflow:ellipsis;min-width:0;overflow:hidden}.mufS8W_badge{color:var(--dsw-alias-label-tertiary);letter-spacing:.2px;flex:none;align-self:flex-start;margin-top:-1px;font-size:8px;font-weight:600;line-height:10px}.mufS8W_detail{min-width:0;color:var(--dsw-alias-label-tertiary);white-space:nowrap;text-overflow:ellipsis;flex:1;font-size:11px;overflow:hidden}.mufS8W_check{color:var(--dsw-alias-label-primary);flex:none;margin-left:auto;display:inline-flex}.mufS8W_check svg{width:14px;height:14px}.mufS8W_status{color:var(--dsw-alias-label-tertiary);padding:7px 8px;font-size:12px}.mufS8W_search{border-radius:var(--dsw-radius-md);color:var(--dsw-alias-label-primary);background:0 0;border:.5px solid #0000;outline:none;margin:2px 2px 3px;padding:5px 7px;font-size:12px}.mufS8W_error{color:var(--dsw-alias-state-error-primary);align-items:center;gap:6px;padding:5px 7px;font-size:11px;display:flex}.mufS8W_errorText{text-overflow:ellipsis;flex:1;overflow:hidden}.mufS8W_retry{border:.5px solid var(--dsw-alias-border-inverted);border-radius:var(--dsw-radius-sm);color:var(--dsw-alias-label-primary);cursor:pointer;background:0 0;padding:2px 7px;font-size:11px}";
+		//#region \0dsh-css:/Users/wotar/Desktop/视频Agent/frame/engines/agent/source/packages/client/ui-commands/src/client/PopupSelectView.module.css.mjs
+		const css = ".lf_Uhq_card{box-sizing:border-box;z-index:100;--dsh-scrollbar-thumb:var(--dsw-alias-scrollbar-bg-l2);--dsh-scrollbar-thumb-hover:var(--dsw-alias-scrollbar-hover-l2);--dsw-elevation-stroke-color:var(--dsw-alias-border-l1);min-width:min(220px,100%);max-width:100%;max-height:320px;box-shadow:var(--dsw-elevation-prominent);border:0;outline:none;flex-direction:column;padding:3px;display:flex;position:absolute;bottom:calc(100% + 4px);left:0;right:0;overflow:hidden}.lf_Uhq_viewport{flex-direction:column;min-height:0;display:flex;overflow-y:auto}.lf_Uhq_row{border-radius:var(--dsw-radius-md);cursor:pointer;color:var(--dsw-alias-label-primary);align-items:center;gap:6px;padding:5px 7px;font-size:12px;display:flex}.lf_Uhq_rowActive{background:var(--dsw-alias-interactive-bg-hover)}.lf_Uhq_label{flex:0 auto;align-items:baseline;gap:4px;min-width:0;display:flex}.lf_Uhq_labelText{white-space:nowrap;text-overflow:ellipsis;min-width:0;overflow:hidden}.lf_Uhq_badge{color:var(--dsw-alias-label-tertiary);letter-spacing:.2px;flex:none;align-self:flex-start;margin-top:-1px;font-size:8px;font-weight:600;line-height:10px}.lf_Uhq_detail{min-width:0;color:var(--dsw-alias-label-tertiary);white-space:nowrap;text-overflow:ellipsis;flex:1;font-size:11px;overflow:hidden}.lf_Uhq_check{color:var(--dsw-alias-label-primary);flex:none;margin-left:auto;display:inline-flex}.lf_Uhq_check svg{width:14px;height:14px}.lf_Uhq_status{color:var(--dsw-alias-label-tertiary);padding:7px 8px;font-size:12px}.lf_Uhq_search{border-radius:var(--dsw-radius-md);color:var(--dsw-alias-label-primary);background:0 0;border:.5px solid #0000;outline:none;margin:2px 2px 3px;padding:5px 7px;font-size:12px}.lf_Uhq_error{color:var(--dsw-alias-state-error-primary);align-items:center;gap:6px;padding:5px 7px;font-size:11px;display:flex}.lf_Uhq_errorText{text-overflow:ellipsis;flex:1;overflow:hidden}.lf_Uhq_retry{border:.5px solid var(--dsw-alias-border-inverted);border-radius:var(--dsw-radius-sm);color:var(--dsw-alias-label-primary);cursor:pointer;background:0 0;padding:2px 7px;font-size:11px}";
 		const tagId = "@deepseek-ai/dsh-client-ui-commands/PopupSelectView.module.css";
 		if (typeof document !== "undefined" && document.querySelector("style[data-plugin-css=" + JSON.stringify(tagId) + "]") === null) {
 			const tag = document.createElement("style");
@@ -1173,20 +1173,20 @@ window.__ModuleLoader__.load({
 			document.head.appendChild(tag);
 		}
 		var PopupSelectView_module_css_default = {
-			"badge": "mufS8W_badge",
-			"card": "mufS8W_card",
-			"check": "mufS8W_check",
-			"detail": "mufS8W_detail",
-			"error": "mufS8W_error",
-			"errorText": "mufS8W_errorText",
-			"label": "mufS8W_label",
-			"labelText": "mufS8W_labelText",
-			"retry": "mufS8W_retry",
-			"row": "mufS8W_row",
-			"rowActive": "mufS8W_rowActive",
-			"search": "mufS8W_search",
-			"status": "mufS8W_status",
-			"viewport": "mufS8W_viewport"
+			"badge": "lf_Uhq_badge",
+			"card": "lf_Uhq_card",
+			"check": "lf_Uhq_check",
+			"detail": "lf_Uhq_detail",
+			"error": "lf_Uhq_error",
+			"errorText": "lf_Uhq_errorText",
+			"label": "lf_Uhq_label",
+			"labelText": "lf_Uhq_labelText",
+			"retry": "lf_Uhq_retry",
+			"row": "lf_Uhq_row",
+			"rowActive": "lf_Uhq_rowActive",
+			"search": "lf_Uhq_search",
+			"status": "lf_Uhq_status",
+			"viewport": "lf_Uhq_viewport"
 		};
 		//#endregion
 		//#region lib/types/client/PopupSelectView.js

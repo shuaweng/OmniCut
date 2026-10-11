@@ -32375,8 +32375,8 @@ fn fs_main(in : VertexOutput) -> @location(0) vec4<f32> {
 			};
 		}
 		//#endregion
-		//#region \0dsh-css:/home/runner/work/deepseek-harness/deepseek-harness/packages/client/ui-sidebar-documentpreview/src/client/pdf/PdfBody.module.css.mjs
-		const css = ".E0GbtG_body{box-sizing:border-box;background:var(--dsw-alias-bg-document-preview);width:100%;min-width:100%;min-height:100%;font-family:var(--dsw-font,sans-serif);white-space:normal;flex-direction:column;gap:12px;padding:12px;display:flex;overflow:visible}[data-document-zoom-mode=fixed] .E0GbtG_body{width:max-content}.E0GbtG_page{box-sizing:border-box;width:100%;min-width:0;overflow-x:visible}.E0GbtG_placeholder{aspect-ratio:3/4;background:var(--dsw-alias-bg-skeleton);width:100%}.E0GbtG_canvas{width:100%;max-width:none;height:auto;margin-inline:auto;display:block}.E0GbtG_surface{max-width:none;box-shadow:var(--dsw-elevation-prominent);margin-inline:auto;position:relative}.E0GbtG_surface[hidden]{display:none}.E0GbtG_text{position:absolute;inset:0;overflow:clip}.E0GbtG_text .textLayer{text-align:initial;letter-spacing:normal;word-spacing:normal;text-size-adjust:none;forced-color-adjust:none;transform-origin:0 0;caret-color:canvastext;z-index:0;--text-scale-factor:calc(var(--total-scale-factor) * var(--min-font-size));--min-font-size-inv:calc(1 / var(--min-font-size));line-height:1;position:absolute;inset:0;overflow:clip}.E0GbtG_text .textLayer[data-main-rotation=\"90\"]{transform:rotate(90deg)translateY(-100%)}.E0GbtG_text .textLayer[data-main-rotation=\"180\"]{transform:rotate(180deg)translate(-100%,-100%)}.E0GbtG_text .textLayer[data-main-rotation=\"270\"]{transform:rotate(270deg)translate(-100%)}.E0GbtG_text :is(span,br){color:#0000;white-space:pre;cursor:text;transform-origin:0 0;user-select:text;position:absolute}.E0GbtG_text .textLayer>:not(.markedContent),.E0GbtG_text .markedContent span:not(.markedContent){z-index:1;--font-height:0;--scale-x:1;--rotate:0deg;font-size:calc(var(--text-scale-factor) * var(--font-height));transform:rotate(var(--rotate)) scaleX(var(--scale-x)) scale(var(--min-font-size-inv))}.E0GbtG_text .markedContent{display:contents}.E0GbtG_text ::selection{background:var(--dsw-alias-bg-document-selection);color:#0000}.E0GbtG_text br::selection{background:0 0}.E0GbtG_text .textLayer .endOfContent{z-index:0;cursor:default;user-select:none;display:block;position:absolute;inset:100% 0 0}.E0GbtG_text .selecting .endOfContent{top:0}.E0GbtG_status{color:var(--dsw-alias-label-secondary);align-items:center;gap:8px;padding:10px;font-size:13px;line-height:1.5;display:flex}.E0GbtG_body .E0GbtG_status{color:var(--dsw-alias-label-document-preview)}";
+		//#region \0dsh-css:/Users/wotar/Desktop/视频Agent/frame/engines/agent/source/packages/client/ui-sidebar-documentpreview/src/client/pdf/PdfBody.module.css.mjs
+		const css = ".XQMGeG_body{box-sizing:border-box;background:var(--dsw-alias-bg-document-preview);width:100%;min-width:100%;min-height:100%;font-family:var(--dsw-font,sans-serif);white-space:normal;flex-direction:column;gap:12px;padding:12px;display:flex;overflow:visible}[data-document-zoom-mode=fixed] .XQMGeG_body{width:max-content}.XQMGeG_page{box-sizing:border-box;width:100%;min-width:0;overflow-x:visible}.XQMGeG_placeholder{aspect-ratio:3/4;background:var(--dsw-alias-bg-skeleton);width:100%}.XQMGeG_canvas{width:100%;max-width:none;height:auto;margin-inline:auto;display:block}.XQMGeG_surface{max-width:none;box-shadow:var(--dsw-elevation-prominent);margin-inline:auto;position:relative}.XQMGeG_surface[hidden]{display:none}.XQMGeG_text{position:absolute;inset:0;overflow:clip}.XQMGeG_text .textLayer{text-align:initial;letter-spacing:normal;word-spacing:normal;text-size-adjust:none;forced-color-adjust:none;transform-origin:0 0;caret-color:canvastext;z-index:0;--text-scale-factor:calc(var(--total-scale-factor) * var(--min-font-size));--min-font-size-inv:calc(1 / var(--min-font-size));line-height:1;position:absolute;inset:0;overflow:clip}.XQMGeG_text .textLayer[data-main-rotation=\"90\"]{transform:rotate(90deg)translateY(-100%)}.XQMGeG_text .textLayer[data-main-rotation=\"180\"]{transform:rotate(180deg)translate(-100%,-100%)}.XQMGeG_text .textLayer[data-main-rotation=\"270\"]{transform:rotate(270deg)translate(-100%)}.XQMGeG_text :is(span,br){color:#0000;white-space:pre;cursor:text;transform-origin:0 0;user-select:text;position:absolute}.XQMGeG_text .textLayer>:not(.markedContent),.XQMGeG_text .markedContent span:not(.markedContent){z-index:1;--font-height:0;--scale-x:1;--rotate:0deg;font-size:calc(var(--text-scale-factor) * var(--font-height));transform:rotate(var(--rotate)) scaleX(var(--scale-x)) scale(var(--min-font-size-inv))}.XQMGeG_text .markedContent{display:contents}.XQMGeG_text ::selection{background:var(--dsw-alias-bg-document-selection);color:#0000}.XQMGeG_text br::selection{background:0 0}.XQMGeG_text .textLayer .endOfContent{z-index:0;cursor:default;user-select:none;display:block;position:absolute;inset:100% 0 0}.XQMGeG_text .selecting .endOfContent{top:0}.XQMGeG_status{color:var(--dsw-alias-label-secondary);align-items:center;gap:8px;padding:10px;font-size:13px;line-height:1.5;display:flex}.XQMGeG_body .XQMGeG_status{color:var(--dsw-alias-label-document-preview)}";
 		const tagId = "@deepseek-ai/dsh-client-ui-sidebar-documentpreview/PdfBody.module.css";
 		if (typeof document !== "undefined" && document.querySelector("style[data-plugin-css=" + JSON.stringify(tagId) + "]") === null) {
 			const tag = document.createElement("style");
@@ -32386,13 +32386,13 @@ fn fs_main(in : VertexOutput) -> @location(0) vec4<f32> {
 			document.head.appendChild(tag);
 		}
 		var PdfBody_module_css_default = {
-			"body": "E0GbtG_body",
-			"canvas": "E0GbtG_canvas",
-			"page": "E0GbtG_page",
-			"placeholder": "E0GbtG_placeholder",
-			"status": "E0GbtG_status",
-			"surface": "E0GbtG_surface",
-			"text": "E0GbtG_text"
+			"body": "XQMGeG_body",
+			"canvas": "XQMGeG_canvas",
+			"page": "XQMGeG_page",
+			"placeholder": "XQMGeG_placeholder",
+			"status": "XQMGeG_status",
+			"surface": "XQMGeG_surface",
+			"text": "XQMGeG_text"
 		};
 		//#endregion
 		//#region lib/types/client/pdf/pdf.js

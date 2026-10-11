@@ -54,5 +54,12 @@ export function seatbeltProfileArgs(policy: SandboxPolicy): string[] {
   if (roots.length > 0) {
     forms.push(`(allow file-write* ${roots.map(root => `(subpath ${sbplString(root)})`).join(' ')})`)
   }
+  if (policy.protectedPaths?.length || policy.protectedPathPatterns?.length) forms.push('(deny process-info* (target others))')
+  for (const path of policy.protectedPaths ?? []) {
+    forms.push(`(deny file-read* file-write* (subpath ${sbplString(path)}))`)
+  }
+  for (const pattern of policy.protectedPathPatterns ?? []) {
+    forms.push(`(deny file-read* file-write* (regex ${sbplString(pattern)}))`)
+  }
   return ['-p', forms.join(' ')]
 }

@@ -1,0 +1,17 @@
+{
+  "id": "7f6ff5b9-1c05-4caa-b1ae-e21bc41d1db9",
+  "filename": "7f6ff5b9-1c05-4caa-b1ae-e21bc41d1db9.mp4",
+  "name": "estee-lauder.mp4",
+  "kind": "video",
+  "duration": 30,
+  "videoDuration": 30,
+  "width": 1920,
+  "height": 1080,
+  "hasAudio": true,
+  "created": "2026-10-09T06:53:31.530Z",
+  "poster": "7f6ff5b9-1c05-4caa-b1ae-e21bc41d1db9.preview.jpg",
+  "provenance": {
+    "provider": "featured",
+    "sourcePath": "assets/7f6ff5b9-1c05-4caa-b1ae-e21bc41d1db9.mp4"
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "id": "452b5f74-26a6-4e65-bd20-c56bdca45fdc",
+  "projectId": "p-6edeb7d33b08",
+  "videoId": "v-default",
+  "name": "大宝SOD蜜·把日子润成诗·成片",
+  "created": "2026-10-08T15:47:02.489Z",
+  "status": "done",
+  "duration": 30,
+  "output": {
+    "width": 1920,
+    "height": 1080
+  },
+  "fileSize": 7586724,
+  "revision": "11:277f92343af229db",
+  "runtimeStopped": true
+}

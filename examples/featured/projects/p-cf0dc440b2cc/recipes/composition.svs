@@ -1,0 +1,17 @@
+<?svml using="@hypit/svs@1"?>
+<sheet version="1">
+  film.main { background: #0B0B0C; }
+  media.hidden { stack-order: 0; fit: cover; opacity: 0; }
+  media.full { stack-order: 0; fit: cover; clip: frame; }
+  media.close { stack-order: 0; fit: cover; frame-x: 0.5; frame-y: 0.30; content-x: 0.5; content-y: 0.30; clip: frame; }
+  media.upper { stack-order: 60; fit: cover; frame-y: 0.3; content-y: 0.3; clip: frame; }
+  caption.primary {
+    stack-order: 70; x: 0.5; y: 0.915; width: 0.9; height: 0.115;
+    anchor-x: center; anchor-y: bottom; align: center; block-align: end; inline-size: fixed;
+    wrap: word; size: 68; line-height: 1.08; fill: #F6F1E8; stroke-color: #0B0B0C; stroke-width: 7;
+    shadow-color: #000000; shadow-opacity: 0.55; shadow-x: 0; shadow-y: 4; shadow-blur: 10; shadow-spread: 0;
+    background: #00000000; padding: "0"; radius: 0;
+    karaoke: off; cue-enter: fade; cue-enter-frames: 2; cue-enter-start-scale: 0.96;
+    cue-exit: none; lead-frames: 0; tail-frames: 0; handoff: cut;
+  }
+</sheet>

@@ -657,6 +657,10 @@ button:focus-visible, textarea:focus-visible {
 }
 .stage-bar button[data-play] { width: 30px; height: 30px; color: light-dark(#1b1a18, #f0f1f3); }
 .stage-mute { margin-left: 5px; }
+.stage-playback-notice { flex: none; padding: 7px 12px; border-top: 1px solid var(--line); color: light-dark(#8b4b21, #e8ad80); font-size: 11px; }
+.stage-playback-notice[hidden] { display: none; }
+.stage-playback-notice summary { cursor: pointer; }
+.stage-playback-notice p { margin: 5px 0 0; line-height: 1.5; }
 
 /* Inspector */
 .workspace-panel,

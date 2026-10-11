@@ -1,6 +1,6 @@
 {
   "name": "omnicut",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
   "type": "module",
   "scripts": {
@@ -8,12 +8,16 @@
     "test": "node --test tests/*.test.mjs",
     "setup": "node scripts/setup.mjs",
     "start": "node server/index.mjs",
+    "open": "node scripts/open-workbench.mjs",
     "agent:verify": "node engines/agent/verify.mjs",
-    "agent:rebuild": "node engines/agent/rebuild.mjs"
+    "agent:rebuild": "node engines/agent/rebuild.mjs",
+    "examples:import": "node scripts/import-featured.mjs",
+    "examples:verify": "node scripts/import-featured.mjs --verify"
   },
   "dependencies": {
     "@deepseek-ai/dsh": "file:engines/agent/runtime/dsh",
-    "lucide": "0.468.0"
+    "lucide": "0.468.0",
+    "sharp": "0.35.5"
   },
   "engines": {
     "node": ">=24"

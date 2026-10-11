@@ -1,4 +1,5 @@
 import type { StudioMaterialPreview } from "../shared.js";
+import { studioResourceUrl } from "./resource-url.js";
 
 type Storyboard = {
   readonly imageUrl: string;
@@ -14,14 +15,42 @@ const resolvedAudio = new Map<string, string | undefined>();
 const storyboards = new Map<string, Promise<Storyboard | undefined>>();
 const resolvedStoryboards = new Map<string, Storyboard | undefined>();
 
+// Studio names media anew on every compile. Share decoded previews between
+// names whose bytes are identical (the server reports a content tag).
+const materialTags = new Map<string, Promise<string | undefined>>();
+const sharedStoryboards = new Map<string, Promise<Storyboard | undefined>>();
+const sharedAudio = new Map<string, Promise<string | undefined>>();
+function materialTag(url: string): Promise<string | undefined> {
+  let held = materialTags.get(url);
+  if (held === undefined) {
+    held = fetch(url, { method: "HEAD" }).then(
+      (response) => response.ok ? response.headers.get("etag") ?? undefined : undefined,
+      () => undefined,
+    );
+    materialTags.set(url, held);
+  }
+  return held;
+}
+function byContent<T>(url: string, shared: Map<string, Promise<T>>, load: () => Promise<T>): Promise<T> {
+  return materialTag(url).then((tag) => {
+    if (tag === undefined) return load();
+    let held = shared.get(tag);
+    if (held === undefined) {
+      held = load();
+      shared.set(tag, held);
+    }
+    return held;
+  });
+}
+
 function previewUrl(preview: StudioMaterialPreview): string {
-  if (preview.source.kind === "artifact") return `/__studio/material/${preview.source.resource}`;
+  if (preview.source.kind === "artifact") return studioResourceUrl(`/__studio/material/${preview.source.resource}`);
   const query = new URLSearchParams({
     module: preview.source.module,
     version: preview.source.version,
     surface: preview.source.surface,
   });
-  return `/__studio/surface-preview?${query.toString()}`;
+  return studioResourceUrl(`/__studio/surface-preview?${query.toString()}`);
 }
 
 function positiveHeader(response: Response, name: string): number | undefined {
@@ -30,7 +59,7 @@ function positiveHeader(response: Response, name: string): number | undefined {
 }
 
 async function loadStoryboard(materialUrl: string): Promise<Storyboard | undefined> {
-  const storyboardUrl = materialUrl.replace("/__studio/material/", "/__studio/storyboard/");
+  const storyboardUrl = materialUrl.replace("/material/", "/storyboard/");
   if (storyboardUrl === materialUrl) return undefined;
   const response = await fetch(storyboardUrl);
   if (!response.ok) return undefined;
@@ -54,7 +83,7 @@ async function loadStoryboard(materialUrl: string): Promise<Storyboard | undefin
 function storyboardFor(url: string): Promise<Storyboard | undefined> {
   const held = storyboards.get(url);
   if (held !== undefined) return held;
-  const pending = loadStoryboard(url).catch(() => undefined).then((storyboard) => {
+  const pending = byContent(url, sharedStoryboards, () => loadStoryboard(url).catch(() => undefined)).then((storyboard) => {
     resolvedStoryboards.set(url, storyboard);
     return storyboard;
   });
@@ -132,7 +161,7 @@ async function audioWaveform(url: string): Promise<string | undefined> {
 export function audioPreview(url: string): Promise<string | undefined> {
   const held = generatedAudio.get(url);
   if (held !== undefined) return held;
-  const pending = audioWaveform(url).catch(() => undefined).then((waveform) => {
+  const pending = byContent(url, sharedAudio, () => audioWaveform(url).catch(() => undefined)).then((waveform) => {
     resolvedAudio.set(url, waveform);
     return waveform;
   });

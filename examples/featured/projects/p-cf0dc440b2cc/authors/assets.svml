@@ -1,0 +1,51 @@
+<?svml using="@hypit/markup@1"?>
+<svml>
+  <import as="asset" from="@hypit/media@1"/>
+  <import as="time" from="@hypit/timeline-author@1"/>
+  <import as="spatial" from="@hypit/spatial@1"/>
+
+  <!-- 9:16 竖版画布与 30fps 时钟 -->
+  <spatial:Canvas id="canvas" width="1080" height="1920"/>
+  <time:Clock id="clock" frame-rate="30"/>
+
+  <asset:Font id="font" src="../assets/FrameSans-Regular.otf" weight="400" style="normal"/>
+  <asset:Font id="display" src="../assets/display.ttf" weight="400" style="normal"/>
+
+  <!-- 讲解员定妆参考：全片所有人物镜头共用这一张 -->
+  <asset:Image id="host-look" src="../assets/ecec80b5-a958-4421-b3c3-af21e12b185b.png"/>
+
+  <!-- OmniCut 真实界面截图（用户上传，只作真实产品证据） -->
+  <asset:Image id="shot-home" src="../assets/b678bf1f-5c5a-404b-b317-fb866796cbe3.jpg"/>
+  <asset:Image id="shot-workbench" src="../assets/75b70d91-5cf7-474f-8aaf-940dd0fbd41c.jpg"/>
+  <asset:Image id="shot-reference" src="../assets/67ee2590-11c9-4d7e-a88e-0a1c29086c75.jpg"/>
+  <asset:Image id="shot-library" src="../assets/5531e63d-315e-42c7-a1ed-32f2c090a9d1.jpg"/>
+  <asset:Image id="shot-inspector" src="../assets/dba64431-4ea2-44c9-9f33-ebe7d05cdd52.jpg"/>
+
+  <!-- 两条真实成片：OmniCut 的实际产出，可剪入宣传片 -->
+  <asset:Video id="work-dabao" src="../assets/017623e8-e52e-4988-a949-d4a2ab8fc057.mp4"/>
+  <asset:Video id="work-estee" src="../assets/7f6ff5b9-1c05-4caa-b1ae-e21bc41d1db9.mp4"/>
+
+  <!-- 从真实成片抽出的画面：素材卡里的真实缩略图 -->
+  <asset:Image id="work-still" src="../assets/a6389b5d-4799-4c67-a948-2d4c08bff135.jpg"/>
+  <asset:Image id="work-still-b" src="../assets/cd1dc5bb-d2c2-4642-a42e-65ca0d6b62fb.jpg"/>
+
+  <!-- 人物表演：同一参考图的真实口播镜头，按语段分段生成（Susan 音轨锁定） -->
+  <asset:Video id="host-1" src="../assets/761e68c6-355a-4dbe-ad51-e92c4a0b5b8b.mp4"/>
+  <asset:Video id="host-2" src="../assets/c2aeb644-0856-4951-b0b0-6f017278dbf9.mp4"/>
+  <asset:Video id="host-3" src="../assets/d6615513-7080-4dd1-8bff-37076cfc54d9.mp4"/>
+  <asset:Video id="host-4" src="../assets/284ce1da-a5be-4cc6-a84a-f226e72d4f08.mp4"/>
+
+  <!-- 清亮女声（loven，STS 自同一干声换音色，保留原表达与节奏），按原句尾切成五段；
+       新音频无原生字符时间戳；实测句间边界与 speech/vo-*.svml 的原对齐逐处吻合（见 analysis 记录） -->
+  <asset:Audio id="vo-1" src="../assets/0be0f2ea-f9d8-478f-8846-046fda01dcfe.mp3"/>
+  <asset:Audio id="vo-2" src="../assets/0fe99b19-6fc7-4a36-8145-7376d9e247a8.mp3"/>
+  <asset:Audio id="vo-3" src="../assets/5e270d28-6a76-4a5f-87ad-e47f02cc4a64.mp3"/>
+  <asset:Audio id="vo-4" src="../assets/4dcfdb35-dcd5-4007-839d-027c02656504.mp3"/>
+  <asset:Audio id="vo-tag" src="../assets/b1048968-9c12-4d98-8a90-13d53d47bc05.mp3"/>
+
+  <!-- 整片连续配乐：一条通铺，首尾自然收束 -->
+  <asset:Audio id="music" src="../assets/5c1a7119-bf7d-4323-ad34-9bd6b16db3e4.mp3"/>
+
+  <!-- 动作音效：卡片落点与一句修改的剪切点 -->
+  <asset:Audio id="sfx-hit" src="../assets/3b76900b-896c-4651-88ec-f3419cc80e65.mp3"/>
+</svml>

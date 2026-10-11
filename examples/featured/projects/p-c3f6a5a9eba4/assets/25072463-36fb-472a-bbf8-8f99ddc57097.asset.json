@@ -1,0 +1,17 @@
+{
+  "id": "25072463-36fb-472a-bbf8-8f99ddc57097",
+  "filename": "25072463-36fb-472a-bbf8-8f99ddc57097.mp4",
+  "name": "广告成片.mp4",
+  "kind": "video",
+  "duration": 2,
+  "videoDuration": 2,
+  "width": 2560,
+  "height": 1440,
+  "hasAudio": false,
+  "created": "2026-10-07T06:57:40.623Z",
+  "poster": "25072463-36fb-472a-bbf8-8f99ddc57097.preview.jpg",
+  "provenance": {
+    "provider": "featured",
+    "sourcePath": "assets/cut-cream-detail.mp4"
+  }
+}

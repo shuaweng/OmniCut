@@ -1,0 +1,103 @@
+export const definition={
+  "name": "拍立得堆叠",
+  "category": "照片画面",
+  "description": "拍立得照片一张张掉落、旋转、叠放在桌面上。",
+  "image": true,
+  "packageName": "@frame/polaroid-stack",
+  "parameters": [
+    {
+      "key": "title",
+      "label": "主标题",
+      "type": "text",
+      "default": "收藏每个瞬间"
+    },
+    {
+      "key": "subtitle",
+      "label": "说明文案",
+      "type": "text",
+      "default": "我们的故事"
+    },
+    {
+      "key": "background",
+      "label": "背景颜色",
+      "type": "text",
+      "default": "#d9cbb7"
+    },
+    {
+      "key": "color",
+      "label": "文字颜色",
+      "type": "text",
+      "default": "#2a241d"
+    },
+    {
+      "key": "accent",
+      "label": "主点缀颜色",
+      "type": "text",
+      "default": "#c45c3c"
+    },
+    {
+      "key": "secondary",
+      "label": "次点缀颜色",
+      "type": "text",
+      "default": "#f7f3ec"
+    },
+    {
+      "key": "x",
+      "label": "水平位置 %",
+      "type": "number",
+      "default": 50,
+      "min": -50,
+      "max": 150,
+      "step": 1
+    },
+    {
+      "key": "y",
+      "label": "垂直位置 %",
+      "type": "number",
+      "default": 50,
+      "min": -50,
+      "max": 150,
+      "step": 1
+    },
+    {
+      "key": "scale",
+      "label": "整体缩放",
+      "type": "number",
+      "default": 1,
+      "min": 0.25,
+      "max": 2,
+      "step": 0.05
+    },
+    {
+      "key": "speed",
+      "label": "动作速度",
+      "type": "number",
+      "default": 1,
+      "min": 0.25,
+      "max": 3,
+      "step": 0.1
+    },
+    {
+      "key": "intensity",
+      "label": "运动幅度",
+      "type": "number",
+      "default": 1,
+      "min": 0,
+      "max": 2,
+      "step": 0.1
+    },
+    {
+      "key": "transparent",
+      "label": "透明背景 true / false",
+      "type": "text",
+      "default": "false"
+    },
+    {
+      "key": "z",
+      "label": "图层顺序",
+      "type": "number",
+      "default": 50,
+      "step": 1
+    }
+  ]
+};

@@ -76,6 +76,8 @@ export interface Config {
    * `process.cwd()`). Normal agent calls use their session cwd instead.
    */
   workspaceRoot?: string
+  protectedPaths?: string[]
+  protectedPathPatterns?: string[]
 }
 
 /** Inputs that select the sandbox policy for one capability call. */
@@ -114,6 +116,8 @@ export class SandboxPolicyService extends Service {
     // No schema default: process.cwd() is resolved in the constructor so the
     // stored root is always absolute regardless of how it was supplied.
     workspaceRoot: z.string(),
+    protectedPaths: z.array(z.string()),
+    protectedPathPatterns: z.array(z.string()),
   })
 
   static inject = ['sessionProjections']
@@ -122,6 +126,8 @@ export class SandboxPolicyService extends Service {
   readonly defaultMode: SandboxMode
   /** The absolute `workspace-write` fallback root for calls without a session cwd. */
   readonly workspaceRoot: string
+  readonly protectedPaths: readonly string[]
+  readonly protectedPathPatterns: readonly string[]
   constructor(ctx: Context, config: Config) {
     super(ctx, 'sandboxPolicy')
     // schemastery (static Config) already filled `mode`; the cast records that
@@ -129,6 +135,8 @@ export class SandboxPolicyService extends Service {
     // the process cwd is real branching, resolved absolute either way.
     this.defaultMode = config.mode as SandboxMode
     this.workspaceRoot = resolveWorkspaceRoot(config.workspaceRoot ?? process.cwd())
+    this.protectedPaths = Object.freeze((config.protectedPaths ?? []).map(resolveWorkspaceRoot))
+    this.protectedPathPatterns = Object.freeze((config.protectedPathPatterns ?? []).map(pattern => { new RegExp(pattern); return pattern }))
 
     ctx.sessionProjections.register({
       key: 'sandboxMode',
@@ -163,9 +171,12 @@ export class SandboxPolicyService extends Service {
    */
   resolve(request: SandboxPolicyRequest = {}): SandboxExecutionPolicy {
     const { session } = request
+    const mode = request.mode ?? (session === undefined ? undefined : this.overrideOf(session)) ?? this.defaultMode
+    if (mode === 'danger-full-access' && (this.protectedPaths.length || this.protectedPathPatterns.length)) throw new Error('full-access execution is unavailable while private configuration protection is enabled')
     return {
-      mode: request.mode ?? (session === undefined ? undefined : this.overrideOf(session)) ?? this.defaultMode,
+      mode,
       workspaceRoot: resolveWorkspaceRoot(session?.header.cwd ?? this.workspaceRoot),
+      ...(this.protectedPaths.length || this.protectedPathPatterns.length ? { protectedPaths: this.protectedPaths, protectedPathPatterns: this.protectedPathPatterns } : {}),
       ...session === undefined ? {} : { sessionId: session.id },
     }
   }

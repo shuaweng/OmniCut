@@ -394,7 +394,7 @@ var Entry = class Entry {
 		const fiber = this.fiber;
 		const refs = volatileEntries(fiber.config);
 		if (!refs.length) return true;
-		const raw = this.options.config;
+		const raw = interpolate(fiber.ctx, this.options.config);
 		let candidate;
 		try {
 			candidate = resolveConfig(fiber.runtime, fiber.ctx.waterfall(fiber, "internal/config", raw, () => raw));

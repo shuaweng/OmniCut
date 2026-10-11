@@ -114,6 +114,21 @@ export type Clip = {
   /** Companion-selected writable fields; hidden source bindings never cross into this surface. */
   readonly inspector: readonly StudioInspectorField[];
   readonly editHandles: readonly StudioEditHandle[];
+  /** Read-only facts from the terminal AudioTrack, on its canonical sample clock. */
+  readonly audio?: {
+    readonly resource: string;
+    readonly timelineStart: number;
+    readonly timelineEnd: number;
+    readonly trimStart: number;
+    readonly trimEnd: number;
+    readonly playbackRate: number;
+    readonly loop: boolean;
+    readonly phase: number;
+    readonly sourceReference?: string;
+    readonly sourceSignature?: string;
+    /** Present only for an untransformed Normalize -> media:Audio source chain. */
+    readonly sourceAssetPath?: string;
+  };
 };
 
 export type Track = {

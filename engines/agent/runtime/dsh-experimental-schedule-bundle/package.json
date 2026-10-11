@@ -34,8 +34,8 @@
   "license": "MIT",
   "dependencies": {
     "@deepseek-ai/dsh-client-ui-schedule": "0.2.0-rc.2",
-    "@deepseek-ai/dsh-schedule": "0.2.0-rc.2",
-    "@deepseek-ai/dsh-time-context": "0.2.0-rc.2"
+    "@deepseek-ai/dsh-time-context": "0.2.0-rc.2",
+    "@deepseek-ai/dsh-schedule": "0.2.0-rc.2"
   },
   "peerDependencies": {
     "@deepseek-ai/cordis": "~4.0.4"

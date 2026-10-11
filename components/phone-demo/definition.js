@@ -1,0 +1,109 @@
+export const definition={
+  "name": "手机界面",
+  "category": "界面产品",
+  "description": "手机卡片从透视中立起，界面滚动展示三个信息区块。",
+  "image": true,
+  "packageName": "@frame/phone-demo",
+  "parameters": [
+    {
+      "key": "title",
+      "label": "主标题",
+      "type": "text",
+      "default": "灵感 在手边"
+    },
+    {
+      "key": "subtitle",
+      "label": "说明文案",
+      "type": "text",
+      "default": "随时记录，轻松创造"
+    },
+    {
+      "key": "background",
+      "label": "背景颜色",
+      "type": "text",
+      "default": "#20202c"
+    },
+    {
+      "key": "color",
+      "label": "文字颜色",
+      "type": "text",
+      "default": "#f3efe8"
+    },
+    {
+      "key": "accent",
+      "label": "主点缀颜色",
+      "type": "text",
+      "default": "#a8cebb"
+    },
+    {
+      "key": "secondary",
+      "label": "次点缀颜色",
+      "type": "text",
+      "default": "#655b80"
+    },
+    {
+      "key": "appName",
+      "label": "应用名称",
+      "type": "text",
+      "default": "灵感手册"
+    },
+    {
+      "key": "x",
+      "label": "水平位置 %",
+      "type": "number",
+      "default": 50,
+      "min": -50,
+      "max": 150,
+      "step": 1
+    },
+    {
+      "key": "y",
+      "label": "垂直位置 %",
+      "type": "number",
+      "default": 50,
+      "min": -50,
+      "max": 150,
+      "step": 1
+    },
+    {
+      "key": "scale",
+      "label": "整体缩放",
+      "type": "number",
+      "default": 1,
+      "min": 0.25,
+      "max": 2,
+      "step": 0.05
+    },
+    {
+      "key": "speed",
+      "label": "动作速度",
+      "type": "number",
+      "default": 1,
+      "min": 0.25,
+      "max": 3,
+      "step": 0.1
+    },
+    {
+      "key": "intensity",
+      "label": "运动幅度",
+      "type": "number",
+      "default": 1,
+      "min": 0,
+      "max": 2,
+      "step": 0.1
+    },
+    {
+      "key": "transparent",
+      "label": "透明背景 true / false",
+      "type": "text",
+      "default": "false"
+    },
+    {
+      "key": "z",
+      "label": "图层顺序",
+      "type": "number",
+      "default": 50,
+      "step": 1
+    }
+  ]
+};

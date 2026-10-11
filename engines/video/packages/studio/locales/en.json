@@ -160,6 +160,8 @@
     "player.pause": "Pause",
     "player.play": "Play",
     "player.preview": "Preview",
+    "player.preview-unavailable": "Preview unavailable",
+    "player.playback-unavailable": "Sound unavailable",
     "player.previous-frame": "Previous frame",
     "player.unmute": "Unmute",
     "source.changed-outside-studio": "Changed outside Studio",

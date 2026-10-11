@@ -1,0 +1,41 @@
+/* OmniCut UI primitives. Media artwork is outside the interface palette. */
+:root {
+  color-scheme: dark;
+  --oc-bg-page: #121212;
+  --oc-bg-panel: #1b1b1b;
+  --oc-bg-elevated: #252525;
+  --oc-text-primary: #eeeeee;
+  --oc-text-secondary: #b3b3b3;
+  --oc-text-muted: #8f8f8f;
+  --oc-border: #343434;
+  --oc-accent: #ff6a22;
+  --oc-font-xs: 12px;
+  --oc-font-sm: 13px;
+  --oc-font-md: 15px;
+  --oc-font-lg: 20px;
+  --oc-weight-regular: 400;
+  --oc-weight-strong: 600;
+  --oc-radius-control: 6px;
+  --oc-radius-card: 10px;
+  --oc-radius-modal: 16px;
+  --oc-font-family: Inter, -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  --oc-shadow: 0 12px 40px rgb(0 0 0 / 32%);
+  --oc-scrim: rgb(0 0 0 / 64%);
+  --oc-focus: var(--oc-text-secondary);
+  --oc-accent-hover: color-mix(in srgb, var(--oc-accent), var(--oc-text-primary) 12%);
+  /* Compatibility aliases for existing native adapters. */
+  --bg: var(--oc-bg-page);
+  --panel: var(--oc-bg-panel);
+  --input: var(--oc-bg-elevated);
+  --line: var(--oc-border);
+  --muted: var(--oc-text-muted);
+  --accent: var(--oc-accent);
+}
+
+body { font-family: var(--oc-font-family); font-size: var(--oc-font-sm); font-weight: var(--oc-weight-regular); color: var(--oc-text-primary); background: var(--oc-bg-page); }
+button, input, textarea, select { font: inherit; }
+button, input, select { border-radius: var(--oc-radius-control); }
+strong, b, h1, h2, h3 { font-weight: var(--oc-weight-strong); }
+:where(button, a, input, textarea, select):focus-visible { outline: 2px solid var(--oc-focus); outline-offset: 2px; }
+::selection { background: var(--oc-bg-elevated); color: var(--oc-text-primary); }
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior: auto !important; } }

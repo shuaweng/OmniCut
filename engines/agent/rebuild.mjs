@@ -5,9 +5,9 @@ import path from 'node:path';
 import {engineRoot, inspectTree, readManifest, verifyRuntime} from './artifacts.mjs';
 
 const args = new Set(process.argv.slice(2));
-if ([...args].some(arg => !['--skip-install', '--from-build', '--help'].includes(arg))) throw new Error('Unknown rebuild option. Use --help.');
+if ([...args].some(arg => !['--skip-install', '--from-build', '--stage-only', '--help'].includes(arg))) throw new Error('Unknown rebuild option. Use --help.');
 if (args.has('--help')) {
-  console.log('node engines/agent/rebuild.mjs [--skip-install | --from-build]\nBuild the vendored source with its pinned pnpm, then replace local runtime packages.\n--skip-install reuses source/node_modules; --from-build only packs an existing build.');
+  console.log('node engines/agent/rebuild.mjs [--skip-install | --from-build] [--stage-only]\nBuild the vendored source with its pinned pnpm, then replace local runtime packages.\n--skip-install reuses source/node_modules; --from-build only packs an existing build.\n--stage-only keeps a verified runtime and manifest in a staging directory without replacing the active runtime.');
   process.exit(0);
 }
 
@@ -15,10 +15,11 @@ const manifest = await readManifest();
 const source = path.join(engineRoot, 'source');
 const staging = await fs.mkdtemp(path.join(os.tmpdir(), 'omnicut-agent-build-'));
 const pnpm = process.platform === 'win32' ? 'pnpm.cmd' : 'pnpm';
+let keepStaging = false;
 
-async function run(command, argv, cwd = source) {
+async function run(command, argv, cwd = source, extraEnv = {}) {
   await new Promise((resolve, reject) => {
-    const child = spawn(command, argv, {cwd, stdio: 'inherit', env: {...process.env, LEFTHOOK: '0', DSH_CLIENT_COMMIT_HASH: manifest.upstream.commit}});
+    const child = spawn(command, argv, {cwd, stdio: 'inherit', env: {...process.env, ...extraEnv, LEFTHOOK: '0', DSH_CLIENT_COMMIT_HASH: manifest.upstream.commit}});
     child.once('error', reject);
     child.once('exit', code => code === 0 ? resolve() : reject(new Error(`${command} exited with ${code}`)));
   });
@@ -27,7 +28,7 @@ async function run(command, argv, cwd = source) {
 try {
   // pnpm honors source/package.json's packageManager and source/pnpm-lock.yaml.
   if (!args.has('--from-build')) {
-    if (!args.has('--skip-install')) await run(pnpm, ['install', '--frozen-lockfile']);
+    if (!args.has('--skip-install')) await run(pnpm, ['install', '--frozen-lockfile'], source, {CI: '1'});
     await run(pnpm, ['run', 'build']);
   }
   const tarballs = path.join(staging, 'tarballs');
@@ -65,21 +66,27 @@ try {
   const runtime = path.join(engineRoot, 'runtime');
   const backup = path.join(engineRoot, '.runtime-before-rebuild');
   manifest.runtimeOrigin = 'Rebuilt from the vendored source with its pinned pnpm workspace; development dependencies omitted.';
-  const nextManifest = path.join(engineRoot, '.manifest-after-rebuild.json');
-  await fs.writeFile(nextManifest, JSON.stringify(manifest, null, 2) + '\n');
-  try { await fs.access(backup); throw new Error(`Unfinished rebuild backup exists: ${backup}`); }
-  catch (error) { if (error.code !== 'ENOENT') throw error; }
-  await fs.rename(runtime, backup);
-  try {
-    await fs.cp(path.join(staging, 'runtime'), runtime, {recursive: true});
-    await fs.rename(nextManifest, path.join(engineRoot, 'manifest.json'));
-  } catch (error) {
-    await fs.rm(runtime, {recursive: true, force: true});
-    await fs.rename(backup, runtime);
-    throw error;
+  if (args.has('--stage-only')) {
+    await fs.writeFile(path.join(staging, 'manifest.json'), JSON.stringify(manifest, null, 2) + '\n');
+    keepStaging = true;
+    console.log(`Verified Agent runtime staged at ${staging}. The active runtime and manifest have not been replaced.`);
+  } else {
+    const nextManifest = path.join(engineRoot, '.manifest-after-rebuild.json');
+    await fs.writeFile(nextManifest, JSON.stringify(manifest, null, 2) + '\n');
+    try { await fs.access(backup); throw new Error(`Unfinished rebuild backup exists: ${backup}`); }
+    catch (error) { if (error.code !== 'ENOENT') throw error; }
+    await fs.rename(runtime, backup);
+    try {
+      await fs.cp(path.join(staging, 'runtime'), runtime, {recursive: true});
+      await fs.rename(nextManifest, path.join(engineRoot, 'manifest.json'));
+    } catch (error) {
+      await fs.rm(runtime, {recursive: true, force: true});
+      await fs.rename(backup, runtime);
+      throw error;
+    }
+    await fs.rm(backup, {recursive: true});
+    console.log(`Rebuilt ${manifest.packages.length} Agent runtime packages. Run npm install at the OmniCut root after dependency changes.`);
   }
-  await fs.rm(backup, {recursive: true});
-  console.log(`Rebuilt ${manifest.packages.length} Agent runtime packages. Run npm install at the OmniCut root after dependency changes.`);
 } finally {
-  await fs.rm(staging, {recursive: true, force: true});
+  if (!keepStaging) await fs.rm(staging, {recursive: true, force: true});
 }

@@ -76,3 +76,23 @@ test('拒绝通过符号链接写入其他文件', async t => {
   await assert.rejects(store.save({ seedanceApiKey: 'new-key' }), /普通文件/);
   assert.equal(await fs.readFile(target, 'utf8'), 'original');
 });
+
+test('参考与成片审片可分别选择服务，Gemini 流式连接持久化且密钥不公开',async t=>{
+ const {store}=await fixture(t);
+ const result=await store.save({videoUnderstandingProvider:'creative',videoReviewProvider:'gemini',geminiApiKey:'isolated-gemini-key',geminiVideoModel:'gemini-3.8-flash',geminiBaseUrl:'https://relay.test/gemini',geminiApiMode:'stream'});
+ assert.equal(result.videoUnderstandingProvider,'creative');assert.equal(result.videoReviewProvider,'gemini');assert.equal(result.reviewConfigured,true);assert.equal(result.reviewModel,'gemini-3.8-flash');assert.equal(result.geminiApiMode,'stream');assert.doesNotMatch(JSON.stringify(result),/isolated-gemini-key/);
+ assert.equal((await store.read()).env.GEMINI_API_MODE,'stream');
+ assert.throws(()=>store.save({geminiApiMode:'automatic'}),/接口方式/);
+});
+
+test('审片沿用参考服务的原始选择与实际服务分别公开，独立覆盖可清除',async t=>{
+ const {store}=await fixture(t,'VIDEO_UNDERSTANDING_PROVIDER=creative\n');
+ let config=await store.save({videoReviewProvider:''});
+ assert.equal(config.videoReviewProviderOverride,'');assert.equal(config.videoReviewProvider,'creative');
+ config=await store.save({videoUnderstandingProvider:'gemini'});
+ assert.equal(config.videoReviewProviderOverride,'');assert.equal(config.videoReviewProvider,'gemini');
+ config=await store.save({videoReviewProvider:'creative'});
+ assert.equal(config.videoReviewProviderOverride,'creative');assert.equal(config.videoReviewProvider,'creative');
+ config=await store.save({videoReviewProvider:''});
+ assert.equal(config.videoReviewProviderOverride,'');assert.equal(config.videoReviewProvider,'gemini');
+});

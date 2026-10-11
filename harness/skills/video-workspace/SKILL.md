@@ -1,18 +1,20 @@
 ---
 name: video-workspace
-description: 在项目独立代码工作区编写并渲染视频、图片、音频素材，再入库参与剪辑。
+description: 在项目独立代码工作区用原生 Author Package 制作可编辑代码镜头，与真实或生成素材融合、预览和导出；也可构建独立图片或声音入库。
 ---
-当前 cwd 是此项目的代码草稿目录。使用原生文件工具编写脚本，bash 执行本地 ffmpeg/ffprobe 或已安装的渲染器。
-先检查依赖，不假称 Remotion 已安装。不要安装未经用户要求的依赖，不读取 .env 或系统密钥，不修改工作区外的 Frame 源码与项目。
-处理已有素材先用 stage_asset 复制到工作区，从返回的 input/ 相对路径读取，不修改原素材。
-供成片使用或用户选择的生成输出才调用 publish_workspace_asset，以相对工作区路径入库。质检抽帧、拼图、中间音轨留在 analysis/，不自动发布到素材库。入库会校验真实媒体，可在原生工程里引用。不要只交付代码就声称成片。
-付费图片、视频生成使用 Frame 的 generate_image/generate_video；不要从 shell 绕过生成服务的幂等、结果入库与权限。
-项目事实以 get_project_context 为准。生成提示词不等于已验证画面。
+# 原生代码工作区
 
-视频创作加载原项目 `hypit` Skill，使用 checkout_hypit_project 获取完整 Hypit 工程到 hypit/，保留 SVML/SVS/SVRun 与项目组件。通过 read_hypit_docs 按需学习原生文档与技能，不必安装第三方 skill。用 commit_hypit_project 提交源码而非仅 publish_workspace_asset 提交压平媒体。模型生成仍使用 Frame 工具，完成后重新读取素材表，将素材引用带入工程。
+目标：用原生源码完成当前镜头或局部修改。产出：可提交的 SVML/SVS/SVRun、实际预览和需要公开的参数。完成标准：工程可编译，关键画面已检查，组件可继续编辑，影片通过真实导出交付。
 
-原生工程使用同一条通路：inspect_hypit_scene 读场景 → adjust_hypit_timing / edit_hypit_scene 调参数或语义锚点；复杂创作 checkout → 代码工具写工程 → commit。新增本地媒体会随 commit 入库，嵌套旧素材用 index_hypit_assets 获取共享素材身份。避免把原生工程退回三镜头模板。
-独立图片、音频或其他原生产出：先 get_hypit_runtime，读取对应文档与 plan；写独立 SVRun，提交后 build_hypit_project → await_tasks 等待 hypit:ID → 读取 outputs.assetFile，再在原工程引用。影片仍可 export_video。不要只把源码当作完成，也不要在 bash 绕开构建服务生成付费内容。
+## 沿已有工程推进
+1. get_project_context 定位目标 videoId 与 revision。参数/时间修改先 inspect_hypit_scene → edit_hypit_scene / adjust_hypit_timing；结构修改加载 hypit，checkout_hypit_project 后使用返回的绝对 directory 和 CLI，按目标视频读写，保留未提交草稿。
+2. 代码或混合镜头先沿选中包的 README 与实际源码实施；需要 Film 接线起步时读 [native-code-recipe.md](references/native-code-recipe.md)，其中品牌揭幕只是简单示例。完整设计场景加载 motion-direction，优先采用 use 返回的 starter 和真实源时间窗，公开参数先落成片；未公开内容才读对应源码复用参考，保留原字体、版式、曲线及源时间关系。先提交改编并看画面；新接口或真实报错才查对应 vocabulary / read_hypit_docs，不重读整套框架。组件和语义边界按需读 [code-video.md](references/code-video.md)。
+3. 已有 editing 时直接导入 editing.document：图片用 asset，音视频用 prepared.media；只在缺少准备引用时 stage_asset / sync_hypit_assets，使用真实返回路径。set_production_plan 每镜保留 generated/code/hybrid，素材与代码在同一 Film 汇合；图片缩放不能冒充真实运动。
+4. 需要库参考时 list_motion_components（query / kind 可筛选）→ get_motion_component 看实际参数、原字体、源片段与文件 → use_motion_component 取得 starter → 读当前 main.svml/look.svs → 用 emptyDraft 或 merge 接入同一 Film → commit→preview。新空白稿可传 initializeDraft:true 直接准备可提交首版；未公开行为再原生 read 对应 sourcePaths。工具准备草稿，commit 才更新工程；不再次 checkout 覆盖，调用方保存文案、颜色、媒体、时间窗与源片段，保留包 activation、Studio Companion 与辅助模块。基础动作或完整场景按镜头目的选择，未公开内容可在项目 packages/ 继续改，不重写原设计为简化近似版；按需要公开可写参数。
+5. 修改已有文件先读取；原场景源码进入生成 bundle 时，按 use 返回的 localBuild 调用 rebuild_motion_component 后再 commit，直接改公开参数不需重建。commit_hypit_project 后 preview_frames 检查真实代表帧；需要运动检查时用可用的不超过3秒 sample。用户希望跨项目复用时 save_motion_component，保留 README、源码与必要资产，消费者明确选择版本。
 
-可复用动效直接使用原生 Author Package：先 list_motion_components，找到合适组件后 use_motion_component，将返回的包与 README 接到现有 SVML 的 Canvas、Timeline 和 Film。它只准备代码草稿，仍需 commit 才进入预览；不要再次 checkout 覆盖它。改调用方文字、颜色、媒体引用、时段即可复用，不重写组件，不渲染成 MP4 再剪。
-需要新动效时读 references/production/component-sharing.md 与原生组件文档，在 packages/ 下写自己的原生包，使用 browserProgram 的绝对帧时钟或原生图形/文本表达，公开参数与 Track，加入 Studio Companion；先在当前工程预览。用户希望保留风格/跨项目复用时，提交后 save_motion_component。包里保留 README、源码和必要资产；视频项目与品牌素材留在调用方，版本更新明确选择，不能顺手改变所有已有项目。
+人物讲解加载 frame-presenter-video，沿真实声音证据装配 Performance / Sound / Caption；prepare_hypit_speech 可在空白工程准备。独立图片/声音等产出用 get_hypit_runtime → 对应文档与 plan → 独立 SVRun → build_hypit_project → await_tasks，读取真实 outputs.assetFile 再引用；影片仍用 export_video 形成成片记录。
+
+## 路径与发布边界
+使用现有依赖和本地 ffmpeg/ffprobe；不安装未经用户要求的 skill、渲染器或依赖，不读取密钥或修改工作区外源码。模型生成使用项目 generate_*，保留幂等、权限与入库流程。
+供成片使用或用户选择的本地媒体才 publish_workspace_asset，使用目标工作区内真实路径；诊断图片/拼图/音轨留在 analysis/。可编辑镜头通过 commit 提交源码，不用压平媒体替代 Author Package，不把代码本身当成已交付影片。

@@ -224,6 +224,19 @@ var SkillRegistry = class extends Service {
 	async list(options = {}) {
 		return (await this.snapshot(options)).skills;
 	}
+	/** Refresh one workspace catalog at a host-controlled request boundary. */
+	invalidate(options) {
+		this.revision += 1;
+		const cached = [...this.collectCache];
+		this.collectCache.clear();
+		for (const [key, entries] of cached) {
+			const parsed = JSON.parse(key);
+			if (parsed.cwd === options.cwd) continue;
+			parsed.revision = this.revision;
+			this.collectCache.set(JSON.stringify(parsed), entries);
+		}
+		this.notifyChange();
+	}
 	/**
 	* Observe the current invocation-neutral catalog and whether discovery completed within a stable revision.
 	* Incomplete observations are never cached, allowing consumers to retain last-good state and

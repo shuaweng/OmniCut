@@ -1,0 +1,115 @@
+export const definition={
+  "name": "时间轴里程碑",
+  "category": "数据图表",
+  "description": "时间轴从左到右画出，里程碑节点依次弹起并标注年份。",
+  "image": false,
+  "packageName": "@frame/milestone-timeline",
+  "parameters": [
+    {
+      "key": "title",
+      "label": "主标题",
+      "type": "text",
+      "default": "一路走来"
+    },
+    {
+      "key": "subtitle",
+      "label": "说明文案",
+      "type": "text",
+      "default": "每一步都算数"
+    },
+    {
+      "key": "background",
+      "label": "背景颜色",
+      "type": "text",
+      "default": "#faf7f2"
+    },
+    {
+      "key": "color",
+      "label": "文字颜色",
+      "type": "text",
+      "default": "#1f1d1a"
+    },
+    {
+      "key": "accent",
+      "label": "主点缀颜色",
+      "type": "text",
+      "default": "#e4572e"
+    },
+    {
+      "key": "secondary",
+      "label": "次点缀颜色",
+      "type": "text",
+      "default": "#c2b8a8"
+    },
+    {
+      "key": "years",
+      "label": "年份（逗号分隔）",
+      "type": "text",
+      "default": "2019,2021,2023,2025,2026"
+    },
+    {
+      "key": "labels",
+      "label": "事件（逗号分隔）",
+      "type": "text",
+      "default": "创立,首款产品,百万用户,走向全球,今天"
+    },
+    {
+      "key": "x",
+      "label": "水平位置 %",
+      "type": "number",
+      "default": 50,
+      "min": -50,
+      "max": 150,
+      "step": 1
+    },
+    {
+      "key": "y",
+      "label": "垂直位置 %",
+      "type": "number",
+      "default": 50,
+      "min": -50,
+      "max": 150,
+      "step": 1
+    },
+    {
+      "key": "scale",
+      "label": "整体缩放",
+      "type": "number",
+      "default": 1,
+      "min": 0.25,
+      "max": 2,
+      "step": 0.05
+    },
+    {
+      "key": "speed",
+      "label": "动作速度",
+      "type": "number",
+      "default": 1,
+      "min": 0.25,
+      "max": 3,
+      "step": 0.1
+    },
+    {
+      "key": "intensity",
+      "label": "运动幅度",
+      "type": "number",
+      "default": 1,
+      "min": 0,
+      "max": 2,
+      "step": 0.1
+    },
+    {
+      "key": "transparent",
+      "label": "透明背景 true / false",
+      "type": "text",
+      "default": "false"
+    },
+    {
+      "key": "z",
+      "label": "图层顺序",
+      "type": "number",
+      "default": 50,
+      "step": 1
+    }
+  ]
+};

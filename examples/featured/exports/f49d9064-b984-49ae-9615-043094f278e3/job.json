@@ -1,0 +1,17 @@
+{
+  "id": "f49d9064-b984-49ae-9615-043094f278e3",
+  "projectId": "p-eea876508eae",
+  "videoId": "v-default",
+  "name": "OmniCut · 创意不该困在工具里·成片",
+  "created": "2026-10-11T12:16:52.193Z",
+  "status": "done",
+  "duration": 61,
+  "output": {
+    "width": 1920,
+    "height": 1080,
+    "fps": 30
+  },
+  "fileSize": 12608633,
+  "revision": "7:95c8a5dd5bf85a81",
+  "runtimeStopped": true
+}

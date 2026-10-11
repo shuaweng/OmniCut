@@ -51,8 +51,8 @@ window.__ModuleLoader__.load({
 			}
 		};
 		//#endregion
-		//#region \0dsh-css:/home/runner/work/deepseek-harness/deepseek-harness/packages/client/ui-settings-session-log/src/client/UploadRow.module.css.mjs
-		const css = ".gi5gtW_row{border-bottom:.5px solid var(--dsw-alias-border-l2);justify-content:space-between;align-items:center;gap:24px;padding:16px 0;display:flex}.gi5gtW_title{font-size:14px;line-height:20px}.gi5gtW_description{color:var(--dsw-alias-label-secondary);margin-top:4px;font-size:12px;line-height:18px}";
+		//#region \0dsh-css:/Users/wotar/Desktop/视频Agent/frame/engines/agent/source/packages/client/ui-settings-session-log/src/client/UploadRow.module.css.mjs
+		const css = ".xGt2oW_row{border-bottom:.5px solid var(--dsw-alias-border-l2);justify-content:space-between;align-items:center;gap:24px;padding:16px 0;display:flex}.xGt2oW_title{font-size:14px;line-height:20px}.xGt2oW_description{color:var(--dsw-alias-label-secondary);margin-top:4px;font-size:12px;line-height:18px}";
 		const tagId = "@deepseek-ai/dsh-client-ui-settings-session-log/UploadRow.module.css";
 		if (typeof document !== "undefined" && document.querySelector("style[data-plugin-css=" + JSON.stringify(tagId) + "]") === null) {
 			const tag = document.createElement("style");
@@ -62,9 +62,9 @@ window.__ModuleLoader__.load({
 			document.head.appendChild(tag);
 		}
 		var UploadRow_module_css_default = {
-			"description": "gi5gtW_description",
-			"row": "gi5gtW_row",
-			"title": "gi5gtW_title"
+			"description": "xGt2oW_description",
+			"row": "xGt2oW_row",
+			"title": "xGt2oW_title"
 		};
 		//#endregion
 		//#region lib/types/client/UploadRow.js

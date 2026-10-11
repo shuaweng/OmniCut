@@ -1023,8 +1023,8 @@ window.__ModuleLoader__.load({
 		/** English dictionary, checked complete against the zh key set. */
 		const en = { "language.title": "Language" };
 		//#endregion
-		//#region \0dsh-css:/home/runner/work/deepseek-harness/deepseek-harness/packages/client/locale/src/client/LanguageRow.module.css.mjs
-		const css = ".hVGvvW_row{border-bottom:.5px solid var(--dsw-alias-border-l2);align-items:center;gap:8px;padding:16px 0;display:flex}.hVGvvW_rowText{flex-direction:column;flex:1;gap:4px;min-width:0;padding-right:48px;display:flex}.hVGvvW_title{color:var(--dsw-alias-label-primary);font-size:14px;font-weight:400;line-height:22px}.hVGvvW_selector{border-radius:var(--dsw-radius-md);background:var(--dsw-alias-bg-module-platform);height:36px;font:inherit;color:var(--dsw-alias-label-primary);cursor:pointer;border:none;align-items:center;gap:12px;padding:0 14px;font-size:14px;line-height:22px;display:inline-flex}.hVGvvW_selector:hover{background:var(--dsw-alias-interactive-bg-hover)}.hVGvvW_chevron{flex:none}";
+		//#region \0dsh-css:/Users/wotar/Desktop/视频Agent/frame/engines/agent/source/packages/client/locale/src/client/LanguageRow.module.css.mjs
+		const css = "._7xGLaa_row{border-bottom:.5px solid var(--dsw-alias-border-l2);align-items:center;gap:8px;padding:16px 0;display:flex}._7xGLaa_rowText{flex-direction:column;flex:1;gap:4px;min-width:0;padding-right:48px;display:flex}._7xGLaa_title{color:var(--dsw-alias-label-primary);font-size:14px;font-weight:400;line-height:22px}._7xGLaa_selector{border-radius:var(--dsw-radius-md);background:var(--dsw-alias-bg-module-platform);height:36px;font:inherit;color:var(--dsw-alias-label-primary);cursor:pointer;border:none;align-items:center;gap:12px;padding:0 14px;font-size:14px;line-height:22px;display:inline-flex}._7xGLaa_selector:hover{background:var(--dsw-alias-interactive-bg-hover)}._7xGLaa_chevron{flex:none}";
 		const tagId = "@deepseek-ai/dsh-client-locale/LanguageRow.module.css";
 		if (typeof document !== "undefined" && document.querySelector("style[data-plugin-css=" + JSON.stringify(tagId) + "]") === null) {
 			const tag = document.createElement("style");
@@ -1034,11 +1034,11 @@ window.__ModuleLoader__.load({
 			document.head.appendChild(tag);
 		}
 		var LanguageRow_module_css_default = {
-			"chevron": "hVGvvW_chevron",
-			"row": "hVGvvW_row",
-			"rowText": "hVGvvW_rowText",
-			"selector": "hVGvvW_selector",
-			"title": "hVGvvW_title"
+			"chevron": "_7xGLaa_chevron",
+			"row": "_7xGLaa_row",
+			"rowText": "_7xGLaa_rowText",
+			"selector": "_7xGLaa_selector",
+			"title": "_7xGLaa_title"
 		};
 		//#endregion
 		//#region lib/types/client/LanguageRow.js

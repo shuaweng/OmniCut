@@ -1,0 +1,204 @@
+{
+  "name": "@frame/swiss-poster",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "网格与大字构成海报，红圆跳出秩序，版面旋转化作乐谱，再拉远成海报墙。可替换标题与品牌主色。",
+  "license": "MIT",
+  "hypit": {
+    "activation": "./activation.js"
+  },
+  "scripts": {
+    "build": "node build.mjs",
+    "test": "node --test verify.test.mjs"
+  },
+  "frame": {
+    "name": "瑞士海报",
+    "category": "完整场景",
+    "description": "网格与大字构成海报，红圆跳出秩序，版面旋转化作乐谱，再拉远成海报墙。可替换标题与品牌主色。",
+    "parameters": [
+      {
+        "key": "accent",
+        "label": "品牌主色",
+        "type": "color",
+        "default": "#E30613"
+      },
+      {
+        "key": "openingLine1",
+        "label": "开场第一行（空白保留原文）",
+        "type": "text",
+        "default": ""
+      },
+      {
+        "key": "openingLine2",
+        "label": "开场第二行",
+        "type": "text",
+        "default": ""
+      },
+      {
+        "key": "posterLine1",
+        "label": "海报标题第一行",
+        "type": "text",
+        "default": ""
+      },
+      {
+        "key": "posterLine2",
+        "label": "海报标题第二行",
+        "type": "text",
+        "default": ""
+      },
+      {
+        "key": "closingLine1",
+        "label": "片尾第一行",
+        "type": "text",
+        "default": ""
+      },
+      {
+        "key": "closingLine2",
+        "label": "片尾第二行",
+        "type": "text",
+        "default": ""
+      },
+      {
+        "key": "credit",
+        "label": "品牌署名",
+        "type": "text",
+        "default": ""
+      },
+      {
+        "key": "sourceStart",
+        "label": "原场景起始秒",
+        "type": "number",
+        "default": 0,
+        "min": 0,
+        "max": 44,
+        "step": 0.125
+      },
+      {
+        "key": "rate",
+        "label": "原场景播放速率",
+        "type": "number",
+        "default": 1,
+        "min": 0.25,
+        "max": 2,
+        "step": 0.125
+      },
+      {
+        "key": "z",
+        "label": "图层顺序",
+        "type": "number",
+        "default": 50,
+        "step": 1
+      }
+    ],
+    "kind": "scene",
+    "duration": 44,
+    "sourceDuration": 44,
+    "aspectRatio": "16:9",
+    "tags": [
+      "瑞士排版",
+      "完整场景",
+      "Lemo原片",
+      "Canvas",
+      "可改文案"
+    ],
+    "import": "@frame/swiss-poster@1",
+    "nativeFonts": [
+      {
+        "id": "archivo",
+        "file": "fonts/Archivo-VF.ttf",
+        "weight": 400,
+        "variableWeight": "100 900",
+        "style": "normal"
+      },
+      {
+        "id": "fraktur",
+        "file": "fonts/UnifrakturMaguntia-Regular.ttf",
+        "weight": 400,
+        "style": "normal"
+      },
+      {
+        "id": "serif",
+        "file": "fonts/DMSerifDisplay-Regular.ttf",
+        "weight": 400,
+        "style": "normal"
+      }
+    ],
+    "previewSettings": {
+      "width": 960,
+      "height": 540,
+      "fps": 24,
+      "posterTime": 38,
+      "galleryStart": 26,
+      "galleryEnd": 40
+    },
+    "segments": [
+      {
+        "name": "网格开场",
+        "start": 0,
+        "end": 4
+      },
+      {
+        "name": "构建海报网格",
+        "start": 4,
+        "end": 8
+      },
+      {
+        "name": "字体统一与留白",
+        "start": 8,
+        "end": 16
+      },
+      {
+        "name": "吸附与红圆出走",
+        "start": 18,
+        "end": 26
+      },
+      {
+        "name": "重排为乐谱与旋转",
+        "start": 26,
+        "end": 36
+      },
+      {
+        "name": "海报墙",
+        "start": 36,
+        "end": 40
+      },
+      {
+        "name": "品牌片尾",
+        "start": 40,
+        "end": 44
+      }
+    ],
+    "sourceFiles": [
+      "source/film.js",
+      "source/ease.js",
+      "source/adapter.js",
+      "source/score.json",
+      "source/lines.json",
+      "source/dur.json",
+      "source/words_rel.json",
+      "source/original/film.js",
+      "source/original/main.js",
+      "source/original/STYLE.md",
+      "source/original/DEMO.md",
+      "build.mjs",
+      "CREDITS",
+      "LICENSE"
+    ],
+    "recommendedUses": [
+      "品牌完整片头",
+      "海报与字体叙事",
+      "由原场景片段组合的短广告"
+    ],
+    "provenance": {
+      "author": "LemoLab",
+      "repository": "https://github.com/lemomo-ai/lemo-opuscar",
+      "commit": "a75e2b3384cded87955c8743b5a59db06ea491a8",
+      "style": "swiss-motion",
+      "license": "MIT",
+      "fonts": "SIL OFL 1.1",
+      "referenceAudio": "参考原声，包含英文旁白；改文案的生产工程需另选配音/配乐，详见CREDITS"
+    },
+    "buildScript": "build.mjs"
+  }
+}

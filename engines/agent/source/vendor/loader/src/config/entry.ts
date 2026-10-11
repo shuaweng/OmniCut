@@ -3,7 +3,7 @@ import { deepEqual, isNullable, updateVolatile, volatileEntries, type Volatile }
 import { Loader } from '../index.ts'
 import { EntryGroup } from './group.ts'
 import { EntryTree } from './tree.ts'
-import { evaluate, isJsExpr } from './utils.ts'
+import { evaluate, interpolate, isJsExpr } from './utils.ts'
 import { equalExceptVolatile } from './diff.ts'
 
 /** Serialized plugin entry options stored in loader config files. */
@@ -163,7 +163,7 @@ export class Entry {
     const fiber = this.fiber!
     const refs = volatileEntries(fiber.config)
     if (!refs.length) return true
-    const raw = this.options.config
+    const raw = interpolate(fiber.ctx, this.options.config)
     let candidate: unknown
     try {
       candidate = resolveConfig(fiber.runtime!, fiber.ctx.waterfall(fiber, 'internal/config', raw, () => raw))

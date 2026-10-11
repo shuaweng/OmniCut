@@ -1,0 +1,9 @@
+<?svml using="@hypit/markup@1"?>
+<svml>
+  <import as="asset" from="@hypit/media@1"/>
+  <import as="time" from="@hypit/timeline-author@1"/>
+  <import as="pipeline" from="@hypit/media-pipeline@1"/>
+  <asset:Audio id="asset" src="../../assets/3bc7d0b0-c088-4750-855e-8728e65b3fb4.mp3"/>
+  <time:Clock id="clock" frame-rate="30"/>
+  <pipeline:Normalize id="prepared" source={asset} clock={clock} video="none" audio="default" span-authority="audio"/>
+</svml>

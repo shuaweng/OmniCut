@@ -13,14 +13,14 @@
     "AGENTS.md",
     "CLAUDE.md"
   ],
-  "runtimeOrigin": "Published npm packages already used by OmniCut, matching the source tag. Development dependencies are omitted; packages are private local workspaces.",
+  "runtimeOrigin": "Rebuilt from the vendored source with its pinned pnpm workspace; development dependencies omitted.",
   "packages": [
     {
       "name": "@deepseek-ai/cordis",
       "version": "4.0.4",
       "source": "source/vendor/cordis",
       "runtime": "runtime/cordis",
-      "sha256": "41e4580aa40fee7285cc4d16078a58bb8661f8bfce34f59990f47e82f11c7cc3",
+      "sha256": "922c39ee2fa1bfe729eed0d6233cac7b3c4e42bb7de476ffbb4438a69c1084a4",
       "bytes": 239640,
       "files": 32
     },
@@ -38,7 +38,7 @@
       "version": "1.0.9",
       "source": "source/vendor/include",
       "runtime": "runtime/cordis-plugin-include",
-      "sha256": "a51f8427c47ca2da24490c5e3fd5d58513d22412d83ba9d9b0dd82028c11ffae",
+      "sha256": "946c06d0ed5e8a0f6a3de46df4d9e9e82ce36e3094b49a64737f26d648ef77b0",
       "bytes": 28703,
       "files": 7
     },
@@ -47,8 +47,8 @@
       "version": "1.0.5",
       "source": "source/vendor/loader",
       "runtime": "runtime/cordis-plugin-loader",
-      "sha256": "7266d3a7f290cf9e774175b1329730edb041c3c4e1dba4703bd1507ad8481044",
-      "bytes": 92786,
+      "sha256": "177decf7b2f0dda28d2a5ee4d4c5826d8cc5ca9443ab4820bbf4de080a060415",
+      "bytes": 92847,
       "files": 28
     },
     {
@@ -74,7 +74,7 @@
       "version": "0.2.0-rc.2",
       "source": "source/apps/cli",
       "runtime": "runtime/dsh",
-      "sha256": "0513d6479acaa38c2e5e98e5e2b7bc8b99f97fda40c09ef38073b22ef303d0ae",
+      "sha256": "2a0a3b127d5d2096a7975481c164e56ee7cdabe540a349901075814115665b06",
       "bytes": 70921,
       "files": 20
     },
@@ -83,7 +83,7 @@
       "version": "0.2.0-rc.2",
       "source": "source/packages/acp/acp",
       "runtime": "runtime/dsh-acp",
-      "sha256": "2d368cd91b2baee718ed8734b7be786b35b3ce8e1a3074a68bf531d9421f7c1e",
+      "sha256": "8ef9bf3bf705babb87ec438b190c0309ba7df111c29f28972020cf5569906c09",
       "bytes": 101327,
       "files": 13
     },
@@ -101,7 +101,7 @@
       "version": "0.2.0-rc.2",
       "source": "source/packages/core/agent",
       "runtime": "runtime/dsh-agent",
-      "sha256": "4712f3e5924930f137d2a424d258d9215df79b4efb8ee04a3ff3842ca9d539de",
+      "sha256": "c7ffff75dc7d5843efa7d063c88c4181fb8b308f4acc012647aaf5611b1661c5",
       "bytes": 164413,
       "files": 25
     },
@@ -119,7 +119,7 @@
       "version": "0.2.0-rc.2",
       "source": "source/packages/context/agent-instructions",
       "runtime": "runtime/dsh-agent-instructions",
-      "sha256": "f9067ba851acb939491ee159697e6754a85f1381c2dc010c627bc3ee6fee363a",
+      "sha256": "c0bdfd107c48996d93734c577ab4a202876ca48f1eb91ff109c8c039d96d2b3e",
       "bytes": 107904,
       "files": 12
     },
@@ -128,7 +128,7 @@
       "version": "0.2.0-rc.2",
       "source": "source/packages/core/agent-loop",
       "runtime": "runtime/dsh-agent-loop",
-      "sha256": "af2a040af55db79b115f25f0ad13741569408bdef0a94a7ddef91a50299114f8",
+      "sha256": "89f32b520e9bef979daa1d0f70f8ef1f51a36c7b6e0e9fb0ffb4f4d55ffdf2fe",
       "bytes": 153576,
       "files": 15
     },
@@ -146,7 +146,7 @@
       "version": "0.2.0-rc.2",
       "source": "source/packages/preset/agent-preset-registry",
       "runtime": "runtime/dsh-agent-preset-registry",
-      "sha256": "7caa8169548a2681d63726d13f06fa57b3512af4ea9015b189136cea4f6067a7",
+      "sha256": "a4008e4c717edbd32ecba83ab0548a0ffc89ed47843d0ba4e285dd4bf412fbe1",
       "bytes": 205351,
       "files": 29
     },
@@ -164,7 +164,7 @@
       "version": "0.2.0-rc.2",
       "source": "source/packages/identity/anonymous-user-id",
       "runtime": "runtime/dsh-anonymous-user-id",
-      "sha256": "632967399b2eb879e6fcf25b2abf7d6346f068c3e55e3b35c055bc20594fefd2",
+      "sha256": "3cbd0a7bb6c0ba6c12ebfbd458faf856994fa12be22a1725edaab9b851608d98",
       "bytes": 27274,
       "files": 7
     },
@@ -173,7 +173,7 @@
       "version": "0.2.0-rc.2",
       "source": "source/packages/api/account-controller",
       "runtime": "runtime/dsh-api-account-controller",
-      "sha256": "703a084f096c6267f9f99c9ff717b014b03a595c1661c35263d7bfea111a5e6e",
+      "sha256": "5e69d1c9987eb27cb600253100839c53b2330918a79ed875df6b77c03abd06c8",
       "bytes": 86956,
       "files": 14
     },
@@ -182,7 +182,7 @@
       "version": "0.2.0-rc.2",
       "source": "source/packages/api/gateway",
       "runtime": "runtime/dsh-api-gateway",
-      "sha256": "21fc72490b4bccfd8a30ec44202cc3257e4110b8918df3c130b01131208bf993",
+      "sha256": "b12fb6a6db2cf77fcdb5958d4c95a77b63aa38e142d6a635db69d5004f77c633",
       "bytes": 400224,
       "files": 29
     },
@@ -191,7 +191,7 @@
       "version": "0.2.0-rc.2",
       "source": "source/packages/api/job-controller",
       "runtime": "runtime/dsh-api-job-controller",
-      "sha256": "925cda6aa5cfb4853d6a27f0f43caee8b9ec4131987409337cbe015b2d1ad089",
+      "sha256": "c8b798eca6561c73a812870c26a24048030db0923db92a81c1e834b06a14fdd5",
       "bytes": 119141,
       "files": 27
     },
@@ -209,8 +209,8 @@
       "version": "0.2.0-rc.2",
       "source": "source/packages/api/session-controller",
       "runtime": "runtime/dsh-api-session-controller",
-      "sha256": "6fc502d1f270833c215cda24bd26cc44250e4adb4510ba438163bfd442b7dae3",
-      "bytes": 1025691,
+      "sha256": "7d14bfee89e4cb371fd6fc3c4ba5e4bd900904089323dec7b426a67db34082cc",
+      "bytes": 1025942,
       "files": 79
     },
     {
@@ -218,7 +218,7 @@
       "version": "0.2.0-rc.2",
       "source": "source/packages/api/settings-controller",
       "runtime": "runtime/dsh-api-settings-controller",
-      "sha256": "01b7cb024291c2953ae93a9763eea164d354eca31525a9cb9d1db6848ced6189",
+      "sha256": "a3291583e1640c6f550f73419716188080ebc82529ceb7517e2be0be0d54e40c",
       "bytes": 126213,
       "files": 16
     },
@@ -227,7 +227,7 @@
       "version": "0.2.0-rc.2",
       "source": "source/packages/api/terminal-controller",
       "runtime": "runtime/dsh-api-terminal-controller",
-      "sha256": "a47996bfe04a8e62b628ae1a5b2f0de9a47f8aa53623114be2df0f672ad9696a",
+      "sha256": "aebbc5474cf3b13be1b9e641ab57ffcd6b7deefea1bea328a70f6e35086842c4",
       "bytes": 309453,
       "files": 35
     },
@@ -236,7 +236,7 @@
       "version": "0.2.0-rc.2",
       "source": "source/packages/api/workspace-controller",
       "runtime": "runtime/dsh-api-workspace-controller",
-      "sha256": "9d50899b9b3e9279514ff90947452400faf49f9d48d8c3df80f4fb9a3239372a",
+      "sha256": "f0bb2232d110f88515e03f826bd62f380d44eeef3a25098b97e5fd0b6dedc0a6",
       "bytes": 249727,
       "files": 31
     },
@@ -254,7 +254,7 @@
       "version": "0.2.0-rc.2",
       "source": "source/packages/boot/app-boot",
       "runtime": "runtime/dsh-app-boot",
-      "sha256": "4193f59c0d237d78e23fa9bda639798f7b8ae3650a3c8f1e0a91dadab3be70a9",
+      "sha256": "a9b351ec52bf28e2c559df080187c40cd8b7ae288c29279790f985b436646efa",
       "bytes": 348893,
       "files": 27
     },
@@ -272,7 +272,7 @@
       "version": "0.2.0-rc.2",
       "source": "source/packages/attachment/attachment",
       "runtime": "runtime/dsh-attachment",
-      "sha256": "a891e574ac89173e6981db35dff15b9fb55d1fcd292f0f848ea9b9d0716d4c90",
+      "sha256": "3945d0e421af983e3d680dda42254e1402d0c22835b9dcf7499634acb145abe7",
       "bytes": 79334,
       "files": 18
     },
@@ -281,7 +281,7 @@
       "version": "0.2.0-rc.2",
       "source": "source/packages/attachment/attachment-local",
       "runtime": "runtime/dsh-attachment-local",
-      "sha256": "701677f5d673178cfa45a9ac0cf5c5e8d4f737843f4de4eaaf28024312e5efda",
+      "sha256": "41ff38ec63858a052aee60a721863c76aed16322410470e0ad91162bd8b711d0",
       "bytes": 99066,
       "files": 15
     },
@@ -290,7 +290,7 @@
       "version": "0.2.0-rc.2",
       "source": "source/packages/credentials/authorization",
       "runtime": "runtime/dsh-authorization",
-      "sha256": "52e7162a0deb681a097ba6f4ad9c6486707c0e819dca1019faf281a2e22cdd02",
+      "sha256": "5228c81b682617e8aa28b6afa68bca55f9134ba8267f9eb4bd22ae7ba31ab471",
       "bytes": 73956,
       "files": 13
     },
@@ -299,7 +299,7 @@
       "version": "0.2.0-rc.2",
       "source": "source/packages/bundle/base",
       "runtime": "runtime/dsh-base",
-      "sha256": "491d69eddc901b1410e5dc9c31769c47384a225c03caa5db9e942b6e0265ae24",
+      "sha256": "21a2deec64def7a5f938467ad47be792a7e6b2d7a3ff1163863f69da710fcd57",
       "bytes": 49875,
       "files": 8
     },
@@ -308,7 +308,7 @@
       "version": "0.2.0-rc.2",
       "source": "source/packages/shell/bash-local",
       "runtime": "runtime/dsh-bash-local",
-      "sha256": "1a4e3fdaa4a5b40f2a5956b9f08a1bd3925e47314fa3ecfc3571a0f31e5db60e",
+      "sha256": "df19a1d1ea7be1b6379c3a3c716eb79f9f32138b3230f25936e7f8b1a2b5c71c",
       "bytes": 42767,
       "files": 7
     },
@@ -344,7 +344,7 @@
       "version": "0.2.0-rc.2",
       "source": "source/packages/client/connection",
       "runtime": "runtime/dsh-client-connection",
-      "sha256": "7b974f5687b86ef46dac66c0cdb3b5d87ff7773645eeb12cf526cf1b507dcaae",
+      "sha256": "26d670b16fa3ea6008e94e5bb75758d28394540f29fff7fa10257fc1338b0e99",
       "bytes": 162836,
       "files": 23
     },
@@ -353,7 +353,7 @@
       "version": "0.2.0-rc.2",
       "source": "source/packages/client/file-upload",
       "runtime": "runtime/dsh-client-file-upload",
-      "sha256": "33f0669a27390999fb0e74c4e342ad85ae88d5b960958ded5c635915f651db3e",
+      "sha256": "486edb69f58e05eab217e298d9d2cd4322c92f41b3b2e30dadb3d5b7b58b4a9a",
       "bytes": 127668,
       "files": 25
     },
@@ -371,8 +371,8 @@
       "version": "0.2.0-rc.2",
       "source": "source/packages/client/locale",
       "runtime": "runtime/dsh-client-locale",
-      "sha256": "56e530158f8df6bc1763a562378f34c47fda46e69044e806342d13bc4a3e0173",
-      "bytes": 108802,
+      "sha256": "d03ea97050362e8d4698d521a8594a051a7c928fb4615c4dd3c07843dc9ce81a",
+      "bytes": 108821,
       "files": 17
     },
     {
@@ -425,8 +425,8 @@
       "version": "0.2.0-rc.2",
       "source": "source/packages/client/ui-agent-preset",
       "runtime": "runtime/dsh-client-ui-agent-preset",
-      "sha256": "2bdd0dda32a51311eae1953d011a412fa9c8547d78e1314b75133004174cd6aa",
-      "bytes": 119562,
+      "sha256": "e4100215430d606d803464cbf0529a986cd31db9b7ec9dd28222d6c99c1d2595",
+      "bytes": 119594,
       "files": 18
     },
     {
@@ -434,8 +434,8 @@
       "version": "0.2.0-rc.2",
       "source": "source/packages/client/ui-approval",
       "runtime": "runtime/dsh-client-ui-approval",
-      "sha256": "96079eadbf21d26e9195dc88f58e499d8068f36cdc88c85d6483b5ea9219fad5",
-      "bytes": 28938,
+      "sha256": "506d7e2ee5b9de8c1beb1b1e13903ee9ca57e6f69986719de3ff5b486fb6ae6c",
+      "bytes": 28946,
       "files": 12
     },
     {
@@ -443,8 +443,8 @@
       "version": "0.2.0-rc.2",
       "source": "source/packages/client/ui-attachment",
       "runtime": "runtime/dsh-client-ui-attachment",
-      "sha256": "9d8aead5ba0df656d761876f69db45df07589a8b78631bca7a90065b26bf277e",
-      "bytes": 74156,
+      "sha256": "a5ca981b08f3d77b950b427b9fbbdef15a0a61c4149d355fb0cab48f5647bf5a",
+      "bytes": 74207,
       "files": 17
     },
     {
@@ -452,8 +452,8 @@
       "version": "0.2.0-rc.2",
       "source": "source/packages/client/ui-brand-official",
       "runtime": "runtime/dsh-client-ui-brand-official",
-      "sha256": "5b06181a7b08077516944617718e33a802efcdaf3765b9a7e3046c73fa4342fb",
-      "bytes": 16084,
+      "sha256": "df108de99d32904e01c4b8a7b56a239bc372b1ae265eba29732ea430d585a137",
+      "bytes": 16143,
       "files": 10
     },
     {
@@ -461,8 +461,8 @@
       "version": "0.2.0-rc.2",
       "source": "source/packages/client/ui-chat",
       "runtime": "runtime/dsh-client-ui-chat",
-      "sha256": "94570539e23e436bf12009e417d51d0ac4cb631c07696ab2f7682df10dce31b3",
-      "bytes": 783727,
+      "sha256": "6f445955ffaf4d41b73331c88399538b456541f4c06750a8df5ec5b9026c21cb",
+      "bytes": 785468,
       "files": 99
     },
     {
@@ -470,8 +470,8 @@
       "version": "0.2.0-rc.2",
       "source": "source/packages/client/ui-commands",
       "runtime": "runtime/dsh-client-ui-commands",
-      "sha256": "a99db38fd5430c0c1ac604629e1eb3d3487df6169f3a3ab13eb8acb1c2b1bc65",
-      "bytes": 117839,
+      "sha256": "c09eaf7e729ddcb00f97e01bd42402482f5a8d0af773a6393dfeb44a6fb92d56",
+      "bytes": 117847,
       "files": 18
     },
     {
@@ -479,8 +479,8 @@
       "version": "0.2.0-rc.2",
       "source": "source/packages/client/ui-conversation",
       "runtime": "runtime/dsh-client-ui-conversation",
-      "sha256": "4c1a14ed3c008607a457c41a883d1a5ed4cecfe352905ef8fb1bd5a6f6684b26",
-      "bytes": 1014277,
+      "sha256": "c30ac2117f24ffabb5fba44e1609f8cbb50ec74864780f4533f2614bc88e67a8",
+      "bytes": 1014362,
       "files": 77
     },
     {
@@ -488,8 +488,8 @@
       "version": "0.2.0-rc.2",
       "source": "source/packages/extensions/ui-cordis",
       "runtime": "runtime/dsh-client-ui-cordis",
-      "sha256": "a8702b20a20383fdae6912f15a196473f2b671e3a2b8337097729424e14d1911",
-      "bytes": 121287,
+      "sha256": "422624ce1be794a7eec49699ff143d1263be74b1f0374ca21f6b2e6ad7baca3e",
+      "bytes": 121311,
       "files": 22
     },
     {
@@ -497,8 +497,8 @@
       "version": "0.2.0-rc.2",
       "source": "source/packages/client/ui-deliverables",
       "runtime": "runtime/dsh-client-ui-deliverables",
-      "sha256": "876ebf40fa84d58a799c94a72d18d8144abc1853928375834a4542cce9b46d2b",
-      "bytes": 202873,
+      "sha256": "20a1ffea920a04c7e2fb3432da5430402700292542e0e50aee9f77809e004e5d",
+      "bytes": 202952,
       "files": 27
     },
     {
@@ -506,8 +506,8 @@
       "version": "0.2.0-rc.2",
       "source": "source/packages/client/ui-directory-picker-browse",
       "runtime": "runtime/dsh-client-ui-directory-picker-browse",
-      "sha256": "29d9139b1e2ed02e8a737832ead719694a80d1ae2de109029adb4655f5436882",
-      "bytes": 68827,
+      "sha256": "5bb65c53bac10c14226f95deac6e9e6228cf95214320fc4dda527ebf233d04e9",
+      "bytes": 68835,
       "files": 11
     },
     {
@@ -524,8 +524,8 @@
       "version": "0.2.0-rc.2",
       "source": "source/packages/client/ui-goal",
       "runtime": "runtime/dsh-client-ui-goal",
-      "sha256": "d7e1207516139b2ba663c42d6f09875c058c3e4ab57b3b05d48c437bce16b752",
-      "bytes": 52999,
+      "sha256": "53ef7bc45def96aa99458512d0d04f8cc2d3357fb22297c978f555d5fe0a1bdb",
+      "bytes": 53038,
       "files": 15
     },
     {
@@ -533,8 +533,8 @@
       "version": "0.2.0-rc.2",
       "source": "source/packages/client/ui-input-trigger",
       "runtime": "runtime/dsh-client-ui-input-trigger",
-      "sha256": "912b53669b02f475fe743465075c9a57e74bc7973e058c4b15f364577ff101d9",
-      "bytes": 112699,
+      "sha256": "9e2c4c2b6ffa8a00ae85a77bd54c95a5d22337db6c7933cee76ebd883a9401ad",
+      "bytes": 112651,
       "files": 19
     },
     {
@@ -542,8 +542,8 @@
       "version": "0.2.0-rc.2",
       "source": "source/packages/client/ui-jobs",
       "runtime": "runtime/dsh-client-ui-jobs",
-      "sha256": "db506cb1a94f516f7eb841a106248fac27d7459f1db5d6d077f7dbdea1728358",
-      "bytes": 53020,
+      "sha256": "3ce364a6326002f29d7bc15277f64c2d332bc8d88128352c6e98aa78c50d9b7d",
+      "bytes": 53124,
       "files": 11
     },
     {
@@ -551,8 +551,8 @@
       "version": "0.2.0-rc.2",
       "source": "source/packages/client/ui-layout",
       "runtime": "runtime/dsh-client-ui-layout",
-      "sha256": "4507d0800704431f0bf3cea5c1ea058e45a038b83831fd58a2559acb1cdae73b",
-      "bytes": 75321,
+      "sha256": "2366d2942eb60593656025ea97c60e2a04fb0962b9b7d90ed777cbc6c56bee86",
+      "bytes": 75355,
       "files": 16
     },
     {
@@ -560,8 +560,8 @@
       "version": "0.2.0-rc.2",
       "source": "source/packages/client/ui-message-feedback",
       "runtime": "runtime/dsh-client-ui-message-feedback",
-      "sha256": "d511ae887bd817fc9942ff27103566249b2d067140dd84a76a032bfcb2b443a2",
-      "bytes": 74149,
+      "sha256": "7174dae4195f2b350f2d3d5f194a06674f5792cc5e01e83b54ebeeabf815c74d",
+      "bytes": 74157,
       "files": 16
     },
     {
@@ -569,8 +569,8 @@
       "version": "0.2.0-rc.2",
       "source": "source/packages/client/ui-model-selection",
       "runtime": "runtime/dsh-client-ui-model-selection",
-      "sha256": "5ed6a0de803ec4e0e649704aa215f1c5fc815329a584bd563a35e1730cad3a11",
-      "bytes": 96603,
+      "sha256": "d239b5a0d48f676c7a319cc7c0d3eff0fe07ccd5bf1c119bea0ffb6cbdbd05d0",
+      "bytes": 96531,
       "files": 16
     },
     {
@@ -578,8 +578,8 @@
       "version": "0.2.0-rc.2",
       "source": "source/packages/client/ui-open-in-app",
       "runtime": "runtime/dsh-client-ui-open-in-app",
-      "sha256": "43abdafb6b7881a7cb223ececfaa27cfa3a6918012f90e088f4b5e967fdd0fff",
-      "bytes": 77904,
+      "sha256": "e974aff722402e2a192c11c6801ba38546e96f0984d555b5c76c8c12d4f37d68",
+      "bytes": 77912,
       "files": 20
     },
     {
@@ -587,8 +587,8 @@
       "version": "0.2.0-rc.2",
       "source": "source/packages/client/ui-permission-presets",
       "runtime": "runtime/dsh-client-ui-permission-presets",
-      "sha256": "3e735094f1f35810540ca370f61c26d4b8129fb2a9ae0a47c85bc3551b74655f",
-      "bytes": 71691,
+      "sha256": "5321466f252dabe05eca25f6d424b998af4fcc735877faec5ccc731914fd7f0f",
+      "bytes": 71707,
       "files": 15
     },
     {
@@ -596,8 +596,8 @@
       "version": "0.2.0-rc.2",
       "source": "source/packages/client/ui-plan",
       "runtime": "runtime/dsh-client-ui-plan",
-      "sha256": "b753f480a0c950b4a6f85e0ec8f28283172882fc3c1cc86c7e2673a340ffd7c6",
-      "bytes": 64808,
+      "sha256": "1a1e752924ae9ae9954a811d338233832a776c9d362e402c491e2fbb9841de58",
+      "bytes": 64824,
       "files": 19
     },
     {
@@ -605,8 +605,8 @@
       "version": "0.2.0-rc.2",
       "source": "source/packages/client/ui-plugin-manager",
       "runtime": "runtime/dsh-client-ui-plugin-manager",
-      "sha256": "41d8cc79adbe16c5365e9f86cda107bf15c86752ac21fdc4bbe9f04dd31a7c3c",
-      "bytes": 301084,
+      "sha256": "c091a032a30049179eda9fbcd64bf5d51ca336183492427095f806e00a64e8a6",
+      "bytes": 301435,
       "files": 23
     },
     {
@@ -641,8 +641,8 @@
       "version": "0.2.0-rc.2",
       "source": "source/packages/client/ui-schedule",
       "runtime": "runtime/dsh-client-ui-schedule",
-      "sha256": "9b6feab5c934c57cd7fe644d68fa0aae90b8a3db76c8533348a0a7ff8efe60e3",
-      "bytes": 461965,
+      "sha256": "e84926dc84ce3fc1ca7143104b47cea4328420447bebf152161329b27ef07fd9",
+      "bytes": 461981,
       "files": 45
     },
     {
@@ -668,8 +668,8 @@
       "version": "0.2.0-rc.2",
       "source": "source/packages/client/ui-settings-account",
       "runtime": "runtime/dsh-client-ui-settings-account",
-      "sha256": "11038ade6dab7fd0f654d39684ac9c55c94a8a534df2dcbd5eb3f592562c7379",
-      "bytes": 5378262,
+      "sha256": "ae3e02be2af5cad92bc1bfed901af4ddb1f1797723b36efc0654aca2b0d5ebc9",
+      "bytes": 5378285,
       "files": 45
     },
     {
@@ -686,8 +686,8 @@
       "version": "0.2.0-rc.2",
       "source": "source/packages/client/ui-settings-general",
       "runtime": "runtime/dsh-client-ui-settings-general",
-      "sha256": "5b0bad378f9cc786a92f0074f479afa7ac1f8860b2fe63ff245c5aa14d772a7a",
-      "bytes": 101728,
+      "sha256": "da86bfdb75cacf732a155d6c21d7511dbb8704e55983c329aa5c4d692399e09d",
+      "bytes": 101784,
       "files": 22
     },
     {
@@ -695,8 +695,8 @@
       "version": "0.2.0-rc.2",
       "source": "source/packages/client/ui-settings-models",
       "runtime": "runtime/dsh-client-ui-settings-models",
-      "sha256": "0374dc91bf769e64182474b7f381742fb5019b83e7a08e2773925b5a83b4737a",
-      "bytes": 283250,
+      "sha256": "271dbf5c98d30bd113624972e77e987a1670d87c37a30095a479f6b75dbf7f85",
+      "bytes": 283282,
       "files": 30
     },
     {
@@ -704,8 +704,8 @@
       "version": "0.2.0-rc.2",
       "source": "source/packages/client/ui-settings-plugin-inventory",
       "runtime": "runtime/dsh-client-ui-settings-plugin-inventory",
-      "sha256": "4ddbbbee1d79fe6824054916f2490d59881125f18bc72ba248482e3a6fbd82c9",
-      "bytes": 70043,
+      "sha256": "63574f17ab070c15b5a2a0c2728547267888e28189012febf15acba8d413e876",
+      "bytes": 70051,
       "files": 11
     },
     {
@@ -713,8 +713,8 @@
       "version": "0.2.0-rc.2",
       "source": "source/packages/client/ui-settings-plugins",
       "runtime": "runtime/dsh-client-ui-settings-plugins",
-      "sha256": "959e6724a3b19365579128bf8c2f859c596720dfa92fa8d4ab6e9ce121e9bd70",
-      "bytes": 24690,
+      "sha256": "3650d4e25a87e7bde3d4c8ff89a619d703a62036233e51610e345b7c5ca38737",
+      "bytes": 24698,
       "files": 11
     },
     {
@@ -722,8 +722,8 @@
       "version": "0.2.0-rc.2",
       "source": "source/packages/client/ui-settings-session-log",
       "runtime": "runtime/dsh-client-ui-settings-session-log",
-      "sha256": "ba07a35831789e07fdf6436028f727d8d8e0c48547702d195f9be49b63c99389",
-      "bytes": 19409,
+      "sha256": "8912ec39343c2ded1ab58092d73e285a1b695a4a91156f0216e95b5a16ffb9a4",
+      "bytes": 19417,
       "files": 12
     },
     {
@@ -740,8 +740,8 @@
       "version": "0.2.0-rc.2",
       "source": "source/packages/client/ui-settings-subagent",
       "runtime": "runtime/dsh-client-ui-settings-subagent",
-      "sha256": "3489245ba314214666fb12cc7b52163436155ebb8f0991d8be1b25c75c405766",
-      "bytes": 68320,
+      "sha256": "d1fb7ab2fc7df346a847d6c0a304ea6283d1a612a148a1b9222dc5c7e7046511",
+      "bytes": 68344,
       "files": 16
     },
     {
@@ -758,8 +758,8 @@
       "version": "0.2.0-rc.2",
       "source": "source/packages/client/ui-shortcuts",
       "runtime": "runtime/dsh-client-ui-shortcuts",
-      "sha256": "1fe3169841eb52021467c3c99d9bb3d2f0346ac586cd4b9a37e2a11756fe3712",
-      "bytes": 83868,
+      "sha256": "a2b3f0d4a3aa3343837200eaf5a0a83caa08bcd77ab3a5732a04e325fe4e1a11",
+      "bytes": 83876,
       "files": 16
     },
     {
@@ -767,8 +767,8 @@
       "version": "0.2.0-rc.2",
       "source": "source/packages/client/ui-sidebar",
       "runtime": "runtime/dsh-client-ui-sidebar",
-      "sha256": "e7b304a31aa3d962f762364a24a8a614e6c50d33e8a382488798c262a80693f6",
-      "bytes": 66306,
+      "sha256": "57b8929eb65b973c1a72679fe4aaf2f34e154bc8ca7e2349be5c46a9ff276694",
+      "bytes": 66273,
       "files": 13
     },
     {
@@ -776,8 +776,8 @@
       "version": "0.2.0-rc.2",
       "source": "source/packages/client/ui-sidebar-browser",
       "runtime": "runtime/dsh-client-ui-sidebar-browser",
-      "sha256": "d9541e9dd360e381b980405617760e45a6f4b109f9466d7f80bdbf2879bb831a",
-      "bytes": 118374,
+      "sha256": "b55169c70a6df8a6c6857884c2d93b4875724ecac8588ece843bc7104d1f4267",
+      "bytes": 118382,
       "files": 29
     },
     {
@@ -785,8 +785,8 @@
       "version": "0.2.0-rc.2",
       "source": "source/packages/client/ui-sidebar-documentpreview",
       "runtime": "runtime/dsh-client-ui-sidebar-documentpreview",
-      "sha256": "3756e9e89fca9a77cd202ee8d34af2ace364ff2a82e17c571c81d36ef1498279",
-      "bytes": 14595668,
+      "sha256": "71ce3483f4a045b8b0e1f18313e1f1269ba4abffb8091fd68a7372351e9ce419",
+      "bytes": 14595761,
       "files": 85
     },
     {
@@ -794,8 +794,8 @@
       "version": "0.2.0-rc.2",
       "source": "source/packages/client/ui-sidebar-files",
       "runtime": "runtime/dsh-client-ui-sidebar-files",
-      "sha256": "1d659d92674765094f2fb4c1f38807accacbd0fb4d36b5e75b8a7dae18e2c990",
-      "bytes": 75749,
+      "sha256": "cb0752302b3fc41510222ecf8030ffce5292cd901479767f855f3b6fb516c982",
+      "bytes": 75757,
       "files": 16
     },
     {
@@ -803,8 +803,8 @@
       "version": "0.2.0-rc.2",
       "source": "source/packages/client/ui-sidebar-right",
       "runtime": "runtime/dsh-client-ui-sidebar-right",
-      "sha256": "ca8efea75b05920bf89a5953324b1397cececdc8154056f540712c78cdd942e4",
-      "bytes": 477065,
+      "sha256": "237d7921e5ff00d082ef0ab44cc4d4f8f14f30299200c4c93f7ffef25ac77afa",
+      "bytes": 477112,
       "files": 32
     },
     {
@@ -812,8 +812,8 @@
       "version": "0.2.0-rc.2",
       "source": "source/packages/client/ui-sidebar-terminal",
       "runtime": "runtime/dsh-client-ui-sidebar-terminal",
-      "sha256": "41d229f523beef49193f328844013dcb6196ad016dea1a14afa85b722395f6fe",
-      "bytes": 735435,
+      "sha256": "0985feb2382a6cfb5c7b1807532f50989f47ba44a2368e228073f964e2679098",
+      "bytes": 735467,
       "files": 21
     },
     {
@@ -821,8 +821,8 @@
       "version": "0.2.0-rc.2",
       "source": "source/packages/client/ui-skill",
       "runtime": "runtime/dsh-client-ui-skill",
-      "sha256": "5d6d915dd84caa1f48fed228ac404df2c51be7c8200c57016f28ac405b86f47e",
-      "bytes": 46874,
+      "sha256": "a0ba0a24fa26adb755c216db3dc6e25472c31195ef3217c87f5973cf654d2a7e",
+      "bytes": 46882,
       "files": 11
     },
     {
@@ -839,8 +839,8 @@
       "version": "0.2.0-rc.2",
       "source": "source/packages/client/ui-subagent",
       "runtime": "runtime/dsh-client-ui-subagent",
-      "sha256": "60089059d69b5254b76637ee89615d649df6590a402d6b5490e25788ca962721",
-      "bytes": 83873,
+      "sha256": "01ee691fb201de0cc42c7f3fc1b98900b74ff197929d2209d79ba4a240d314ba",
+      "bytes": 83900,
       "files": 13
     },
     {
@@ -848,8 +848,8 @@
       "version": "0.2.0-rc.2",
       "source": "source/packages/client/ui-theme",
       "runtime": "runtime/dsh-client-ui-theme",
-      "sha256": "ba311dca1865566223b42d3db51eaa4004c659eb2d524dfff117a7a0966bc02d",
-      "bytes": 349265,
+      "sha256": "54ca5f949ce3b8c52e2dba4fc5e9b4e0eed21980f23474e6de9b7cc594dd3b0e",
+      "bytes": 349333,
       "files": 21
     },
     {
@@ -857,8 +857,8 @@
       "version": "0.2.0-rc.2",
       "source": "source/packages/client/ui-tool",
       "runtime": "runtime/dsh-client-ui-tool",
-      "sha256": "0f25b62d1c69de5d9b6b6bbea87945c02efbb46b6de95143a3069e9ea456a643",
-      "bytes": 290033,
+      "sha256": "7bb2d25419024061a7ea73890719fe6d0deae2c8ad090a29d0d4d68cb29f5c7d",
+      "bytes": 290101,
       "files": 48
     },
     {
@@ -866,8 +866,8 @@
       "version": "0.2.0-rc.2",
       "source": "source/packages/client/ui-trajectory",
       "runtime": "runtime/dsh-client-ui-trajectory",
-      "sha256": "6f94d318014730677fe3ab09895e0bccb180d038c644b39b5895f8071b390c48",
-      "bytes": 496380,
+      "sha256": "d56f9bc1769ab3bde345f8f9843616b278065b15291e4533f7724314badb0b3e",
+      "bytes": 496359,
       "files": 37
     },
     {
@@ -875,8 +875,8 @@
       "version": "0.2.0-rc.2",
       "source": "source/packages/client/ui-user-questions",
       "runtime": "runtime/dsh-client-ui-user-questions",
-      "sha256": "9396a35c02076522825fdf2967d5a3fd9e22b94625f968a6243197f7575c0cc1",
-      "bytes": 144883,
+      "sha256": "1950ba300234a0c257ed4fcf30da8171c3fba4b85b4f12620a13e432f131fa9d",
+      "bytes": 144933,
       "files": 16
     },
     {
@@ -884,8 +884,8 @@
       "version": "0.2.0-rc.2",
       "source": "source/packages/client/ui-workflow-run",
       "runtime": "runtime/dsh-client-ui-workflow-run",
-      "sha256": "e90200e4deb4535a8aaa2bf7b743e4ef26914ba09188704099a3b63cbdb12e97",
-      "bytes": 51057,
+      "sha256": "80868a44de0445ba0428eb56ed0247ceada0ce7b536daa8850617f80c051cde2",
+      "bytes": 51065,
       "files": 12
     },
     {
@@ -893,8 +893,8 @@
       "version": "0.2.0-rc.2",
       "source": "source/packages/client/ui-workspace",
       "runtime": "runtime/dsh-client-ui-workspace",
-      "sha256": "7feeb380199f8541ce3e014fb7a2bc1abd0dc46ff1e5303dd40ac23f66dc5047",
-      "bytes": 339913,
+      "sha256": "8e64948b887227ed65146fc3ca1965cdfdbd86ad1ceeb5067db6fd061e210da7",
+      "bytes": 340100,
       "files": 26
     },
     {
@@ -902,7 +902,7 @@
       "version": "0.2.0-rc.2",
       "source": "source/packages/boot/cmdline",
       "runtime": "runtime/dsh-cmdline",
-      "sha256": "9bd8b0d18b31d78f5967a9938d7a6e3b43680aafff1bd41170921fe2f4cef34c",
+      "sha256": "ad27fb564f35b5a0f0922e49041c8d6db4745e14bb965a42338f6a8ea010cae0",
       "bytes": 34480,
       "files": 7
     },
@@ -920,7 +920,7 @@
       "version": "0.2.0-rc.2",
       "source": "source/packages/feedback/command-feedback",
       "runtime": "runtime/dsh-command-feedback",
-      "sha256": "4dd206a54d88190ac2cb4171ebcd5755dc97b980d81f213d295575de7c8313e2",
+      "sha256": "1abd678d0d0104d08fead6a66096042755130444686d1fe03080687b3482cfb4",
       "bytes": 52824,
       "files": 14
     },
@@ -929,7 +929,7 @@
       "version": "0.2.0-rc.2",
       "source": "source/packages/goal/command-goal",
       "runtime": "runtime/dsh-command-goal",
-      "sha256": "5dc7907abfc39a13b93f61204cb88a29ac4c62c9cdcea021374ce4dfb83cb20f",
+      "sha256": "2e93eb4b55d303dcde48c71f2beee11b50f074b6e2c847be6bfce75782ccd79c",
       "bytes": 29026,
       "files": 7
     },
@@ -938,7 +938,7 @@
       "version": "0.2.0-rc.2",
       "source": "source/packages/interaction/commands",
       "runtime": "runtime/dsh-commands",
-      "sha256": "05c3cefb8991dc592fc425d8f57327edab79aca2c37e764bd1e2ac53c7272ac8",
+      "sha256": "e28d0ee39f1e48d85ecae2d2640e9bd3f31b4284dd99e067104ad716c8dcc6ce",
       "bytes": 148187,
       "files": 19
     },
@@ -947,7 +947,7 @@
       "version": "0.2.0-rc.2",
       "source": "source/packages/compaction/compaction",
       "runtime": "runtime/dsh-compaction",
-      "sha256": "bf6ce27ee93e57a452bc9c5b83a342c750f9559ee42bdf770373d7a8ba2c8267",
+      "sha256": "60a8b449c47e43af6e69e315d90fe5081d3dc493cd8d7f1f92cd337a08081869",
       "bytes": 95005,
       "files": 19
     },
@@ -956,7 +956,7 @@
       "version": "0.2.0-rc.2",
       "source": "source/packages/compaction/compaction-basic",
       "runtime": "runtime/dsh-compaction-basic",
-      "sha256": "0c61f2feef31a78abae8bbc3570af9049a97ba34bd087dd93838780cb804095a",
+      "sha256": "db8107f84fc2bf691d020837bad403601ecef23a97d9943a2ae933bf03a8f462",
       "bytes": 116949,
       "files": 11
     },
@@ -965,7 +965,7 @@
       "version": "0.2.0-rc.2",
       "source": "source/packages/compaction/compaction-image-offload",
       "runtime": "runtime/dsh-compaction-image-offload",
-      "sha256": "5aa4cbb3949e38d37e20d3c33c8e4fa6e46899270efde3bcd54f16845a9b0a87",
+      "sha256": "31ec8da73d84ce32ed871340f451f70f16af24620be275e7bab6f790090b84d3",
       "bytes": 36093,
       "files": 14
     },
@@ -974,7 +974,7 @@
       "version": "0.2.0-rc.2",
       "source": "source/packages/compaction/compaction-tool-result-pruner",
       "runtime": "runtime/dsh-compaction-tool-result-pruner",
-      "sha256": "f0f7f51b316425dba3f33c5fd9e504da8efeb261692fb2d82e4e5b47a988c271",
+      "sha256": "61eca34643c8f063eae0674d9c11a5dbc795c510a94a5574deae7afdd2dc7e77",
       "bytes": 35284,
       "files": 9
     },
@@ -983,8 +983,8 @@
       "version": "0.2.0-rc.2",
       "source": "source/packages/boot/config-editor",
       "runtime": "runtime/dsh-config-editor",
-      "sha256": "15713d462f5ccd32282af6e2f66cbb23c8a11dd8c7d6378bac39be14fd7caac4",
-      "bytes": 18910,
+      "sha256": "134e7857030c6d5397ab9f506a8eb98079866fa1c28cc623608f2f679e35742c",
+      "bytes": 19049,
       "files": 7
     },
     {
@@ -1001,7 +1001,7 @@
       "version": "0.2.0-rc.2",
       "source": "source/packages/extensions/cordis-host-runner",
       "runtime": "runtime/dsh-cordis-host-runner",
-      "sha256": "080c0bb71894fb66c157b058eed7b9e3766c66dcda123df1f9c12136e0a2c92f",
+      "sha256": "3c0394309de083cd4fb9a33f2fb1ad7a1b29fdbc2cba78e5188b1deea504046d",
       "bytes": 518522,
       "files": 24
     },
@@ -1019,7 +1019,7 @@
       "version": "0.2.0-rc.2",
       "source": "source/packages/credentials/credentials-local",
       "runtime": "runtime/dsh-credentials-local",
-      "sha256": "dd422c98f3c5499c082a63c2a927759e45e8f3fa8164574c5e513c1938146ee9",
+      "sha256": "cadb3c4c08533197714b4735eb6e2499ee6000642d0fb3dcd7cf635adeda8d77",
       "bytes": 78005,
       "files": 7
     },
@@ -1064,7 +1064,7 @@
       "version": "0.2.0-rc.2",
       "source": "source/packages/experimental/agent-team",
       "runtime": "runtime/dsh-experimental-agent-team",
-      "sha256": "c380f35126f20ef917bc651eb6d337160ba4270ac074fc9c84925e25478fdaa3",
+      "sha256": "a445aa5d8041eb6295422adad1b7d0049a36e3583e01fa45762af586c1df0e17",
       "bytes": 263041,
       "files": 43
     },
@@ -1091,7 +1091,7 @@
       "version": "0.2.0-rc.2",
       "source": "source/packages/experimental/auto-review",
       "runtime": "runtime/dsh-experimental-auto-review",
-      "sha256": "d489f2510faf2aaffab61b4d299ebdb4ee6b67071cf99cdfebb5803837dfff33",
+      "sha256": "02fa59197a7717c55a82b5e9570fd77f189629cf8ef45081720ecc57133be9bf",
       "bytes": 50088,
       "files": 11
     },
@@ -1100,8 +1100,8 @@
       "version": "0.2.0-rc.2",
       "source": "source/packages/experimental/client-ui-agent-team",
       "runtime": "runtime/dsh-experimental-client-ui-agent-team",
-      "sha256": "937b2fdad21f3f09b5118b703a44272a0249a04b7d391ce0043d413bca794e43",
-      "bytes": 48793,
+      "sha256": "bd8dd1656619c28c448b41640420782925c3cc68bb5d658ee81c3d599fe601cf",
+      "bytes": 48801,
       "files": 14
     },
     {
@@ -1109,8 +1109,8 @@
       "version": "0.2.0-rc.2",
       "source": "source/packages/experimental/client-ui-voice-input",
       "runtime": "runtime/dsh-experimental-client-ui-voice-input",
-      "sha256": "4f9c18cd6735d7236ad70d810f2a3906e5a189e23358a9abaeb50bccf469942f",
-      "bytes": 244232,
+      "sha256": "973025115c8d00b5aab5e5fec54b06983b0c57920e4b8e8d65709773e5de8ccc",
+      "bytes": 244240,
       "files": 18
     },
     {
@@ -1118,7 +1118,7 @@
       "version": "0.2.0-rc.2",
       "source": "source/packages/experimental/schedule-bundle",
       "runtime": "runtime/dsh-experimental-schedule-bundle",
-      "sha256": "ada0a341d558aad4777e195b97100704d57da9f3be241fb62d8ea6e3ff68782c",
+      "sha256": "9708af63fa43aa509095bf1aabc648b1c9f893492a919b81a44b61c564515174",
       "bytes": 16336,
       "files": 11
     },
@@ -1127,7 +1127,7 @@
       "version": "0.2.0-rc.2",
       "source": "source/packages/experimental/speech-to-text",
       "runtime": "runtime/dsh-experimental-speech-to-text",
-      "sha256": "ea13c13b85cc1e35610713268708553e24253b5f6bdf3c6f598afe55b95a4db3",
+      "sha256": "997c6d10ac336823a6f2099e4b8499f8e0f8a794186f1f93f7b56e61671bae1d",
       "bytes": 38902,
       "files": 12
     },
@@ -1145,7 +1145,7 @@
       "version": "0.2.0-rc.2",
       "source": "source/packages/experimental/tool-agent-team",
       "runtime": "runtime/dsh-experimental-tool-agent-team",
-      "sha256": "7f9b5e4d97a6411e6acd901ecd5ebdc5832f583ed4646fbe3096efff532e74eb",
+      "sha256": "c87e12c0f0e0db6a260c98231dd29e8f7b06c4b7f39170c2fc2d978da6f10fab",
       "bytes": 46246,
       "files": 9
     },
@@ -1172,7 +1172,7 @@
       "version": "0.2.0-rc.2",
       "source": "source/packages/context/file-reference-local",
       "runtime": "runtime/dsh-file-reference-local",
-      "sha256": "4a03eac930d1b4dafd9600e3e6eb667849083caab42ae8736d06b17238d99ccc",
+      "sha256": "7f47ba6b68e7097c9b9d30775ad40c5ebc3f5fa613c4d81fa38e51a965f7ae7d",
       "bytes": 62375,
       "files": 10
     },
@@ -1181,8 +1181,8 @@
       "version": "0.2.0-rc.2",
       "source": "source/packages/fs/fs",
       "runtime": "runtime/dsh-fs",
-      "sha256": "7fb0090ab5b47436da4477285ee78749df8cbce5efcb5efccc73c5b5f3d09808",
-      "bytes": 49371,
+      "sha256": "bb85ac8cd087611d3a7ebcbfb82531da5552bfaa796b40bcf38b4eeea99be358",
+      "bytes": 49395,
       "files": 10
     },
     {
@@ -1208,8 +1208,8 @@
       "version": "0.2.0-rc.2",
       "source": "source/packages/fs/fs-sandbox",
       "runtime": "runtime/dsh-fs-sandbox",
-      "sha256": "d46786ece421f0c5bb7cff56a486c638acee9d562fe418b30030bbef75c14b13",
-      "bytes": 34796,
+      "sha256": "b9c73e2baa69728a0a4cb897ed1916ee9f9ce92e2e9883dc3371bb8af9cfbc3c",
+      "bytes": 37748,
       "files": 8
     },
     {
@@ -1217,7 +1217,7 @@
       "version": "0.2.0-rc.2",
       "source": "source/packages/goal/goal",
       "runtime": "runtime/dsh-goal",
-      "sha256": "108f7ac79af480cc7c341456d6a634ffb6a230ec116ae2c28288e91be4499806",
+      "sha256": "600d24bbee923534d2f31db7ccbbfe9f4be5dfd5b130b09779b78a6a05250b13",
       "bytes": 232227,
       "files": 25
     },
@@ -1226,7 +1226,7 @@
       "version": "0.2.0-rc.2",
       "source": "source/packages/goal/goal-round-driver",
       "runtime": "runtime/dsh-goal-round-driver",
-      "sha256": "8ea9c39b580ef57a92bc1aa1a9b59595c7995d1c7980fe8449a3bf2ee220762c",
+      "sha256": "9505cdb1d04b3bea026818e02777a3c4c3da596b9ad0f47e39ae7387b39dd852",
       "bytes": 41459,
       "files": 10
     },
@@ -1235,7 +1235,7 @@
       "version": "0.2.0-rc.2",
       "source": "source/packages/bundle/headless",
       "runtime": "runtime/dsh-headless",
-      "sha256": "8df848a2d55c063c18a103df6e66a379135137789560ce6064fba5fc4db2ed2c",
+      "sha256": "afa4816f120982ea7c3a9401b7dc388f805513a1a4e93394833db3fbfe8ef8fa",
       "bytes": 71786,
       "files": 14
     },
@@ -1271,7 +1271,7 @@
       "version": "0.2.0-rc.2",
       "source": "source/packages/hooks/hooks-claude-code",
       "runtime": "runtime/dsh-hooks-claude-code",
-      "sha256": "b8ca469479235fbd521d8e02799a0415938be0ae9b7bb0bae014f88791e258ac",
+      "sha256": "4d139de387571422ecdbdba85288dd49ce7dd257746c438300f3a40c545948f9",
       "bytes": 58189,
       "files": 8
     },
@@ -1280,7 +1280,7 @@
       "version": "0.2.0-rc.2",
       "source": "source/packages/hooks/hooks-codex",
       "runtime": "runtime/dsh-hooks-codex",
-      "sha256": "09604f6c2b9111eaf04c8de1f05720e61d96ab2c48516e6e7545584127593350",
+      "sha256": "6c83c5b143dfeef9a400c69a3ef3ef863e91c61f03ff8d8431f4bd507c35a44b",
       "bytes": 48618,
       "files": 8
     },
@@ -1298,7 +1298,7 @@
       "version": "0.2.0-rc.2",
       "source": "source/packages/host/directory-picker-auto",
       "runtime": "runtime/dsh-host-directory-picker-auto",
-      "sha256": "738fa63aa749900a620812e77fbaab3fc52ddfe29a066069a8b40d440bd4ac83",
+      "sha256": "ab76d4b2f41323e89d655e557a54fd24bf8cd1185a98425e06886be33ab0c59c",
       "bytes": 32018,
       "files": 9
     },
@@ -1316,7 +1316,7 @@
       "version": "0.2.0-rc.2",
       "source": "source/packages/host/directory-picker-native",
       "runtime": "runtime/dsh-host-directory-picker-native",
-      "sha256": "5c017beedef6fc1676ca4c687c162247d89bfd5eb77046754145fef50ca1ed10",
+      "sha256": "67e8f8720b46c9313b70f0c22252ce1ecc7ce5900c4ee04411cae82811d2d4b1",
       "bytes": 53094,
       "files": 14
     },
@@ -1334,7 +1334,7 @@
       "version": "0.2.0-rc.2",
       "source": "source/packages/host/open-in-app",
       "runtime": "runtime/dsh-host-open-in-app",
-      "sha256": "7fec6963921c1fb4259d1214bfbe6a279bc2cd270e0035b10c7ab4607cebebdc",
+      "sha256": "fe9fcdf67cdc91fbfb16ddfc846e6e30bf8b9f7ea16f909beafd9b363d7054fa",
       "bytes": 158184,
       "files": 18
     },
@@ -1343,7 +1343,7 @@
       "version": "0.2.0-rc.2",
       "source": "source/packages/host/plugin-inventory",
       "runtime": "runtime/dsh-host-plugin-inventory",
-      "sha256": "f1262a86425a76b3cde26c3562b2460fcd17bb32d41596985ad456acbe338176",
+      "sha256": "17733df0204c3bb76c9254783d11544ef561e75000cd8046cc270bb19eff64b6",
       "bytes": 44303,
       "files": 14
     },
@@ -1388,7 +1388,7 @@
       "version": "0.2.0-rc.2",
       "source": "source/packages/jobs/jobs",
       "runtime": "runtime/dsh-jobs",
-      "sha256": "921cdbd59a3d6fb1ad35ab5f2c7f205e9757fdc357d0f8584d15ea8dbef6c56c",
+      "sha256": "19147aaf1a1d642b51ab88fce25b5bae26a4387f55fd3c2539e990e179b485d1",
       "bytes": 74330,
       "files": 19
     },
@@ -1397,7 +1397,7 @@
       "version": "0.2.0-rc.2",
       "source": "source/packages/jobs/jobs-local",
       "runtime": "runtime/dsh-jobs-local",
-      "sha256": "546c252faf563a3f706b4d051c4633146c59f2d2716b868e1cb98d77187fe41b",
+      "sha256": "4f8e0bcca2fe01087a2389152f4a15ae2f559064a1100d5f414218d2ef434caa",
       "bytes": 72282,
       "files": 10
     },
@@ -1424,7 +1424,7 @@
       "version": "0.2.0-rc.2",
       "source": "source/packages/llm/llm",
       "runtime": "runtime/dsh-llm",
-      "sha256": "b2048daf3fc63f9e6ac4577a3c53feb624d3f511a57b77c6e804af993d66d6b7",
+      "sha256": "6a18560a13716db256950709c2e0bf319929ababba0f7f92de7c69bde89dfd59",
       "bytes": 418276,
       "files": 39
     },
@@ -1433,7 +1433,7 @@
       "version": "0.2.0-rc.2",
       "source": "source/packages/llm/llm-deepseek",
       "runtime": "runtime/dsh-llm-deepseek",
-      "sha256": "34ac163b0e163a3bbe8d7bf8a25f8a10c086e1cc5b9d8368d4dd04e5dfa923c2",
+      "sha256": "d2dc0271c13c32ae9f33d4f86b442a17e244a340c3e625258b354c537704ce4d",
       "bytes": 213205,
       "files": 30
     },
@@ -1442,7 +1442,7 @@
       "version": "0.2.0-rc.2",
       "source": "source/packages/llm/llm-deepseek-account",
       "runtime": "runtime/dsh-llm-deepseek-account",
-      "sha256": "4d8e83f2a4b1312a0951570739ad52171c647e9e96fd193618f6803ac6b9390d",
+      "sha256": "9f908d35798840d6b514b17f0e4786f9cb934cc8aa3ec9649c52d6cd5b837ce6",
       "bytes": 19074,
       "files": 8
     },
@@ -1451,7 +1451,7 @@
       "version": "0.2.0-rc.2",
       "source": "source/packages/llm/llm-deepseek-api-key",
       "runtime": "runtime/dsh-llm-deepseek-api-key",
-      "sha256": "afd6e009f8cb3200700fc3351644abefb527fe8041ee4f9db0b00aad741d196a",
+      "sha256": "daccc870277baa7d336c2553f9fa720fddab1d21a935ec86b93b1251161c89c6",
       "bytes": 18892,
       "files": 8
     },
@@ -1460,7 +1460,7 @@
       "version": "0.2.0-rc.2",
       "source": "source/packages/llm/llm-pi-ai",
       "runtime": "runtime/dsh-llm-pi-ai",
-      "sha256": "416c101a8168ef1e7809a7748cfa841d014bb2d12cbe7e8e51fe9d790ea87960",
+      "sha256": "fec8663dad903461d9656f6cc450dd60cc44f0fa4b228726c86e5a5fb2e05dea",
       "bytes": 235281,
       "files": 18
     },
@@ -1469,7 +1469,7 @@
       "version": "0.2.0-rc.2",
       "source": "source/packages/llm/llm-retry",
       "runtime": "runtime/dsh-llm-retry",
-      "sha256": "d226c63ccb94a97fd52f566b0681836846d2731af1d6633cc85c7d2f1b8ddfa6",
+      "sha256": "df451047f18dd3e966803e39dc96a483d987cea2c9cdc4fbd87ab9b47fe3a632",
       "bytes": 61707,
       "files": 17
     },
@@ -1478,7 +1478,7 @@
       "version": "0.2.0-rc.2",
       "source": "source/packages/mcp/mcp-client",
       "runtime": "runtime/dsh-mcp-client",
-      "sha256": "dc9a74abd3b9fd72dd00a2b514ef4c7ed080537adf783ccc43fb1786435a1a68",
+      "sha256": "2f5762be9e9f614df96f51a4c729405e644318dd90dcba96c6d7c4e6a260efff",
       "bytes": 93337,
       "files": 11
     },
@@ -1496,7 +1496,7 @@
       "version": "0.2.0-rc.2",
       "source": "source/packages/feedback/message-feedback",
       "runtime": "runtime/dsh-message-feedback",
-      "sha256": "6df95e0cc108e5bf02912ca65c96beabcec05205ba9b379b623d022cb3be5bbe",
+      "sha256": "767f5cdea49861e22236a5b156c9ef5fd7c43cad6554bfd41981cf23bbc1338c",
       "bytes": 89235,
       "files": 14
     },
@@ -1514,7 +1514,7 @@
       "version": "0.2.0-rc.2",
       "source": "source/packages/document/office-to-pdf",
       "runtime": "runtime/dsh-office-to-pdf",
-      "sha256": "f1e4e8a05512dc7aaada9565740756642830ce5b584c15e7313c20c4b51eef35",
+      "sha256": "db17401dc44fb4ab4f24e4ac597a31ebd6bb2562a619e7389925086e3692f527",
       "bytes": 112786,
       "files": 22
     },
@@ -1550,7 +1550,7 @@
       "version": "0.2.0-rc.2",
       "source": "source/packages/interaction/permission-presets",
       "runtime": "runtime/dsh-permission-presets",
-      "sha256": "15752992c04d2a7d876c9beb43ca99d12589b327ef417dd7653ac7b154db2117",
+      "sha256": "5796a0b2dfc96009ee6842e624e539f99e34a133340053c559d6227eef2f20cb",
       "bytes": 126280,
       "files": 19
     },
@@ -1568,7 +1568,7 @@
       "version": "0.2.0-rc.2",
       "source": "source/packages/plan/plan-mode",
       "runtime": "runtime/dsh-plan-mode",
-      "sha256": "9aa048f51a982f38f8ff4cfa9d6dd0d8e24af9b897eb81d0c79ae02a253ca9b1",
+      "sha256": "e2d35e3efbf45574dacd3533688f6aa266020fe05c23184e92988c95e581028a",
       "bytes": 82454,
       "files": 15
     },
@@ -1577,7 +1577,7 @@
       "version": "0.2.0-rc.2",
       "source": "source/packages/boot/plugin-manager",
       "runtime": "runtime/dsh-plugin-manager",
-      "sha256": "ee9ef3e4ccb5534cea5acfcb2c42bf82c653b17d18327de9d5303d73b69c60b4",
+      "sha256": "19e6d4358fe4a8f32ab1917332276982eb770ed2780e22c83b9babc759ec24a2",
       "bytes": 382746,
       "files": 34
     },
@@ -1586,7 +1586,7 @@
       "version": "0.2.0-rc.2",
       "source": "source/packages/llm/plugin-package-inventory-deepseek",
       "runtime": "runtime/dsh-plugin-package-inventory-deepseek",
-      "sha256": "ec1a86d79dd186f52c278d4b390be0a4818e90699dbeb6e6f5dbaa67b7fda2cf",
+      "sha256": "21c3a29c824ca329af487dc41a6770466c3b10265f3a18bace4158ebfd908ac1",
       "bytes": 30369,
       "files": 10
     },
@@ -1604,7 +1604,7 @@
       "version": "0.2.0-rc.2",
       "source": "source/packages/ptc-runtime/ptc-runtime-node",
       "runtime": "runtime/dsh-ptc-runtime-node",
-      "sha256": "ba95be690bd1861058a65fcdb7755d4693441b4ecfa07dd8bc3baa7e3c7d6893",
+      "sha256": "08c64d173e704dad7da8d56f1bef9cdeecd5f27db6568543b68025cb6d606cc9",
       "bytes": 136452,
       "files": 20
     },
@@ -1622,7 +1622,7 @@
       "version": "0.2.0-rc.2",
       "source": "source/packages/shell/pwsh-sandbox",
       "runtime": "runtime/dsh-pwsh-sandbox",
-      "sha256": "6787021df040a4a0157cd67d9da265f26ad44aea947fd3523a740af230b90f88",
+      "sha256": "909d78d203d753d8df91361da92ba2c73646bd22f22b4cf21d2e13c99a8157c5",
       "bytes": 40721,
       "files": 8
     },
@@ -1640,8 +1640,8 @@
       "version": "0.2.0-rc.2",
       "source": "source/packages/sandbox/sandbox",
       "runtime": "runtime/dsh-sandbox",
-      "sha256": "2568e80688b60b85e42ea07d6048ea69864a6c2b7830021afc549c1136ccd438",
-      "bytes": 64141,
+      "sha256": "0539cecad4eb27e926febbbb7318ba20b4b0c270c2e60d3ce97d13698d007778",
+      "bytes": 64383,
       "files": 10
     },
     {
@@ -1649,8 +1649,8 @@
       "version": "0.2.0-rc.2",
       "source": "source/packages/sandbox/sandbox-local",
       "runtime": "runtime/dsh-sandbox-local",
-      "sha256": "aac395b3dc79929843d462f4f7936987ea856990880f90fd7bdbb0ed4066b65f",
-      "bytes": 61145,
+      "sha256": "2b68e319d79d8d9383518dc57b8c4ab5a6b0d0e1cfb56a55d399608ca73794f9",
+      "bytes": 61902,
       "files": 8
     },
     {
@@ -1658,8 +1658,8 @@
       "version": "0.2.0-rc.2",
       "source": "source/packages/sandbox/sandbox-policy",
       "runtime": "runtime/dsh-sandbox-policy",
-      "sha256": "bdf335902a6ce439747b901cb4168e68907553c023228f48fa3784a3b124911c",
-      "bytes": 41675,
+      "sha256": "665852402169a01e520b9315ee1e7e393dbea5b86e6b82c708933fbccfcb82d4",
+      "bytes": 42636,
       "files": 10
     },
     {
@@ -1667,7 +1667,7 @@
       "version": "0.2.0-rc.2",
       "source": "source/packages/sandbox/sandbox-windows-acl",
       "runtime": "runtime/dsh-sandbox-windows-acl",
-      "sha256": "f05081703a616a65e1d139d00d50f1ab0548245ceb0fcbddae060c681e67d97b",
+      "sha256": "1224b461199a70e47d911f7243e5d434da6c7be2102f8ff243d9202953e4cf9d",
       "bytes": 229011,
       "files": 21
     },
@@ -1676,7 +1676,7 @@
       "version": "0.2.0-rc.2",
       "source": "source/packages/schedule/schedule",
       "runtime": "runtime/dsh-schedule",
-      "sha256": "cae7d4eebc919d5cad159016321a7a8a2a5b40c772a84e484101097a5a870e98",
+      "sha256": "72a71a0cb1dde15356350de6f0abf8e39877c1af29945f8bfb52dff4b3656f72",
       "bytes": 448726,
       "files": 33
     },
@@ -1694,7 +1694,7 @@
       "version": "0.2.0-rc.2",
       "source": "source/packages/bundle/sdk-app",
       "runtime": "runtime/dsh-sdk-app",
-      "sha256": "34e7e371e1334ed4e4d75c6712b004679654e307f487d7f41cf89570f5581e53",
+      "sha256": "b96cefdfffa319fdede1b91156faa550cf2841d3943d75ae7a68bc5ea7701e18",
       "bytes": 18831,
       "files": 8
     },
@@ -1712,7 +1712,7 @@
       "version": "0.2.0-rc.2",
       "source": "source/packages/bundle/sdk-minimal",
       "runtime": "runtime/dsh-sdk-minimal",
-      "sha256": "04389a6d6fcab31289e430b74271b545e0dcc6003897a39f214232a6453ca0c0",
+      "sha256": "0b6b050a2f5c169a31fc4ad025616ef00d2a9863a56dffe22f1379d9479a4cb9",
       "bytes": 22196,
       "files": 8
     },
@@ -1730,7 +1730,7 @@
       "version": "0.2.0-rc.2",
       "source": "source/packages/core/session",
       "runtime": "runtime/dsh-session",
-      "sha256": "bff1f552431086e728759839eb5fbd6a65152289622c3d78c9cafc1cffe98446",
+      "sha256": "00fab779ae3c3babd7ad41b332b74fa54c81ea90d9657666ec468a763258e796",
       "bytes": 333950,
       "files": 29
     },
@@ -1739,7 +1739,7 @@
       "version": "0.2.0-rc.2",
       "source": "source/packages/session/session-checkpoint-policy",
       "runtime": "runtime/dsh-session-checkpoint-policy",
-      "sha256": "12475cb207a967fd452ec4ba16c30b594a368b005fe24a482474e1db76547b1c",
+      "sha256": "ba5cb5de78cbfa0cfdfdf4250b5f43f804cec7cea6f9ef4188a64a7f57c0f1a5",
       "bytes": 22346,
       "files": 7
     },
@@ -1757,7 +1757,7 @@
       "version": "0.2.0-rc.2",
       "source": "source/packages/session/session-format-catalog",
       "runtime": "runtime/dsh-session-format-catalog",
-      "sha256": "2dfd7263d5f64303c23aa03e944b93b730b8b6064be27bbda51bee6412cd80ee",
+      "sha256": "3b122b4bbf8a525e1b5893fb1d3ea6646700d6ac91b883baf550f9a3f98f3a26",
       "bytes": 33095,
       "files": 18
     },
@@ -1784,7 +1784,7 @@
       "version": "0.2.0-rc.2",
       "source": "source/packages/session/session-format-v2-to-v3",
       "runtime": "runtime/dsh-session-format-v2-to-v3",
-      "sha256": "bfe12ad1930f46259296cbddd95a549b8dc77e4d506bffb8582d2433a52daeba",
+      "sha256": "6550406281b7b1102a8b8023e9769ae0bb3230a1dda350bf83c62cfae15a6348",
       "bytes": 88312,
       "files": 12
     },
@@ -1793,7 +1793,7 @@
       "version": "0.2.0-rc.2",
       "source": "source/packages/session/session-format-v3-to-v4",
       "runtime": "runtime/dsh-session-format-v3-to-v4",
-      "sha256": "d05f2085d5e7a54318d71e7140bd4a762c0bde4ef93cc6bdbfe48673207f8625",
+      "sha256": "e80e29d1d7088c23383ff8ffde39a180babd5fac60a56e2bafcae2bcdc1a0e33",
       "bytes": 165676,
       "files": 23
     },
@@ -1802,7 +1802,7 @@
       "version": "0.2.0-rc.2",
       "source": "source/packages/session/session-log-deepseek",
       "runtime": "runtime/dsh-session-log-deepseek",
-      "sha256": "2f7f24660926e6cbaa2efa51005f67c797c0a8005442515b118493113e9072f2",
+      "sha256": "19040985da964fc997d85958c114a6967896787d89e582e467112e3ebc6e9564",
       "bytes": 46472,
       "files": 13
     },
@@ -1811,8 +1811,8 @@
       "version": "0.2.0-rc.2",
       "source": "source/packages/session-query/session-log-export",
       "runtime": "runtime/dsh-session-log-export",
-      "sha256": "0a8cbf1b7cb5ab02c6bf263c0c826ff34699ddac620df89b711c6bab2048f8f8",
-      "bytes": 76002,
+      "sha256": "faa329f58e394696e71aa51b19182c6a676e4d04ac576b1cc4670a3cf4ebd075",
+      "bytes": 76010,
       "files": 15
     },
     {
@@ -1829,7 +1829,7 @@
       "version": "0.2.0-rc.2",
       "source": "source/packages/session/session-persistence-jsonl",
       "runtime": "runtime/dsh-session-persistence-jsonl",
-      "sha256": "276312da0c902c5022be5e5f2b73c61838413191e61e2117e90c5729c09a0aee",
+      "sha256": "05c5feeb89f3df3e489b257ee11b7fcc6b355908aa2dcd4848daa4d812fcf5d2",
       "bytes": 784874,
       "files": 20
     },
@@ -1838,7 +1838,7 @@
       "version": "0.2.0-rc.2",
       "source": "source/packages/session/session-projection",
       "runtime": "runtime/dsh-session-projection",
-      "sha256": "86cc03540771310feaadc43cef6f3ec3ad09a230eef8cb78691ec0c508ba3698",
+      "sha256": "18b55c35bcf98685672e1bf8377fdd954449e2f4cf45db4d5fbcf2f42684dea5",
       "bytes": 87401,
       "files": 10
     },
@@ -1847,7 +1847,7 @@
       "version": "0.2.0-rc.2",
       "source": "source/packages/session/session-projection-cache",
       "runtime": "runtime/dsh-session-projection-cache",
-      "sha256": "aad8e73a8de2b8102638eeb200b677c02e05607b031a5d82df92f8463f753e63",
+      "sha256": "6819a1d2d25098dc35e814f34fdf15db68ba27dc143dc259495b17a73fea100e",
       "bytes": 62212,
       "files": 8
     },
@@ -1856,7 +1856,7 @@
       "version": "0.2.0-rc.2",
       "source": "source/packages/session-query/session-query",
       "runtime": "runtime/dsh-session-query",
-      "sha256": "214897a28db9006ac3ac3d5ea0a1fc7249746acfef9f85dae8dfd752111fa240",
+      "sha256": "b55eb708c8093b166a21503b99fe0ea1bb219a6b7cc7c967fff4ac0616601899",
       "bytes": 117748,
       "files": 18
     },
@@ -1865,7 +1865,7 @@
       "version": "0.2.0-rc.2",
       "source": "source/packages/session-query/session-query-sqlite",
       "runtime": "runtime/dsh-session-query-sqlite",
-      "sha256": "5da4de3e3378603c4f44050da8bf3b09b2ad88f16b95d3c6d0f0004ae1d03330",
+      "sha256": "c92d69e6b523f3343cafa235357b5b37e7d1ec5d2741bf13b97f21dd5f9da67d",
       "bytes": 87177,
       "files": 9
     },
@@ -1874,7 +1874,7 @@
       "version": "0.2.0-rc.2",
       "source": "source/packages/context/session-reference",
       "runtime": "runtime/dsh-session-reference",
-      "sha256": "a6784f3849270827e7750e9129999ba5571d732efed98637ccaba6260ff631c4",
+      "sha256": "1edffce22706e0d40840eaf5ab8e7e4c4945baba8d61b60b61ca88b0273fb73e",
       "bytes": 166923,
       "files": 24
     },
@@ -1883,7 +1883,7 @@
       "version": "0.2.0-rc.2",
       "source": "source/packages/session/session-stats",
       "runtime": "runtime/dsh-session-stats",
-      "sha256": "d3b9968163be68ed11977827d70922e2084981e6a45b9f4505c6619942571b39",
+      "sha256": "4d9a03dda9a0fd610f67e53feead1061998ca6eb7fa4c454b572e49641ea6ec9",
       "bytes": 44440,
       "files": 14
     },
@@ -1892,7 +1892,7 @@
       "version": "0.2.0-rc.2",
       "source": "source/packages/session/session-telemetry",
       "runtime": "runtime/dsh-session-telemetry",
-      "sha256": "6bf0a6aee77bfa38d14fef3e4223cd39f5916a3405fa2f901d3893a2551c9a99",
+      "sha256": "85084eba2501e2481f7839a8042480572c9933e89970e3a1e902e31364e15a22",
       "bytes": 47342,
       "files": 8
     },
@@ -1901,7 +1901,7 @@
       "version": "0.2.0-rc.2",
       "source": "source/packages/session/session-telemetry-otel",
       "runtime": "runtime/dsh-session-telemetry-otel",
-      "sha256": "79ce5dfc8776f3e732f11e918cbbd7fccfeaa194fa981f6c17963df2fa4b5f06",
+      "sha256": "34c9394c77ce02ca1cf0ee3cc7d9666d7a07d89e70f67bd4733100117ddf58a7",
       "bytes": 38194,
       "files": 7
     },
@@ -1910,7 +1910,7 @@
       "version": "0.2.0-rc.2",
       "source": "source/packages/session/session-title",
       "runtime": "runtime/dsh-session-title",
-      "sha256": "be0610b1c7a96a499563bc7f1f666b1e55f5d925074e22e8e37725d255ee00c9",
+      "sha256": "804fdb70f64cd7b8991cdc9065beba76bbdec13787fd1ef3181cb4e247c92986",
       "bytes": 104064,
       "files": 17
     },
@@ -1919,7 +1919,7 @@
       "version": "0.2.0-rc.2",
       "source": "source/packages/session/session-title-first-prompt-llm",
       "runtime": "runtime/dsh-session-title-first-prompt-llm",
-      "sha256": "51caf0907d83f1d5abad5cb19579085c5c3bd1f8081bb38adc7dcf7c8eeafa43",
+      "sha256": "75be57315ef1a7f671dec2ef379c6f35024bd4fa0a9fc956e05b57f472eb3c89",
       "bytes": 19276,
       "files": 7
     },
@@ -1928,7 +1928,7 @@
       "version": "0.2.0-rc.2",
       "source": "source/packages/session/session-title-llm",
       "runtime": "runtime/dsh-session-title-llm",
-      "sha256": "986137966715524ba7979e3d290b68451b301b1d9bf70ab28a35099e9340e863",
+      "sha256": "72dd91d0c4418b8d3b000f07393341bdcaab0eb4d4d775359ac2e527ed99a620",
       "bytes": 35720,
       "files": 7
     },
@@ -1937,7 +1937,7 @@
       "version": "0.2.0-rc.2",
       "source": "source/packages/session/session-turn-outline",
       "runtime": "runtime/dsh-session-turn-outline",
-      "sha256": "2872b3d4911bca9672409867e2481c9a54fc2e3333b61ccffc3b95d128815b45",
+      "sha256": "fe1b179fdfbe4a42aa27a146980456e22bc1be613b0e4c498ac8c1eb9bcabbed",
       "bytes": 38531,
       "files": 14
     },
@@ -1946,7 +1946,7 @@
       "version": "0.2.0-rc.2",
       "source": "source/packages/settings/settings",
       "runtime": "runtime/dsh-settings",
-      "sha256": "1ffc080b1426a50d7a6dd61615500588ec1bf65d6a16cabf1fc0b048acf09569",
+      "sha256": "2aa21b35e36f0d5cb95e473df0332889dda9ca6303e655d810e5dfe4373fdd70",
       "bytes": 72398,
       "files": 14
     },
@@ -1955,7 +1955,7 @@
       "version": "0.2.0-rc.2",
       "source": "source/packages/shell/shell",
       "runtime": "runtime/dsh-shell",
-      "sha256": "73adbd40564659164154a23e210aa0c3344a2908fd73f0d4be4f976e46ebb669",
+      "sha256": "73b86fefa34ff21879a09ba049c94935724f4e4d41538b72cd9bc6913d8969f5",
       "bytes": 46724,
       "files": 9
     },
@@ -1973,8 +1973,8 @@
       "version": "0.2.0-rc.2",
       "source": "source/packages/skill/skill",
       "runtime": "runtime/dsh-skill",
-      "sha256": "ef726b4fcb3cf30bf1a67d17766a95d4244e8ae395fe39e340ed106b0941c462",
-      "bytes": 64752,
+      "sha256": "86236e3b5f4cd0f8e01adb28299585d7008fa7f3d69f873dfa7cd85c79ded848",
+      "bytes": 65332,
       "files": 7
     },
     {
@@ -1991,8 +1991,8 @@
       "version": "0.2.0-rc.2",
       "source": "source/packages/skill/skill-filesystem",
       "runtime": "runtime/dsh-skill-filesystem",
-      "sha256": "046600bfda1f65014baa27614b90819f63407c6da55a098d07d8ada8b7dad6e5",
-      "bytes": 61394,
+      "sha256": "d280f33db6c8eae687b94dff3f08a3bfdf50eb7f4de3ac6f5c634b207cc3b070",
+      "bytes": 62078,
       "files": 7
     },
     {
@@ -2009,7 +2009,7 @@
       "version": "0.2.0-rc.2",
       "source": "source/packages/spill/spill",
       "runtime": "runtime/dsh-spill",
-      "sha256": "2f345293b4aa07a2bcc921e441af97532df5c6bdd98975588dd359799b657585",
+      "sha256": "1a15909f2e04af453cbbcb8597330f586060be1b0e42914b5ba67c44eab442a2",
       "bytes": 29541,
       "files": 8
     },
@@ -2027,7 +2027,7 @@
       "version": "0.2.0-rc.2",
       "source": "source/packages/spill/spill-policy",
       "runtime": "runtime/dsh-spill-policy",
-      "sha256": "c0a098d09cecf553930c22a9d7ea87a87f1887ac5b5211462733acf56daf6d83",
+      "sha256": "a182cd7c45863f8c0250152b5e0cb562da826315fce179c0eb9d85aa82feabc4",
       "bytes": 51738,
       "files": 14
     },
@@ -2054,7 +2054,7 @@
       "version": "0.2.0-rc.2",
       "source": "source/packages/storage/storage-json",
       "runtime": "runtime/dsh-storage-json",
-      "sha256": "1f7ab14ef9706f6cc76a3a03c9c03d450eac1f96b67f363c3deced84c664ee0b",
+      "sha256": "6b063b611aca9bc139ed1b4035ff8461bcafc7b8fe6b884d898744b679fec1ca",
       "bytes": 55697,
       "files": 11
     },
@@ -2063,7 +2063,7 @@
       "version": "0.2.0-rc.2",
       "source": "source/packages/subagent/subagent",
       "runtime": "runtime/dsh-subagent",
-      "sha256": "e79db8bce6b8ec5ea5ebdf65485ebcc3ca1b944b4976191b6f8efb94f0d87e6a",
+      "sha256": "92fc1920c765e9011fb3c84386704a21719bba17a51f6c7f55743fd2dca9cb92",
       "bytes": 559010,
       "files": 59
     },
@@ -2081,7 +2081,7 @@
       "version": "0.2.0-rc.2",
       "source": "source/packages/subagent/subagent-in-process-driver",
       "runtime": "runtime/dsh-subagent-in-process-driver",
-      "sha256": "91ada56570206d7947bdee3c94a3596b01e04437802c022bd85d41fecfce0cea",
+      "sha256": "a22999f942a2a31d9619fac7fa608b24969e5557378a22d82dea4d2af4a1ccda",
       "bytes": 43096,
       "files": 8
     },
@@ -2090,7 +2090,7 @@
       "version": "0.2.0-rc.2",
       "source": "source/packages/subagent/subagent-spawn-in-process",
       "runtime": "runtime/dsh-subagent-spawn-in-process",
-      "sha256": "46dda8d75c3500ef7c46ded775d9709b46188426647586d8fcaf4ce3bbf3eb12",
+      "sha256": "19e59a5e03d41a608520b544fb970bce2d5dc9a78bd70feb2145476a957c0205",
       "bytes": 23627,
       "files": 7
     },
@@ -2108,7 +2108,7 @@
       "version": "0.2.0-rc.2",
       "source": "source/packages/subprocess/subprocess-local",
       "runtime": "runtime/dsh-subprocess-local",
-      "sha256": "900f315a0802dd65b5a919f9fb59451f93b34e2d67e3b84b3a2c5305d220bd89",
+      "sha256": "8f2ef3f566f02a69d82fe4a3772a0c340c456a9decd68041e12d7bf90954085a",
       "bytes": 230480,
       "files": 26
     },
@@ -2117,7 +2117,7 @@
       "version": "0.2.0-rc.2",
       "source": "source/packages/core/system-prompt",
       "runtime": "runtime/dsh-system-prompt",
-      "sha256": "956c8f5a1ff4a4d9998ef543a18612f79bbe7e50bd6e28c8dd84886152122361",
+      "sha256": "2f8541f86213bf33d76438d532a955a7d4e664b9e426169e1278d7b685a0b9e8",
       "bytes": 64648,
       "files": 9
     },
@@ -2126,7 +2126,7 @@
       "version": "0.2.0-rc.2",
       "source": "source/packages/terminal/terminal",
       "runtime": "runtime/dsh-terminal",
-      "sha256": "1e05798cec672aa9d0d15e4d673f3246330ac523e08e5ab26b42f96d42bf3c23",
+      "sha256": "cf24a54c85a5754eedf197fce4159013f71f7bed122d0835b5f968894c845b49",
       "bytes": 49404,
       "files": 8
     },
@@ -2135,7 +2135,7 @@
       "version": "0.2.0-rc.2",
       "source": "source/packages/terminal/terminal-bash",
       "runtime": "runtime/dsh-terminal-bash",
-      "sha256": "0913015fb0c13e27d1e11b949f54a135c4321881efc783d2a4302499b81c30b8",
+      "sha256": "25741075c37ce2d6e39ac5322f1b9d3eda0be74ea20a932cf18f8ace0eda0fc6",
       "bytes": 78272,
       "files": 10
     },
@@ -2144,7 +2144,7 @@
       "version": "0.2.0-rc.2",
       "source": "source/packages/context/time-context",
       "runtime": "runtime/dsh-time-context",
-      "sha256": "a1abeb5c078db1206b2064e94de30101315dd29d59e1e5af8622f09849855eb9",
+      "sha256": "bc35a1df8e05420acce99a947816782b467bedb48ca549aeaeaba3d84b11224a",
       "bytes": 48194,
       "files": 13
     },
@@ -2171,7 +2171,7 @@
       "version": "0.2.0-rc.2",
       "source": "source/packages/llm/token-meter",
       "runtime": "runtime/dsh-token-meter",
-      "sha256": "7979508314838fa01ae6fe46509a5d26a1bf917cba5ff6cebff929ee5b7e0a6c",
+      "sha256": "83a672d3c0fa6eb15b29075c6903098edfa8c87457d3838b2d82497ad9bc8356",
       "bytes": 146879,
       "files": 28
     },
@@ -2180,7 +2180,7 @@
       "version": "0.2.0-rc.2",
       "source": "source/packages/interaction/tool-ask-user",
       "runtime": "runtime/dsh-tool-ask-user",
-      "sha256": "b981398249fb56ac280056a960947b872d30694624c5278bfb297b80c98afd90",
+      "sha256": "73644dc1642606f362afe34784ac55f246dfb58213cac97c1bfcecb1d9419e01",
       "bytes": 35091,
       "files": 8
     },
@@ -2189,7 +2189,7 @@
       "version": "0.2.0-rc.2",
       "source": "source/packages/shell/tool-bash",
       "runtime": "runtime/dsh-tool-bash",
-      "sha256": "6609a3e510a4e334f1a50b7410eff0f2f0820f0479420c4917396e2a70efc3ea",
+      "sha256": "7b2e9e31c26b7d433288b209561c4f22b4824b4b9a199162f3e1ce1a0236b12e",
       "bytes": 76919,
       "files": 9
     },
@@ -2198,7 +2198,7 @@
       "version": "0.2.0-rc.2",
       "source": "source/packages/shell/tool-bash-persistent",
       "runtime": "runtime/dsh-tool-bash-persistent",
-      "sha256": "f1a7b3df38c7da9cc23d20386ebb822c56052189307794ad41a3121e55b2c96e",
+      "sha256": "e5b21ddd2a51162edc54adf07f2ef082de39fe02aa496665bb9dbd557b266758",
       "bytes": 43532,
       "files": 7
     },
@@ -2207,7 +2207,7 @@
       "version": "0.2.0-rc.2",
       "source": "source/packages/guard/timeout-policy",
       "runtime": "runtime/dsh-tool-call-timeout-policy",
-      "sha256": "e0c90f5f94d888cb5fc7ce0bedd6d4284c94cd3fb547110510c62f31cc8da8c3",
+      "sha256": "0f7dfb284364124f95806436eb2b5f2db7a599d1c2d8fe321647e99c1802aa37",
       "bytes": 29110,
       "files": 7
     },
@@ -2216,7 +2216,7 @@
       "version": "0.2.0-rc.2",
       "source": "source/packages/extensions/tool-cordis",
       "runtime": "runtime/dsh-tool-cordis",
-      "sha256": "93761c6ba207360dca03df8a44d26965989b4092d10405a539f1e84cda0fd7f2",
+      "sha256": "ad16595cfc962430f062c914adca390c2bded741f24b1ec486cac72d6c8bd3ee",
       "bytes": 649532,
       "files": 18
     },
@@ -2225,7 +2225,7 @@
       "version": "0.2.0-rc.2",
       "source": "source/packages/fs/tool-fs",
       "runtime": "runtime/dsh-tool-fs",
-      "sha256": "3bd7d590ca0355b3d8d2cfd80df263bce5f51275cf81466bc76ccbfaa1eb91a8",
+      "sha256": "6d8f34b5b0593850884e57af4ec8284e2b818a80933a0f20dba2dc08be2e24ae",
       "bytes": 120874,
       "files": 17
     },
@@ -2234,8 +2234,8 @@
       "version": "0.2.0-rc.2",
       "source": "source/packages/fs/tool-fs-search",
       "runtime": "runtime/dsh-tool-fs-search",
-      "sha256": "3a6a32f38b1b053a4a0174520e8f0e8e3bc276e878ab35eb73672be19ae4ea5f",
-      "bytes": 127171,
+      "sha256": "684a2eecfa0cf4b1ed017057cc9603077dc4ac37346ce0f294d29595a50422e5",
+      "bytes": 127894,
       "files": 12
     },
     {
@@ -2243,7 +2243,7 @@
       "version": "0.2.0-rc.2",
       "source": "source/packages/goal/tool-goal",
       "runtime": "runtime/dsh-tool-goal",
-      "sha256": "6a785445f11d2dee727a13504c2d3acbb1334a83701cc5af1ae36e3d05fdedf6",
+      "sha256": "472cf5aa473fb6b2acabf760337b3bd95d16472af11b2b3062c3b3143c574a8b",
       "bytes": 47329,
       "files": 9
     },
@@ -2252,7 +2252,7 @@
       "version": "0.2.0-rc.2",
       "source": "source/packages/jobs/tool-jobs",
       "runtime": "runtime/dsh-tool-jobs",
-      "sha256": "2c5f78951bcbb6053617c2c69696ec4f5865360373c259b1a9dcc52a157a02e2",
+      "sha256": "ce32137100ffe3171d70f1375d7ab5974927540565f7648b967701d6e499781e",
       "bytes": 54202,
       "files": 8
     },
@@ -2261,7 +2261,7 @@
       "version": "0.2.0-rc.2",
       "source": "source/packages/deliverables/tool-present",
       "runtime": "runtime/dsh-tool-present",
-      "sha256": "f4624c5616b21285d4c965945e14607fb37ae3aaf6226ef7fb6236d269538078",
+      "sha256": "a3980f8cd3c4f9069909ac56dbd63dfc9a663a2cac5efb9ab8b7c6ac51adae25",
       "bytes": 24842,
       "files": 10
     },
@@ -2270,7 +2270,7 @@
       "version": "0.2.0-rc.2",
       "source": "source/packages/shell/tool-pwsh",
       "runtime": "runtime/dsh-tool-pwsh",
-      "sha256": "4f61c273b47c8e0c933ad2beffc42ff8b040d7e7a3250e558c88e2e8afb12a4f",
+      "sha256": "ade403fa182044965290562f41edf3ac6c0c3d703aa4fcfe3a7baaed3f0f9b83",
       "bytes": 77592,
       "files": 9
     },
@@ -2279,7 +2279,7 @@
       "version": "0.2.0-rc.2",
       "source": "source/packages/shell/tool-pwsh-persistent",
       "runtime": "runtime/dsh-tool-pwsh-persistent",
-      "sha256": "48823d44fdb6ec2380d25f80143b349b4c330eec86022ddede773d114293733b",
+      "sha256": "da901310def9364712aa16f2b7461c068956fe062e8102864caf73e5961669f6",
       "bytes": 48720,
       "files": 7
     },
@@ -2288,7 +2288,7 @@
       "version": "0.2.0-rc.2",
       "source": "source/packages/workflow/tool-ralph",
       "runtime": "runtime/dsh-tool-ralph",
-      "sha256": "ebef818eb280cfddb41ca38482cee6dff20014a1519ff95d662919f8d5161256",
+      "sha256": "e1d2038f2a7434193ad7ed77cca3243d9567574b46475a142cf8ea37c30aea0b",
       "bytes": 46761,
       "files": 7
     },
@@ -2297,7 +2297,7 @@
       "version": "0.2.0-rc.2",
       "source": "source/packages/skill/tool-skill",
       "runtime": "runtime/dsh-tool-skill",
-      "sha256": "bee233030c43178fb3efab8bd1559a663e39dff21c1623513c0d6bb02c3bc2f0",
+      "sha256": "014c5f83a7c8bacf3ae06858360c43609afd5ce08a4c3f2ad516dcc3bc15d2b3",
       "bytes": 52847,
       "files": 7
     },
@@ -2315,7 +2315,7 @@
       "version": "0.2.0-rc.2",
       "source": "source/packages/subagent/tool-subagent",
       "runtime": "runtime/dsh-tool-subagent",
-      "sha256": "c0e6be5b0d0e5ba57938389298cfea89df65877bd7287a1709e5a1fba82ebd0a",
+      "sha256": "66805349d049d2462549a18494944fb0aa8cd45ae5f96df56abf38b729828422",
       "bytes": 94497,
       "files": 14
     },
@@ -2333,7 +2333,7 @@
       "version": "0.2.0-rc.2",
       "source": "source/packages/todo/tool-todo",
       "runtime": "runtime/dsh-tool-todo",
-      "sha256": "c04877b358b7cfa8daf752cf4ba5ab8ed4ab3afce16f0a589174ca541d14707c",
+      "sha256": "e6ad66158c3e8acb9864d3e71cad1efcebbcc43efae793bca767aaff47e0687f",
       "bytes": 57135,
       "files": 15
     },
@@ -2351,7 +2351,7 @@
       "version": "0.2.0-rc.2",
       "source": "source/packages/workflow/tool-workflow",
       "runtime": "runtime/dsh-tool-workflow",
-      "sha256": "ea9cfd03607f4ee7b9f17297d06e528964c19595474400f740114fb59bc7c66d",
+      "sha256": "81c52777782f86214da23f4cb11b1e991d44711e1728b787c7c4f780e1f9240a",
       "bytes": 93451,
       "files": 15
     },
@@ -2369,7 +2369,7 @@
       "version": "0.2.0-rc.2",
       "source": "source/packages/core/tools",
       "runtime": "runtime/dsh-tools",
-      "sha256": "1817feb8d06be0a860163c5f60b724d1040d2d194e3cc059b307aa3a791c51af",
+      "sha256": "011ee7e8f1f98a0157b2dd46fb3130ebf3146571a450472b087be908f4f911b5",
       "bytes": 514227,
       "files": 27
     },
@@ -2405,7 +2405,7 @@
       "version": "0.2.0-rc.2",
       "source": "source/packages/interaction/user-approval",
       "runtime": "runtime/dsh-user-approval",
-      "sha256": "79b512b37de697574e4bcc1efc71299fc40fab4163eb58e87929e0c488e3daa4",
+      "sha256": "4d9c0a9e1e510deb6088ca0ae31311c102e174170e606212a3d436c4b5cba86f",
       "bytes": 73361,
       "files": 13
     },
@@ -2414,7 +2414,7 @@
       "version": "0.2.0-rc.2",
       "source": "source/packages/interaction/user-questions",
       "runtime": "runtime/dsh-user-questions",
-      "sha256": "f8baabf01d26d155c7179af305bc5a4f5b278a64c3af6071c154446ba1dbd8c2",
+      "sha256": "d7bc42c5ae4e694d1cea434ea23390808d5b5911893d5559bc8c6df5a1932012",
       "bytes": 155097,
       "files": 18
     },
@@ -2477,7 +2477,7 @@
       "version": "0.2.0-rc.2",
       "source": "source/packages/bundle/web-app",
       "runtime": "runtime/dsh-web-app",
-      "sha256": "14f08ccfd52326f65c355af41b80b96f8bf57042af19fd0a288a441e70ddb51f",
+      "sha256": "0af5105f7013cb4ea20cc87da5c0385fe6a5e56db9cb2d14c488732900cf10e1",
       "bytes": 103757,
       "files": 14
     },
@@ -2486,7 +2486,7 @@
       "version": "0.2.0-rc.2",
       "source": "source/packages/web/web-fetch-http",
       "runtime": "runtime/dsh-web-fetch-http",
-      "sha256": "359469663a883c9dc954d1f52e05ba0d753617a500bece441168ccc09dfaf908",
+      "sha256": "9b92dee14b4d7ed390f85836b1c5d723e0555dba2167754734dac70943658433",
       "bytes": 62253,
       "files": 10
     },
@@ -2495,8 +2495,8 @@
       "version": "0.2.0-rc.2",
       "source": "source/apps/web",
       "runtime": "runtime/dsh-web-frontend",
-      "sha256": "32ba6395c2efe39ef968593e96a03435fbf42e5b3ef0b9bad9efc518cb25df39",
-      "bytes": 5704481,
+      "sha256": "89bddd795d0ff457806349c7c664c1b361f12905e0e50113a0d5d86a8cc1647c",
+      "bytes": 5704490,
       "files": 132
     },
     {
@@ -2504,7 +2504,7 @@
       "version": "0.2.0-rc.2",
       "source": "source/packages/web/web-search-deepseek",
       "runtime": "runtime/dsh-web-search-deepseek",
-      "sha256": "b32f1e3d50c112fce5f9120c2a35c4cc1a2a43a682fb6d85a8bc7e7f3d748630",
+      "sha256": "33642cdff2f9c54ba92dc2d1c843a452178e9ad68c6ff85ff98da0e4efacc6dc",
       "bytes": 61093,
       "files": 9
     },
@@ -2513,7 +2513,7 @@
       "version": "0.2.0-rc.2",
       "source": "source/packages/webhook/webhook",
       "runtime": "runtime/dsh-webhook",
-      "sha256": "1563d02597b1f85d4c17894fdc8d71d5711d2f91fdec52f2f2ee9535cf838880",
+      "sha256": "58d8602a460f13644d5480eaf223df5849cda1df0bd1327176c9942ba0881258",
       "bytes": 57446,
       "files": 17
     },
@@ -2522,7 +2522,7 @@
       "version": "0.2.0-rc.2",
       "source": "source/packages/webhook/webhook-github",
       "runtime": "runtime/dsh-webhook-github",
-      "sha256": "b9f47f367c3b2a999235e26e11ed081226a6da8b81bbdc8fef6b97b2605b18f3",
+      "sha256": "b2b95eafc2ed28c15359a3d5d5da94834a13fc4d0b26e80d87bc4fd760436932",
       "bytes": 32375,
       "files": 14
     },
@@ -2540,7 +2540,7 @@
       "version": "0.2.0-rc.2",
       "source": "source/packages/workflow/workflow",
       "runtime": "runtime/dsh-workflow",
-      "sha256": "cd8fcb9289903b4a8d414df75f89dfec33ccf1d34f7531811780e579b55e72d3",
+      "sha256": "c60dd8daa24d817950b039c37dfcbd30f0acc9159fe1f43aeb46b1469fbd992a",
       "bytes": 56289,
       "files": 15
     },
@@ -2549,7 +2549,7 @@
       "version": "0.2.0-rc.2",
       "source": "source/packages/workflow/workflow-ptc",
       "runtime": "runtime/dsh-workflow-ptc",
-      "sha256": "1d4657fb029c3ca143a69954711f09141e16e702f7c05e2fa6626104dd2e52a3",
+      "sha256": "90bd2cc2b45110ea12013fbd67a75a2784b206d40e165915ba0f9e59f1fd5ae2",
       "bytes": 151072,
       "files": 15
     },
@@ -2558,7 +2558,7 @@
       "version": "0.2.0-rc.2",
       "source": "source/packages/workspace/workspace",
       "runtime": "runtime/dsh-workspace",
-      "sha256": "78ef6a23ad132a3bdef6270980e355f578c7b2c75b1dffe237abe8fab29149b8",
+      "sha256": "583b514a018aef5a68126983080867177b3cfed70c9818022f3d96eda2c7d3d3",
       "bytes": 163167,
       "files": 19
     },
@@ -2586,5 +2586,30 @@
     "snapshots/session/ptc-workspace-context/workspace/nested/AGENTS.md",
     "snapshots/session/agent-instructions/workspace/AGENTS.md",
     "snapshots/session/agent-instructions/workspace/nested/AGENTS.md"
+  ],
+  "omnicutPatches": [
+    "Protected configuration read/write boundary and confined file search on macOS; source and bundled runtime updated together."
+  ],
+  "localPatches": [
+    {
+      "package": "@deepseek-ai/cordis-plugin-loader",
+      "description": "Resolve profile expressions when applying live volatile configuration."
+    },
+    {
+      "package": "@deepseek-ai/dsh-config-editor",
+      "description": "Validate resolved configuration while preserving profile expressions on disk."
+    },
+    {
+      "package": "@deepseek-ai/dsh-api-session-controller",
+      "description": "Adopt durable model selection for product-owned live sessions."
+    },
+    {
+      "package": "@deepseek-ai/dsh-skill-filesystem",
+      "description": "Discover explicitly configured skill roots relative to the session workspace."
+    },
+    {
+      "package": "@deepseek-ai/dsh-skill",
+      "description": "Expose cwd-scoped catalog invalidation at host-controlled user-input boundaries."
+    }
   ]
 }

@@ -333,7 +333,7 @@ function referencedParameters(input: {
         preimage,
       },
       ...(!writable
-        ? { disabledReason: reference === undefined ? "该几何值由组件声明为只读。" : "引用由作者在 SVML 中绑定，面板不替换引用关系。" }
+        ? { disabledReason: reference === undefined ? "该几何值由组件声明为只读。" : "这一项跟随其他设置，请在源码中修改。" }
         : {}),
     } satisfies StudioSourceBinding, ...nested];
   });
@@ -430,7 +430,7 @@ export function sourceBindingsForDraft(input: {
         preimage,
       },
       ...(!writable
-        ? { disabledReason: isReference ? "引用由作者在 SVML 中绑定，面板不替换引用关系。" : "该参数由组件声明为只读。" }
+        ? { disabledReason: isReference ? "这一项跟随其他设置，请在源码中修改。" : "该参数由组件声明为只读。" }
         : {}),
     } satisfies StudioSourceBinding];
   });
@@ -594,7 +594,7 @@ export function resolveTimelineEditHandles(
     }
     const missing = projected.find((item) => "missing" in item);
     if (missing !== undefined && "missing" in missing) {
-      return disabled(gesture, `投影参数 ${missing.missing} 在当前作者源码中不可写。`);
+      return disabled(gesture, "这一项暂不支持在面板中修改。");
     }
     const semanticEndpoints = affected.filter(({ endpoint }) => endpoint.authority.kind === "semantic").map(({ endpoint }) => endpoint);
     const target = semanticTarget(semanticEndpoints);

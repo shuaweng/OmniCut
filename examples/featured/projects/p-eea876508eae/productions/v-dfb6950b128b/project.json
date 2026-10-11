@@ -1,0 +1,95 @@
+{
+  "id": "p-eea876508eae",
+  "projectId": "p-eea876508eae",
+  "videoId": "v-dfb6950b128b",
+  "name": "OmniCut · 代码界面版",
+  "brief": "OmniCut · 代码界面版",
+  "draft": false,
+  "updated": "2026-10-10T16:11:28.625Z",
+  "version": 13,
+  "history": [],
+  "messages": [],
+  "native": {
+    "author": "main.svml",
+    "run": "render.svrun",
+    "target": "final.video",
+    "output": {
+      "width": 1920,
+      "height": 1080,
+      "fps": 30
+    },
+    "duration": 61
+  },
+  "parentId": "v-default",
+  "productionPlan": {
+    "duration": 61,
+    "ratio": "16:9",
+    "route": "code",
+    "updated": "2026-10-10T15:43:29.377Z",
+    "scenes": [
+      {
+        "id": "gather",
+        "name": "素材汇入",
+        "start": 0,
+        "end": 7.3,
+        "visual": "四张代码素材卡漂浮散开后汇入窄窗",
+        "voiceover": "一个想法，要穿过多少个窗口，才能变成作品？",
+        "route": "code"
+      },
+      {
+        "id": "claim",
+        "name": "主张",
+        "start": 7.3,
+        "end": 13,
+        "visual": "窄窗拉开，主张字排",
+        "voiceover": "创意，不该困在工具里。",
+        "route": "code"
+      },
+      {
+        "id": "brief",
+        "name": "需求→方案",
+        "start": 13,
+        "end": 21,
+        "visual": "输入框→三张分镜卡",
+        "voiceover": "在 OmniCut，从一句话开始……完整的方案。",
+        "route": "code"
+      },
+      {
+        "id": "bench-gather",
+        "name": "图声动效汇合",
+        "start": 21,
+        "end": 30.2,
+        "visual": "素材拖入镜头/字幕/配乐三轨",
+        "voiceover": "图像、声音、动效，在同一个地方汇合。",
+        "route": "code"
+      },
+      {
+        "id": "bench-edit",
+        "name": "时间线精修",
+        "start": 30.2,
+        "end": 42.6,
+        "visual": "拖短镜头、字幕吸附、压低配乐；对话气泡联动",
+        "voiceover": "然后回到时间线……对话给你自由，工作台给你掌控。",
+        "route": "code"
+      },
+      {
+        "id": "reuse",
+        "name": "复用与交付",
+        "start": 42.6,
+        "end": 55,
+        "visual": "同一动效横竖重排→成片/可编辑工程→中央Logo",
+        "voiceover": "导出的那一刻……OmniCut。创意，不该困在工具里。",
+        "route": "code"
+      },
+      {
+        "id": "brand",
+        "name": "品牌落版",
+        "start": 55,
+        "end": 61,
+        "visual": "Logo→主张→干净落版",
+        "voiceover": "",
+        "route": "code"
+      }
+    ]
+  }
+}
